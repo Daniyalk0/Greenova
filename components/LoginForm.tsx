@@ -27,7 +27,7 @@ const LoginForm = (): JSX.Element => {
   });
 
   const onSubmit = (data: LoginFormData) => {
-    const { email, password } = data;
+    const { email } = data;
     loginUser({ email }); // ✅ you can pass `password` too if needed
     router.push("/");
     reset();
