@@ -52,14 +52,14 @@ const {
               <Link className="flex items-center gap-4" href={`/product/${item?.id}`}>
                 <img
                 
-                  src={item.image}
-                  alt={item.namee}
+                  src={item?.image}
+                  alt={item?.namee}
                   className="w-24 h-24 object-cover rounded"
                 />
                 <div>
-                  <h2 className="text-lg font-bold">{item.namee}</h2>
+                  <h2 className="text-lg font-bold">{item?.namee}</h2>
                   <p className="text-sm text-gray-600">
-                    Price: <strong>₹{item.price}</strong>
+                    Price: <strong>₹{item?.price}</strong>
                   </p>
                 </div>
               </Link>
@@ -72,7 +72,7 @@ const {
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="w-6 text-center">{item.quantity}</span>
+                  <span className="w-6 text-center">{item.quantity && item.quantity}</span>
                   <button
                     onClick={() => addOrIncrease(item)}
                     className="text-gray-600 hover:text-black"
@@ -81,7 +81,8 @@ const {
                   </button>
                 </div>
                 <p className="font-semibold text-lg">
-                  ₹{(item.price * item.quantity).toFixed(2)}
+                 ₹{(item.price * (item.quantity ?? 1)).toFixed(2)}
+
                 </p>
                 <button
                   onClick={() => remove(item.id)}
