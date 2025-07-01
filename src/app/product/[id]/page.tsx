@@ -1,10 +1,4 @@
-import ProductDetails from "../../../../components/ProductDetails";
-
-// ✅ No React.FC, no interface
-export default function Page({
-  params,
-}: {
-  params: { id: string };
-}) {
-  return <ProductDetails id={params.id} />;
+// src/app/product/[id]/page.tsx
+export default function Page() {
+  return <div>Product page coming soon...</div>;
 }
