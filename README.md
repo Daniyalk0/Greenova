@@ -8,7 +8,7 @@ A modern and responsive frontend web application for an e-commerce platform that
 
 - **Next.js** – React framework for building fast, SEO-friendly applications with App Router  
 - **Tailwind CSS** – Utility-first CSS framework for rapid UI development  
-- **TypeScript** – Adds static typing for improved code reliability  
+- **JavaScript** – A flexible and widely-used language for building dynamic web applications. 
 - **React Hook Form** – Efficient and easy-to-use form management library  
 - **Zod** – Type-safe schema validation library integrated with forms  
 
@@ -30,7 +30,7 @@ A modern and responsive frontend web application for an e-commerce platform that
 ## 🌐 Live Demo
 
 Check out the live version of the app here:  
-**[Live Site](https://your-deployment-url.vercel.app)**
+**[Live Site](https://ecommerce-assignment-frontend-eight.vercel.app/)**
 
 ---
 
