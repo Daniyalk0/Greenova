@@ -1,4 +1,4 @@
-
+// ❌ Do NOT use 'use client'
 import ProductDetails from "../../../../components/ProductDetails";
 
 interface PageProps {
@@ -7,13 +7,11 @@ interface PageProps {
   };
 }
 
+// ✅ MUST be a regular function, NOT React.FC
 export default function Page({ params }: PageProps) {
-  const { id } = params;
-
   return (
     <div>
-      <ProductDetails id={id} />
+      <ProductDetails id={params.id} />
     </div>
   );
 }
-
