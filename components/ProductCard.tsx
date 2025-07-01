@@ -18,8 +18,22 @@ type ProductCardProps = {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { user } = useContext(AuthContext);
-  const { cart, addOrIncrease } = useContext(CartContext);
+const authContext = useContext(AuthContext);
+
+if (!authContext) {
+  throw new Error("AuthContext must be used within an AuthProvider");
+}
+
+const { user } = authContext;
+
+const cartContext = useContext(CartContext);
+
+if (!cartContext) {
+  throw new Error("CartContext must be used within a CartProvider");
+}
+
+const { cart, addOrIncrease } = cartContext;
+
   const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
   const router = useRouter();
 

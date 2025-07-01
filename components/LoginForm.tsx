@@ -9,7 +9,14 @@ import { AuthContext } from "@/app/contexts/AuthContext";
 import { LoginFormData, loginSchema } from "../lib/validation";
 
 const LoginForm = () => {
-  const { loginUser } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
+
+if (!authContext) {
+  throw new Error("AuthContext must be used within an AuthProvider");
+}
+
+const { loginUser } = authContext;
+
   const router = useRouter();
   const pathname = usePathname();
 

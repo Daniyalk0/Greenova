@@ -7,7 +7,14 @@ import { useForm } from "react-hook-form";
 // import { AuthContext } from '@/context/AuthContext';
 
 const SignupForm = () => {
-  const { loginUser } = useContext(AuthContext);
+ const authContext = useContext(AuthContext);
+
+if (!authContext) {
+  throw new Error("AuthContext must be used within an AuthProvider");
+}
+
+const { loginUser } = authContext;
+
 
   const {
     register,
