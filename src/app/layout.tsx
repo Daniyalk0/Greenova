@@ -32,7 +32,7 @@ const playFairDisplay = localFont({
   variable: '--font-play-fair',
   display: 'swap',
 });
-export const playFairDisplay2 = localFont({
+const playFairDisplay2 = localFont({
   src: [
     {
       path: './fonts/PlayfairDisplay-Regular.ttf',
