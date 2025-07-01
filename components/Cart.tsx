@@ -18,17 +18,19 @@ type CartItem = {
 const Cart = () => {
   const pathname = usePathname();
 
-  const {
-    cart,
-    remove,
-    addOrIncrease,
-    decrease,
-  }: {
-    cart: CartItem[];
-    remove: (id: number) => void;
-    addOrIncrease: (item: CartItem) => void;
-    decrease: (id: number) => void;
-  } = useContext(CartContext);
+const cartContext = useContext(CartContext);
+
+if (!cartContext) {
+  throw new Error("CartContext must be used within a CartProvider");
+}
+
+const {
+  cart,
+  remove,
+  addOrIncrease,
+  decrease,
+} = cartContext;
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
