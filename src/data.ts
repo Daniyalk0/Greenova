@@ -5,6 +5,7 @@ const items = [
     family: "Rosaceae",
     order: "Rosales",
     genus: "Fragaria",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/2/29/PerfectStrawberry.jpg",
     nutritions: {
       calories: 29.0,
@@ -21,6 +22,7 @@ const items = [
     family: "Musaceae",
     order: "Zingiberales",
     genus: "Musa",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg",
     nutritions: {
       calories: 96.0,
@@ -37,6 +39,7 @@ const items = [
     family: "Solanaceae",
     order: "Solanales",
     genus: "Solanum",
+    category: "vegetable",
     image: "https://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg",
     nutritions: {
       calories: 74.0,
@@ -53,6 +56,7 @@ const items = [
     family: "Rosaceae",
     order: "Rosales",
     genus: "Rubus",
+    category: "fruit",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaPnzAOc8-YUw02uqhiNCwq8lge4DFhHJbLg&s",
     nutritions: {
       calories: 40.0,
@@ -69,6 +73,7 @@ const items = [
     family: "Actinidiaceae",
     order: "Ericales",
     genus: "Actinidia",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Kiwi_aka.jpg",
     nutritions: {
       calories: 61.0,
@@ -85,6 +90,7 @@ const items = [
     family: "Bromeliaceae",
     order: "Poales",
     genus: "Ananas",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_and_cross_section.jpg",
     nutritions: {
       calories: 50.0,
@@ -101,6 +107,7 @@ const items = [
     family: "Rosaceae",
     order: "Rosales",
     genus: "Prunus",
+    category: "fruit",
     image: "https://media.istockphoto.com/id/1388174145/photo/plum-isolated-on-white.jpg?s=612x612&w=0&k=20&c=fdUpkfAtlTrpDgm_N66OXE63NbS8RrCnPcblSFQ8kcE=",
     nutritions: {
       calories: 46.0,
@@ -117,6 +124,7 @@ const items = [
     family: "Rutaceae",
     order: "Sapindales",
     genus: "Citrus",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg",
     nutritions: {
       calories: 43.0,
@@ -133,6 +141,7 @@ const items = [
     family: "Rosaceae",
     order: "Rosales",
     genus: "Malus",
+    category: "fruit",
     image: "https://www.urbangroc.com/wp-content/uploads/2023/01/pngwing.com_.png.webp",
     nutritions: {
       calories: 21.0,
@@ -149,6 +158,7 @@ const items = [
     family: "Cucurbitaceae",
     order: "Cucurbitales",
     genus: "Citrullus",
+    category: "fruit",
     image: "https://farmtodoorstep.co/wp-content/uploads/2020/05/watermelon.jpg",
     nutritions: {
       calories: 30.0,
@@ -165,6 +175,7 @@ const items = [
     family: "Rutaceae",
     order: "Sapindales",
     genus: "Citrus",
+    category: "fruit",
     image: "https://media.istockphoto.com/id/1406047398/photo/lemon-with-leaf-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=WIwBPye17pFzllBxa4qRvwprxFTAS5S3nJyDvmm49ok=",
     nutritions: {
       calories: 29.0,
@@ -181,6 +192,7 @@ const items = [
     family: "Anacardiaceae",
     order: "Sapindales",
     genus: "Mangifera",
+    category: "fruit",
     image: "https://5.imimg.com/data5/SELLER/Default/2023/9/344928632/OW/RQ/XC/25352890/yellow-mango.jpeg",
     nutritions: {
       calories: 60.0,
@@ -197,6 +209,7 @@ const items = [
     family: "Ericaceae",
     order: "Ericales",
     genus: "Vaccinium",
+    category: "fruit",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7gtwQgG9N46nxxpG-o82Vu6ZLMookYmhOYQ&s",
     nutritions: {
       calories: 57.0,
@@ -213,6 +226,7 @@ const items = [
     family: "Rosaceae",
     order: "Rosales",
     genus: "Malus",
+    category: "fruit",
     image: "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg",
     nutritions: {
       calories: 52.0,
@@ -229,6 +243,7 @@ const items = [
     family: "Myrtaceae",
     order: "Myrtales",
     genus: "Psidium",
+    category: "fruit",
     image: "https://orgfarm.store/cdn/shop/files/guava.webp?v=1721811540",
     nutritions: {
       calories: 68.0,
@@ -240,5 +255,6 @@ const items = [
     price: 3.79,
   },
 ];
+
 
 export default items;
