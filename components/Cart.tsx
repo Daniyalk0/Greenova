@@ -102,10 +102,11 @@ const {
             <h2 className="text-xl font-semibold">
               Total: ₹
               {cart
-                .reduce(
-                  (acc, item) => acc + item.price * item.quantity,
-                  0
-                )
+            .reduce(
+  (acc, item) => acc + item.price * (item.quantity ?? 1),
+  0
+)
+
                 .toFixed(2)}
             </h2>
           </div>
