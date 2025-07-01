@@ -1,15 +1,13 @@
 
-import React from 'react';
-import ProductDetails from '../../../../components/ProductDetails';
+import ProductDetails from "../../../../components/ProductDetails";
 
-// Type the params correctly
 interface PageProps {
   params: {
     id: string;
   };
 }
 
-const Page: React.FC<PageProps> = ({ params }) => {
+export default function Page({ params }: PageProps) {
   const { id } = params;
 
   return (
@@ -17,6 +15,5 @@ const Page: React.FC<PageProps> = ({ params }) => {
       <ProductDetails id={id} />
     </div>
   );
-};
+}
 
-export default Page;
