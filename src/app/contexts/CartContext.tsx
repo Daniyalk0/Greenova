@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext,useState, ReactNode } from 'react';
 
 // 1. Define the product type
 export interface Product {

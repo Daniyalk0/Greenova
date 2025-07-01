@@ -8,9 +8,6 @@ import { useForm } from "react-hook-form";
 
 const SignupForm = (): JSX.Element => {
   const { loginUser } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
 
   const {
     register,
@@ -21,8 +18,8 @@ const SignupForm = (): JSX.Element => {
   });
 
   const onSubmit = (data: SignupFormData) => {
-    console.log("Form Submitted:", data);
-    loginUser({ email });
+      const { email } = data;
+      loginUser({ email }); 
   };
 
   return (
