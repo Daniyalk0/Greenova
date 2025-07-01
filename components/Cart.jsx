@@ -3,34 +3,20 @@
 import { useContext, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Plus, Minus, Trash } from "lucide-react";
-import { CartContext } from "@/app/contexts/CartContext";
+// import { CartContext } from "@/app/contexts/CartContext";
 import React from "react";
 import Link from "next/link";
-
-type CartItem = {
-  id: number;
-  namee: string;
-  image: string;
-  price: number;
-  quantity: number;
-};
+import { CartContext } from "../src/app/contexts/CartContext";
 
 const Cart = () => {
   const pathname = usePathname();
+  const cartContext = useContext(CartContext);
 
-const cartContext = useContext(CartContext);
+  if (!cartContext) {
+    throw new Error("CartContext must be used within a CartProvider");
+  }
 
-if (!cartContext) {
-  throw new Error("CartContext must be used within a CartProvider");
-}
-
-const {
-  cart,
-  remove,
-  addOrIncrease,
-  decrease,
-} = cartContext;
-
+  const { cart, remove, addOrIncrease, decrease } = cartContext;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -49,9 +35,11 @@ const {
               key={item.id}
               className="flex flex-row sm:items-center justify-between border-b py-4 gap-4"
             >
-              <Link className="flex items-center gap-4" href={`/product/${item?.id}`}>
+              <Link
+                className="flex items-center gap-4"
+                href={`/product/${item?.id}`}
+              >
                 <img
-                
                   src={item?.image}
                   alt={item?.namee}
                   className="w-24 h-24 object-cover rounded"
@@ -72,7 +60,9 @@ const {
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="w-6 text-center">{item.quantity && item.quantity}</span>
+                  <span className="w-6 text-center">
+                    {item.quantity && item.quantity}
+                  </span>
                   <button
                     onClick={() => addOrIncrease(item)}
                     className="text-gray-600 hover:text-black"
@@ -81,8 +71,7 @@ const {
                   </button>
                 </div>
                 <p className="font-semibold text-lg">
-                 ₹{(item.price * (item.quantity ?? 1)).toFixed(2)}
-
+                  ₹{(item.price * (item.quantity ?? 1)).toFixed(2)}
                 </p>
                 <button
                   onClick={() => remove(item.id)}
@@ -102,11 +91,10 @@ const {
             <h2 className="text-xl font-semibold">
               Total: ₹
               {cart
-            .reduce(
-  (acc, item) => acc + item.price * (item.quantity ?? 1),
-  0
-)
-
+                .reduce(
+                  (acc, item) => acc + item.price * (item.quantity ?? 1),
+                  0
+                )
                 .toFixed(2)}
             </h2>
           </div>
@@ -117,4 +105,3 @@ const {
 };
 
 export default Cart;
-

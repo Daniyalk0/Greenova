@@ -4,37 +4,27 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { LuShoppingCart } from "react-icons/lu";
-import { AuthContext } from "@/app/contexts/AuthContext";
-import { CartContext } from "@/app/contexts/CartContext";
+// import { AuthContext } from "@/app/contexts/AuthContext";
+// import { CartContext } from "@/app/contexts/CartContext";
+import { AuthContext } from "../src/app/contexts/AuthContext";
+import { CartContext } from "../src/app/contexts/CartContext";
 
 const Navbar = () => {
-  const { user, logoutUser } = useContext(AuthContext) as {
-    user: { email: string } | null;
-    logoutUser: () => void;
-  };
+  const authContext = useContext(AuthContext);
+  const cartContext = useContext(CartContext);
 
-  const { cart } = useContext(CartContext) as {
-    cart: {
-      id: number;
-      namee: string;
-      image: string;
-      price: number;
-      quantity: number;
-    }[];
-  };
+  const { user, logoutUser } = authContext || {};
+  const { cart } = cartContext || { cart: [] };
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const navRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef(null);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   // Close menu on outside click
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navRef.current &&
-        !navRef.current.contains(event.target as Node)
-      ) {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
@@ -120,7 +110,7 @@ const Navbar = () => {
           {user && (
             <Link
               href="/cart"
-              className={`relative`}
+              className="relative"
               onClick={() => setIsOpen(false)}
             >
               <div className="transition-all duration-300 cursor-pointer relative">

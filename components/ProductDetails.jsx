@@ -2,39 +2,36 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { Plus, Minus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import items from "@/data";
-import { CartContext } from "@/app/contexts/CartContext";
-import { AuthContext } from "@/app/contexts/AuthContext";
+import { usePathname, useRouter } from "next/navigation";
+// import items from "@/data";
+import { CartContext } from "../src/app/contexts/CartContext";
+import { AuthContext } from "../src/app/contexts/AuthContext";
+import items from "../src/data";
+// import { CartContext } from "@/app/contexts/CartContext";
+// import { AuthContext } from "@/app/contexts/AuthContext";
 
-// Types
-type Product = {
-  id: number | string;
-  namee: string;
-  name?: string;
-  image: string;
-  price: number;
-  description?: string;
-};
+const ProductDetails = ({ id }) => {
+  const [Products] = useState(items);
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isAlreadyInCart, setisAlreadyInCart] = useState(false);
 
-interface Props {
-  id: string | number;
-}
+  const cartContext = useContext(CartContext);
+  const authContext = useContext(AuthContext);
 
-const ProductDetails: React.FC<Props> = ({ id }) => {
-  const [Products] = useState<Product[]>(items);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [isAlreadyInCart, setisAlreadyInCart] = useState<boolean>(false);
+   const pathname = usePathname();
+  
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+  
 
-  const { addProductByQuantity, cart } = useContext(CartContext) as {
-    cart: Product[] & { quantity: number }[];
-    addProductByQuantity: (product: Product, qty: number) => void;
+  const { cart, addProductByQuantity } = cartContext || {
+    cart: [],
+    addProductByQuantity: () => {},
   };
 
-  const { user } = useContext(AuthContext) as {
-    user: { email: string } | null;
-  };
+  const { user } = authContext || { user: null };
 
   const router = useRouter();
 

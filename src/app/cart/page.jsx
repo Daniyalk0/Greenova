@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Cart from '../../../components/Cart';
 import { usePathname } from 'next/navigation';
 
-const Page: React.FC = () => {
+const Page = () => {
   const pathname = usePathname();
 
   useEffect(() => {

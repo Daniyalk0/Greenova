@@ -1,32 +1,32 @@
 "use client";
-import { AuthContext } from "@/app/contexts/AuthContext";
+
+// import { AuthContext } from "@/app/contexts/AuthContext";
 import { useState, useContext } from "react";
-import { SignupFormData, signupSchema } from "../lib/validation";
+import { signupSchema } from "../lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-// import { AuthContext } from '@/context/AuthContext';
+import { AuthContext } from "../src/app/contexts/AuthContext";
 
 const SignupForm = () => {
- const authContext = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
 
-if (!authContext) {
-  throw new Error("AuthContext must be used within an AuthProvider");
-}
+  if (!authContext) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
 
-const { loginUser } = authContext;
-
+  const { loginUser } = authContext;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupFormData>({
+  } = useForm({
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data: SignupFormData) => {
-      const { email } = data;
-      loginUser({ email }); 
+  const onSubmit = (data) => {
+    const { email } = data;
+    loginUser({ email });
   };
 
   return (

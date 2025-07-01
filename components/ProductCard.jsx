@@ -1,48 +1,39 @@
 "use client";
 
-import React, { useContext, useEffect, useState, MouseEvent } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShoppingBag, Check } from "lucide-react";
-import { AuthContext } from "@/app/contexts/AuthContext";
+// import { AuthContext } from "@/app/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { CartContext } from "@/app/contexts/CartContext";
+import { AuthContext } from "../src/app/contexts/AuthContext";
+import { CartContext } from "../src/app/contexts/CartContext";
+// import { CartContext } from "@/app/contexts/CartContext";
 
-type Product = {
-  id: number;
-  namee: string;
-  price: number;
-  image: string;
-};
+const ProductCard = ({ product }) => {
+  const authContext = useContext(AuthContext);
 
-type ProductCardProps = {
-  product: Product;
-};
+  if (!authContext) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-const authContext = useContext(AuthContext);
+  const { user } = authContext;
 
-if (!authContext) {
-  throw new Error("AuthContext must be used within an AuthProvider");
-}
+  const cartContext = useContext(CartContext);
 
-const { user } = authContext;
+  if (!cartContext) {
+    throw new Error("CartContext must be used within a CartProvider");
+  }
 
-const cartContext = useContext(CartContext);
-
-if (!cartContext) {
-  throw new Error("CartContext must be used within a CartProvider");
-}
-
-const { cart, addOrIncrease } = cartContext;
+  const { cart, addOrIncrease } = cartContext;
 
   const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const isInCart = cart.some((item: Product) => item.id === product.id);
+    const isInCart = cart.some((item) => item.id === product.id);
     setIsAlreadyInCart(isInCart);
-  }, [cart, product.id]); // ✅ Corrected dependency (was [isUser] — wrong)
+  }, [cart, product.id]);
 
-  const handleAddToCart = (e: MouseEvent<HTMLDivElement>) => {
+  const handleAddToCart = (e) => {
     e.stopPropagation(); // Prevent navigating to product page
 
     if (!user) {
@@ -82,7 +73,9 @@ const { cart, addOrIncrease } = cartContext;
           <p className="text-slate-600 font-bold mt-1">
             ₹{product.price.toFixed(2)}
           </p>
-          <p className="bg-cyan-200 rounded-lg px-2 text-cyan-600">{product.category}</p>
+          <p className="bg-cyan-200 rounded-lg px-2 text-cyan-600">
+            {product.category}
+          </p>
         </div>
       </div>
     </div>

@@ -6,17 +6,9 @@ import { usePathname } from "next/navigation";
 import ProductCard from "../../components/ProductCard";
 import React from "react";
 
-// ✅ Product type
-type Product = {
-  id: number;
-  namee: string;
-  image: string;
-  price: number;
-};
-
 const Page = () => {
-  const [items, setItems] = useState<Product[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [items, setItems] = useState(null);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -30,7 +22,7 @@ const Page = () => {
       try {
         const res = await fetch("/api/items");
         if (!res.ok) throw new Error("Failed to fetch");
-        const data: Product[] = await res.json();
+        const data = await res.json();
         if (isMounted) {
           setItems(data);
           setLoading(false);

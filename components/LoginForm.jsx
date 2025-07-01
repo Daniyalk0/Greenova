@@ -2,20 +2,22 @@
 
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 
-import { AuthContext } from "@/app/contexts/AuthContext";
-import { LoginFormData, loginSchema } from "../lib/validation";
+// import { AuthContext } from "@/app/contexts/AuthContext";
+import { loginSchema } from "../lib/validation";
+import { AuthContext } from "../src/app/contexts/AuthContext";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
   const authContext = useContext(AuthContext);
 
-if (!authContext) {
-  throw new Error("AuthContext must be used within an AuthProvider");
-}
+  if (!authContext) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
 
-const { loginUser } = authContext;
+  const { loginUser } = authContext;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -29,13 +31,13 @@ const { loginUser } = authContext;
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<LoginFormData>({
+  } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = (data) => {
     const { email } = data;
-    loginUser({ email }); 
+    loginUser({ email });
     router.push("/");
     reset();
   };
