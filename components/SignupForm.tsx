@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 // import { AuthContext } from '@/context/AuthContext';
 
-const SignupForm = (): JSX.Element => {
+const SignupForm = () => {
   const { loginUser } = useContext(AuthContext);
 
   const {

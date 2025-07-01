@@ -15,7 +15,7 @@ type CartItem = {
   quantity: number;
 };
 
-const Cart = (): JSX.Element => {
+const Cart = () => {
   const pathname = usePathname();
 
   const {

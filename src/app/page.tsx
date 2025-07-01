@@ -14,7 +14,7 @@ type Product = {
   price: number;
 };
 
-const Page = (): JSX.Element => {
+const Page = () => {
   const [items, setItems] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const pathname = usePathname();

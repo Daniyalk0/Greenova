@@ -7,7 +7,7 @@ import { LuShoppingCart } from "react-icons/lu";
 import { AuthContext } from "@/app/contexts/AuthContext";
 import { CartContext } from "@/app/contexts/CartContext";
 
-const Navbar = (): JSX.Element => {
+const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext) as {
     user: { email: string } | null;
     logoutUser: () => void;

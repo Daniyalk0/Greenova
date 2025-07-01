@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/app/contexts/AuthContext";
 import { LoginFormData, loginSchema } from "../lib/validation";
 
-const LoginForm = (): JSX.Element => {
+const LoginForm = () => {
   const { loginUser } = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
