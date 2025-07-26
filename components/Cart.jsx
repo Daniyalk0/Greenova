@@ -16,7 +16,10 @@ const Cart = () => {
     throw new Error("CartContext must be used within a CartProvider");
   }
 
-  const { cart, remove, addOrIncrease, decrease } = cartContext;
+  const { cart, remove, addOrIncreaseProducts, decrease, isHydrated } = cartContext;
+
+  if (!isHydrated) return null ;
+    
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -64,7 +67,7 @@ const Cart = () => {
                     {item.quantity && item.quantity}
                   </span>
                   <button
-                    onClick={() => addOrIncrease(item)}
+                    onClick={() => addOrIncreaseProducts(item)}
                     className="text-gray-600 hover:text-black"
                   >
                     <Plus size={16} />

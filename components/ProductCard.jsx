@@ -9,21 +9,13 @@ import { CartContext } from "../src/app/contexts/CartContext";
 // import { CartContext } from "@/app/contexts/CartContext";
 
 const ProductCard = ({ product }) => {
-  const authContext = useContext(AuthContext);
-
-  if (!authContext) {
-    throw new Error("AuthContext must be used within an AuthProvider");
-  }
-
-  const { user } = authContext;
-
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
     throw new Error("CartContext must be used within a CartProvider");
   }
 
-  const { cart, addOrIncrease } = cartContext;
+  const { cart, addOrIncreaseProducts, isHydrated } = cartContext;
 
   const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
   const router = useRouter();
@@ -34,13 +26,10 @@ const ProductCard = ({ product }) => {
   }, [cart, product.id]);
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent navigating to product page
-
-    if (!user) {
-      router.push("/login");
-    } else {
-      addOrIncrease(product);
+    if (!isAlreadyInCart) {
+      e.stopPropagation(); // Prevent navigating to product page
     }
+    addOrIncreaseProducts(product);
   };
 
   return (
@@ -52,7 +41,7 @@ const ProductCard = ({ product }) => {
         className="absolute cursor-pointer left-3 top-3 bg-zinc-200 p-1 rounded-md"
         onClick={handleAddToCart}
       >
-        {isAlreadyInCart && user ? (
+        {isAlreadyInCart ? (
           <Check className="text-green-600 w-5" />
         ) : (
           <ShoppingBag className="text-cyan-800 w-5" />

@@ -14,7 +14,7 @@ const Navbar = () => {
   const cartContext = useContext(CartContext);
 
   const { user, logoutUser } = authContext || {};
-  const { cart } = cartContext || { cart: [] };
+  const { cart , isHydrated} = cartContext || { cart: [] };
 
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef(null);
@@ -82,14 +82,16 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link href="/cart" className="relative">
               <div
-                className={`${
-                  user ? "opacity-100" : "opacity-0 pointer-events-none"
-                } transition-all duration-300 cursor-pointer relative`}
+                className={`
+                 transition-all duration-300 cursor-pointer relative`}
               >
                 <LuShoppingCart className="md:text-[3vw] xl:text-[1.5vw] 2xl:text-[1.3vw]" />
-                <h2 className="absolute flex items-center -right-3 -top-3 px-2 py-0 justify-center text-md bg-zinc-900 text-white rounded-full">
+                {isHydrated && (
+
+                  <h2 className="absolute flex items-center -right-3 -top-3 px-2 py-0 justify-center text-md bg-zinc-900 text-white rounded-full">
                   <p>{cart?.length}</p>
                 </h2>
+                )}
               </div>
             </Link>
           </div>
@@ -107,7 +109,6 @@ const Navbar = () => {
           ref={navRef}
           className="md:hidden bg-white shadow-lg px-4 py-4 space-y-2"
         >
-          {user && (
             <Link
               href="/cart"
               className="relative"
@@ -120,7 +121,6 @@ const Navbar = () => {
                 </h2>
               </div>
             </Link>
-          )}
           <Link
             href="/"
             onClick={() => setIsOpen(false)}
