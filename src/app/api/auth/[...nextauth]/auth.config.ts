@@ -112,7 +112,7 @@ export const authConfig: NextAuthOptions = {
         if (existingUser) {
           // Check if provider is already linked
           const isLinked = existingUser.accounts.some(
-            (acc) => acc.provider === account.provider
+            (acc: any) => acc.provider === account.provider
           );
 
           if (!isLinked) {
