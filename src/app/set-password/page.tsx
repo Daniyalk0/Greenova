@@ -3,9 +3,7 @@ import SetPasswordForm from "@/components/SetPasswordForm";
 
 export default function SetPasswordPage({
   searchParams,
-}: {
-  searchParams?: { email?: string; provider?: string };
-}) {
+}: any) {
   const email = searchParams?.email;
   const provider = searchParams?.provider;
 
