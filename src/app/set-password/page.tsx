@@ -1,8 +1,16 @@
 import { redirect } from "next/navigation";
 import SetPasswordForm from "@/components/SetPasswordForm";
 
-export default function SetPasswordPage({ searchParams }: { searchParams: { email?: string; provider?: string } }) {
-  const { email, provider } = searchParams;
+interface PageProps {
+  searchParams?: {
+    email?: string;
+    provider?: string;
+  };
+}
+
+export default function SetPasswordPage({ searchParams }: PageProps) {
+  const email = searchParams?.email;
+  const provider = searchParams?.provider;
 
   if (!email || !provider) {
     // Redirect if missing required params to block direct access
