@@ -1,6 +1,6 @@
-# 🥦 Fruits & Vegetables E-commerce Web App (Frontend)
+# `Greenova` Fruits & Vegetables E-commerce Web App
 
-A modern and responsive frontend web application for an e-commerce platform that sells fresh fruits and vegetables. Built with performance, accessibility, and scalability in mind.
+### _A modern and responsive frontend web application for an e-commerce platform that sells fresh fruits and vegetables. Built with performance, accessibility, and scalability in mind._
 
 ---
 
@@ -8,23 +8,34 @@ A modern and responsive frontend web application for an e-commerce platform that
 
 - **Next.js** – React framework for building fast, SEO-friendly applications with App Router  
 - **Tailwind CSS** – Utility-first CSS framework for rapid UI development  
-- **JavaScript** – A flexible and widely-used language for building dynamic web applications. 
-- **React Hook Form** – Efficient and easy-to-use form management library  
-- **Zod** – Type-safe schema validation library integrated with forms  
+- **TypeScript** – Type-safe development for reliability 
+- **Supabase (PostgreSQL)** – Backend database and API  
+- **NextAuth.js** – Authentication system with OAuth
 
 ---
 
-## 📦 Features
+# 📦 Authentication Features (Implemented)
 
-- Product listing of fresh fruits and vegetables  
-- Product details page with key information  
-- Add to Cart functionality with quantity control  
-- Cart page displaying selected items and total price  
-- Login and Signup forms with real-time client-side validation  
-- Context API for global cart state management  
-- Fully responsive and mobile-friendly design  
-- Fast routing and optimized performance with Next.js   
+## Email & Password Authentication
+- ***Sign Up*** – Users can sign up with email, name, and password 
+- ***Login / Logout*** – Secure session management with persistent login state
+- ***Forgot Password*** – Request a password reset and update password via email
+- ***Change Password*** – Users can update their password when signed in
+- ***Set Password*** – For users who signed in via OAuth (Google/Facebook), set a password for their account
 
+## OAuth Authentication
+- ***Google & Facebook login***
+- ***Account Merging*** – Merge accounts if a user signs in with multiple login methods (email + OAuth)
+
+## Security & Validation
+- ***Server-side form validation*** with Zod for extra security beyond client-side checks
+- ***Middleware-based route protection*** → restricts access to authenticated users only
+- ***Session Management*** – Protects authenticated routes and persists sessions
+
+## UX Enhancements
+- ***Real-time form validation*** using React Hook Form + Zod
+- ***Loading states / UX feedback*** for all authentication actions
+- ***Friendly error handling*** for invalid credentials, OAuth conflicts, and network errors
 ---
 
 ## 🌐 Live Demo
