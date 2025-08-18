@@ -29,7 +29,7 @@ const SignupForm = () => {
 
   const onSubmit = async (data: SignupInput) => {
     setError('')
-    setLoading(false)
+    setLoading(true)
     setShowPassword(false)
     try {
 
