@@ -1,14 +1,11 @@
 import { redirect } from "next/navigation";
 import SetPasswordForm from "@/components/SetPasswordForm";
 
-interface PageProps {
-  searchParams?: {
-    email?: string;
-    provider?: string;
-  };
-}
-
-export default function SetPasswordPage({ searchParams }: PageProps) {
+export default function SetPasswordPage({
+  searchParams,
+}: {
+  searchParams?: { email?: string; provider?: string };
+}) {
   const email = searchParams?.email;
   const provider = searchParams?.provider;
 
