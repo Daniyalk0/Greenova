@@ -4,22 +4,20 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:Pass11word%40@db.lzpbentohychvxyxgqmx.supabase.co:5432/postgres?sslmode=require"
 }
 
 model User {
-  id             String   @id @default(cuid())
-  name           String?
-  email          String?  @unique
-  emailVerified  DateTime?
-  password       String?   // ✅ Required for credentials-based login
-  image          String?
-  role           String   @default("customer") // 'admin' or 'customer'
-  
-  // Relations
-  orders         Order[]
-  accounts       Account[]
-  sessions       Session[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          String    @default("customer")
+  accounts      Account[]
+  orders        Order[]
+  sessions      Session[]
 }
 
 model Product {
@@ -36,44 +34,39 @@ model Product {
 model Order {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
   items     Json
   total     Int
   status    String   @default("pending")
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
-// ✅ Required by NextAuth for OAuth support
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id])
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
 
-// ✅ Required by NextAuth for database session strategy
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
 }
 
-// ✅ Required if you ever use email verification or forgot password
 model VerificationToken {
   identifier String
   token      String   @unique
