@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { handleLogout } from "@/lib/logout";
@@ -7,26 +7,33 @@ import { handleLogout } from "@/lib/logout";
 type UserProfilePopUpProps = {
   isProfileOpen: boolean;
   setIsProfileOpen: (open: boolean) => void;
+  pfpRef: RefObject<HTMLDivElement | null>;
 };
 
-export default function UserProfilePopUp({ isProfileOpen, setIsProfileOpen }: UserProfilePopUpProps) {
+export default function UserProfilePopUp({ isProfileOpen, setIsProfileOpen, pfpRef }: UserProfilePopUpProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
     const popupRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        setIsProfileOpen(false); // close popup
-      }
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target as Node) && // click outside popup
+      pfpRef.current &&
+      !pfpRef.current.contains(event.target as Node) // click outside toggle
+    ) {
+      setIsProfileOpen(false); // close popup
     }
+  }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [setIsProfileOpen]);
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [setIsProfileOpen]);
+
 
   if (!session) return null;
 

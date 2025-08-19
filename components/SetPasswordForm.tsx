@@ -93,7 +93,7 @@ export default function SetPasswordForm({ email, provider }: SetPasswordFormProp
             className="w-full mb-1 p-2 border rounded"
           />
           <EyeIcon
-            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-emerald-700"
+            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
             onClick={() => setShowPassword((prev) => !prev)}
           />
         </div>
