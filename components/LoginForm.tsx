@@ -44,6 +44,7 @@ const LoginForm = () => {
     setShowPassword(false)
     setLoading(true);
     setError(""); // reset error before login attempt
+    setProviderName("")
 
     try {
       const res = await signIn("credentials", {
@@ -104,7 +105,7 @@ const LoginForm = () => {
             className="w-full mb-1 p-2 border rounded"
           />
           <EyeIcon
-            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-emerald-700"
+            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
             onClick={() => setShowPassword((prev) => !prev)}
           />
         </div>

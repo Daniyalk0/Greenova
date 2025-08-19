@@ -12,8 +12,10 @@ type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
 
 const ChangePasswordForm = () => {
     const [message, setMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true)
-        const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [showOld, setShowOld] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const { data: session } = useSession()
     const {
         register,
@@ -24,9 +26,11 @@ const ChangePasswordForm = () => {
     });
 
     const submit = async (data: ChangePasswordFormData) => {
-        setMessage("")
         setLoading(true)
-        setShowPassword(false)
+        setMessage("")
+        setShowOld(false)
+        setShowNew(false)
+        setShowConfirm(false)
         try {
 
             const { oldPassword, newPassword } = data;
@@ -52,37 +56,50 @@ const ChangePasswordForm = () => {
         }
     }
 
-       const EyeIcon = showPassword ? EyeClosed : Eye;
+   const OldEyeIcon = showOld ? EyeClosed : Eye;
+   const NewEyeIcon = showNew ? EyeClosed : Eye;
+   const ConfirmEyeIcon = showConfirm ? EyeClosed : Eye;
 
     return (
         <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 mt-10">
             <h2 className="text-xl font-semibold mb-4">Change Password</h2>
             <form onSubmit={handleSubmit(submit)} className="space-y-4">
                 {/* Old password */}
-                <div>
-                    <label className="block text-sm font-medium mb-1">Old Password</label>
+                <div className="flex w-full relative">
+
                     <input
-                        type="password"
-                        placeholder="Enter old password"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        type={showOld ? "text" : "password"}
+                        placeholder="Password"
                         {...register("oldPassword")}
+                        className="w-full mb-1 p-2 border rounded"
                     />
-                    {errors.oldPassword && (
-                        <p className="text-red-500 text-sm mb-2">{errors.oldPassword.message}</p>
-                    )}
+                    <OldEyeIcon
+                        className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
+                        onClick={() => setShowOld((prev) => !prev)}
+                    />
                 </div>
+                {errors.oldPassword && (
+                    <p className="text-red-500 text-xs mb-3">{errors.oldPassword.message}</p>
+                )}
 
                 {/* New password */}
                 <div>
                     <label className="block text-sm font-medium mb-1">New Password</label>
-                    <input
-                        type="password"
-                        placeholder="Enter new password"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        {...register("newPassword")}
-                    />
+                    <div className="flex w-full relative">
+
+                        <input
+                            type={showNew ? "text" : "password"}
+                            placeholder="Password"
+                            {...register("newPassword")}
+                            className="w-full mb-1 p-2 border rounded"
+                        />
+                        <NewEyeIcon
+                            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
+                            onClick={() => setShowNew((prev) => !prev)}
+                        />
+                    </div>
                     {errors.newPassword && (
-                        <p className="text-red-500 text-sm mb-2">{errors.newPassword.message}</p>
+                        <p className="text-red-500 text-xs mb-3">{errors.newPassword.message}</p>
                     )}
                 </div>
 
@@ -91,18 +108,21 @@ const ChangePasswordForm = () => {
                     <label className="block text-sm font-medium mb-1">
                         Confirm New Password
                     </label>
-                       <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              {...register("confirmPassword")}
-              className="w-full mb-1 p-2 border rounded"
-            />
-            <EyeIcon
-              className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-emerald-700"
-              onClick={() => setShowPassword((prev) => !prev)}
-            />
+                    <div className="flex w-full relative">
+
+                        <input
+                            type={showConfirm ? "text" : "password"}
+                            placeholder="Password"
+                            {...register("confirmPassword")}
+                            className="w-full mb-1 p-2 border rounded"
+                        />
+                        <ConfirmEyeIcon
+                            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
+                            onClick={() => setShowConfirm((prev) => !prev)}
+                        />
+                    </div>
                     {errors.confirmPassword && (
-                        <p className="text-red-500 text-sm mb-2">{errors.confirmPassword.message}</p>
+                        <p className="text-red-500 text-xs mb-3">{errors.confirmPassword.message}</p>
                     )}
                 </div>
 

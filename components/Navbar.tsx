@@ -14,6 +14,7 @@ const Navbar = () => {
   const { data, status } = useSession();
   console.log(data);
 
+const pfpRef = useRef<HTMLDivElement | null>(null);
 
 
   const togglePfp = () => setIsOpen((prev) => !prev);
@@ -68,17 +69,18 @@ const Navbar = () => {
               </Link>
             {/* Avatar */}
             {data && (
-              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center cursor-pointer" >
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center cursor-pointer"   ref={pfpRef}
+                  onClick={togglePfp} >
 
                 <img
                   src={avatarUrl}
-                  onClick={togglePfp}
+               
                   alt="User profile"
                   className="w-full h-full object-cover"
                 />
               </div>
             )}
-            <UserProfilePopUp isProfileOpen={isOpen} setIsProfileOpen={setIsOpen} />
+            <UserProfilePopUp isProfileOpen={isOpen} setIsProfileOpen={setIsOpen} pfpRef={pfpRef} />
           </div>
         </div>
       </div>
