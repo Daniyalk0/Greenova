@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Tech Stack
+## 🚀 Tech Stack Yet..
 
 - **Next.js** – React framework for building fast, SEO-friendly applications with App Router  
 - **Tailwind CSS** – Utility-first CSS framework for rapid UI development  
@@ -14,7 +14,7 @@
 
 ---
 
-# 📦 Authentication Features (Implemented)
+## 📦 Authentication Features (Implemented)
 
 ## Email & Password Authentication
 - ***Sign Up*** – Users can sign up with email, name, and password 
@@ -41,7 +41,7 @@
 ## 🌐 Live Demo
 
 Check out the live version of the app here:  
-**[Live Site](https://ecommerce-assignment-frontend-eight.vercel.app/)**
+**[Live Site](https://greenova-pi.vercel.app/)**
 
 ---
 
@@ -52,8 +52,8 @@ Follow these steps to run the project locally:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Daniyalk0/Ecommerce_assignment_frontend
-cd Ecommerce_assignment_frontend
+git clone https://github.com/Daniyalk0/Greenova
+cd Greenova
 ```
 
 **Installation**
