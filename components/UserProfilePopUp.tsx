@@ -75,7 +75,10 @@ useEffect(() => {
           {loading ? (
             <>
   
-              <span className="animate-spin rounded-full h-4 w-4 border-2 border-white"></span>
+            <>
+              Logging out
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+            </>
             </>
           ) : (
             "Logout"

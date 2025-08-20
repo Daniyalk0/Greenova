@@ -64,7 +64,10 @@ export default function ForgotPasswordForm() {
           className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
         >
           {loading ? (
-            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+          <>
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+              Loading
+            </>
           ) : (
             "Forgot Password"
           )}
