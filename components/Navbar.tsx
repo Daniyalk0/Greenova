@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Home, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { LuShoppingCart } from "react-icons/lu";
@@ -14,7 +14,7 @@ const Navbar = () => {
   const { data, status } = useSession();
   console.log(data);
 
-const pfpRef = useRef<HTMLDivElement | null>(null);
+  const pfpRef = useRef<HTMLDivElement | null>(null);
 
 
   const togglePfp = () => setIsOpen((prev) => !prev);
@@ -61,21 +61,21 @@ const pfpRef = useRef<HTMLDivElement | null>(null);
                 Login
               </Link>
             )}
-               <Link
-                href="/"
-                className="block text-gray-700 hover:text-indigo-600"
-              >
-                <Home />
-              </Link>
+            <Link
+              href="/"
+              className="block text-gray-700 hover:text-indigo-600"
+            >
+              <Home />
+            </Link>
             {/* Avatar */}
-            {data && (
-              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center cursor-pointer"   ref={pfpRef}
-                  onClick={togglePfp} >
+            {data?.user?.image && (
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center cursor-pointer" ref={pfpRef}
+                onClick={togglePfp} >
 
                 <img
                   src={avatarUrl}
-               
-                  alt="User profile"
+
+                  alt={data?.user?.name ?? "Avatar"}
                   className="w-full h-full object-cover"
                 />
               </div>
