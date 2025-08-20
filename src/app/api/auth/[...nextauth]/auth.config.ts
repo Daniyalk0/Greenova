@@ -1,10 +1,18 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import FacebookProvider from "next-auth/providers/facebook";
 import bcrypt from "bcryptjs";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, Profile } from "next-auth";
+
+interface FacebookProfile extends Profile {
+  picture?: {
+    data?: {
+      url?: string;
+    };
+  };
+}
 
 export const authConfig: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -14,6 +22,11 @@ export const authConfig: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "openid email profile",
+        },
+      },
     }),
 
     // Twitter OAuth
@@ -137,7 +150,10 @@ export const authConfig: NextAuthOptions = {
             where: { id: existingUser.id },
             data: {
               name: profile?.name ?? "",
-              image: profile?.image ?? "",
+              image:
+                account.provider === "facebook"
+                  ? (profile as any)?.picture?.data?.url ?? ""
+                  : (profile as any)?.picture ?? profile?.image ?? "",
             },
           });
           // Override user.id to unify session as existing user

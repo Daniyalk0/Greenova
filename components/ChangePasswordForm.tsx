@@ -16,7 +16,7 @@ const ChangePasswordForm = () => {
     const [showOld, setShowOld] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const { data: session } = useSession()
+    
     const {
         register,
         handleSubmit,
@@ -56,9 +56,9 @@ const ChangePasswordForm = () => {
         }
     }
 
-   const OldEyeIcon = showOld ? EyeClosed : Eye;
-   const NewEyeIcon = showNew ? EyeClosed : Eye;
-   const ConfirmEyeIcon = showConfirm ? EyeClosed : Eye;
+    const OldEyeIcon = showOld ? EyeClosed : Eye;
+    const NewEyeIcon = showNew ? EyeClosed : Eye;
+    const ConfirmEyeIcon = showConfirm ? EyeClosed : Eye;
 
     return (
         <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 mt-10">
@@ -133,7 +133,10 @@ const ChangePasswordForm = () => {
                     className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
                 >
                     {loading ? (
-                        <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                        <>
+                            Changing
+                            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                        </>
                     ) : (
                         "Change Password"
                     )}

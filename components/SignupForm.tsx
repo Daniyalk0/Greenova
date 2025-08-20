@@ -10,12 +10,14 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import generatePassword from "@/lib/passwordGenerator";
 import { Eye, EyeClosed } from "lucide-react";
+import OAuthSignIn from "./OAuthSignIn";
 
 const SignupForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false);
+    const [OAuthLoading, setOAuthLoading] = useState("")
 
   const {
     register,
@@ -76,14 +78,12 @@ const SignupForm = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-sm mx-auto mt-10 bg-white p-6 rounded-lg shadow"
+        className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow"
       >
         <h2 className="text-2xl font-semibold mb-4">SignUp</h2>
 
-        <div className="flex w-full items-center justify-center gap-3 my-4 ">
-          <button className="border-b-[1px] border-black" type="button" onClick={() => signIn("google")}>Continue with Google</button>
-          <button className="border-b-[1px] border-black" type="button" onClick={() => signIn("facebook")}>Continue with Facebook</button>
-        </div>
+      <OAuthSignIn OAuthLoading={OAuthLoading} setOAuthLoading={setOAuthLoading}/>
+
         <input
           type="text"
           placeholder="Name"
@@ -126,9 +126,9 @@ const SignupForm = () => {
           <button
             type="button"
             onClick={handleGeneratePassword}
-            className="bg-blue-500 text-white px-3 rounded"
+            className="bg-blue-500 text-[0.6rem] sm:text-[0.8rem] text-white p-1 sm:px-3  rounded"
           >
-            Generate
+            Generate Password
           </button>
         </div>
 
@@ -138,7 +138,10 @@ const SignupForm = () => {
           className="w-full h-10 bg-cyan-500 text-white rounded hover:bg-cyan-600 flex items-center justify-center gap-2"
         >
           {loading ? (
-            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+           <>
+              Signing Up
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+            </>
           ) : (
             "Signup"
           )}

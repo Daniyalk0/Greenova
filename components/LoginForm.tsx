@@ -12,6 +12,7 @@ import { z } from "zod";
 import { signIn } from 'next-auth/react';
 import Link from "next/link";
 import { Eye, EyeClosed } from "lucide-react";
+import OAuthSignIn from "./OAuthSignIn";
 
 
 type LoginInput = z.infer<typeof loginSchema>;
@@ -39,6 +40,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false)
   const [providerName, setProviderName] = useState<string | null>(null);
   const [emailForSetPassword, setEmailForSetPassword] = useState<string | number | boolean>("")
+  const [OAuthLoading, setOAuthLoading] = useState("")
 
   const onSubmit = async (data: LoginInput) => {
     setShowPassword(false)
@@ -78,13 +80,10 @@ const LoginForm = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-sm mx-auto mt-10 bg-white p-6 rounded-lg shadow"
+        className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow"
       >
         <h2 className="text-2xl font-semibold mb-4">Login</h2>
-        <div className="flex w-full items-center justify-center gap-3 my-4 ">
-          <button className="border-b-[1px] border-black" type="button" onClick={() => signIn("google", { callbackUrl: "/" })}>Continue with Google</button>
-          <button className="border-b-[1px] border-black" type="button" onClick={() => signIn("facebook", { callbackUrl: "/" })}>Continue with Facebook</button>
-        </div>
+       <OAuthSignIn setOAuthLoading={setOAuthLoading} OAuthLoading={OAuthLoading}/>
 
         <input
           type="email"
@@ -123,7 +122,10 @@ const LoginForm = () => {
           className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
         >
           {loading ? (
-            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+            <>
+              Logging in
+              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+            </>
           ) : (
             "Login"
           )}
