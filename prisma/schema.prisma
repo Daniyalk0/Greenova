@@ -12,8 +12,8 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  password      String?
   image         String?
+  password      String?
   role          String    @default("customer")
   accounts      Account[]
   orders        Order[]
@@ -21,23 +21,30 @@ model User {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  price       Int
-  description String
-  category    String
-  imageUrl    String
-  createdAt   DateTime @default(now())
+  name          String
+  price         Float
+  category      String
+  description   String?
+  imageUrl      String
+  slug          String  @unique
+  calories      Float?
+  carbohydrates Float?
+  discount      Int?
+  fat           Float?
+  inStock       Boolean @default(true)
+  protein       Float?
+  rating        Float?
+  sugar         Float?
+  id            Int     @id @default(autoincrement())
 }
 
 model Order {
   id        String   @id @default(cuid())
   userId    String
   items     Json
-  total     Int
-  status    String   @default("pending")
   createdAt DateTime @default(now())
+  status    String   @default("pending")
+  total     Int
   user      User     @relation(fields: [userId], references: [id])
 }
 
