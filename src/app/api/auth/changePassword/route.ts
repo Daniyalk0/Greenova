@@ -4,8 +4,7 @@ import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../[...nextauth]/auth.config";
 
-
-export const POST = async(req:Request) => {
+export const POST = async (req: Request) => {
   try {
     // Get logged-in user
     const session = await getServerSession(authConfig);
@@ -16,7 +15,10 @@ export const POST = async(req:Request) => {
     const { oldPassword, newPassword } = await req.json();
 
     if (!oldPassword || !newPassword) {
-      return NextResponse.json({ error: "Both fields are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Both fields are required" },
+        { status: 400 }
+      );
     }
 
     // Find user
@@ -31,15 +33,23 @@ export const POST = async(req:Request) => {
     // Check old password
     const isValid = await bcrypt.compare(oldPassword, user.password);
     if (!isValid) {
-      return NextResponse.json({ error: "Old password is incorrect" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Old password is incorrect" },
+        { status: 400 }
+      );
     }
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
     if (isSamePassword) {
-      return Response.json({ error: "New password cannot be same as old password" }, { status: 400 });
+      return Response.json(
+        { error: "New password cannot be same as old password" },
+        { status: 400 }
+      );
     }
 
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    if (!user.email) throw new Error("User email is required");
 
     // Update user
     await prisma.user.update({
@@ -50,7 +60,9 @@ export const POST = async(req:Request) => {
     return NextResponse.json({ message: "Password changed successfully" });
   } catch (error) {
     console.error("Change password error:", error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
-}
-
+};
