@@ -11,32 +11,37 @@
 - **TypeScript** – Type-safe development for reliability 
 - **Supabase (PostgreSQL)** – Backend database and API  
 - **NextAuth.js** – Authentication system with OAuth
+**Framer Motion** – Smooth animations & interactive motion effects for UI elements  
+
 
 ---
 
-## 📦 Authentication Features (Implemented)
+## 📦 Authentication Features
 
-## Email & Password Authentication
-- ***Sign Up*** – Users can sign up with email, name, and password 
-- ***Login / Logout*** – Secure session management with persistent login state
-- ***Forgot Password*** – Request a password reset and update password via email
-- ***Change Password*** – Users can update their password when signed in
-- ***Set Password*** – For users who signed in via OAuth (Google/Facebook), set a password for their account
+- Sign Up with email, name & password  
+- Login / Logout with secure session management and persistent login state  
+- Forgot Password with reset link via email  
+- Change Password when signed in  
+- Set Password for accounts created via OAuth  
+- Google & Facebook login with account merging support  
+- Server-side validation with Zod for extra security  
+- Middleware-based route protection to restrict private pages  
+- Session management to protect routes and persist login  
+- Real-time form validation with React Hook Form + Zod  
+- Loading states and UX feedback for all auth actions  
+- Friendly error handling for invalid credentials, OAuth conflicts, and network issues  
 
-## OAuth Authentication
-- ***Google & Facebook login***
-- ***Account Merging*** – Merge accounts if a user signs in with multiple login methods (email + OAuth)
+## 🏠 Homepage Features
 
-## Security & Validation
-- ***Server-side form validation*** with Zod for extra security beyond client-side checks
-- ***Middleware-based route protection*** → restricts access to authenticated users only
-- ***Session Management*** – Protects authenticated routes and persists sessions
+- Hero section with bouncing icons for an engaging first impression  
+- Blog Card preview → links directly to the blog page  
+- Animated Products Card displaying random fruits & vegetables with nutrition details  
 
-## UX Enhancements
-- ***Real-time form validation*** using React Hook Form + Zod
-- ***Loading states / UX feedback*** for all authentication actions
-- ***Friendly error handling*** for invalid credentials, OAuth conflicts, and network errors
----
+## 🗂️ Categories Page Features
+
+- Showcases all product types we sell (fruits, vegetables, herbs, etc.)  
+- Sleek modern grid layout for easy browsing and visual appeal  
+
 
 ## 🌐 Live Demo
 

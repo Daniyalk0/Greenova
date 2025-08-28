@@ -13,7 +13,7 @@ type UserMenuProps = {
 };
 
 
-const mobileNav = ({ itemCount, data }:
+const MobileNav = ({ itemCount, data }:
     UserMenuProps) => {
     const [isOpen, setIsOpen] = useState(true)
     return (
@@ -66,4 +66,4 @@ const mobileNav = ({ itemCount, data }:
     )
 }
 
-export default mobileNav
+export default MobileNav
