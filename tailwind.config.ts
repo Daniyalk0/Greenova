@@ -13,8 +13,21 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			playfair: [
-  				'var(--font-play-fair-2)'
-  			]
+  				'var(--font-play-fair)',
+  			],
+  			dmsans_semibold: [
+  				'var(--font-dm-sans-semibold)',
+  			],
+  			dmsans_light: [
+  				'var(--font-dm-sans-light)',
+  			],
+  			monasans_semibold: [
+  				'var(--font-monasans-semibold)',
+  			],
+  			dmsans_italic_light: [
+  				'var(--font-dm-sans-italic-light)',
+  			],
+
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

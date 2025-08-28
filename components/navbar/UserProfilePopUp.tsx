@@ -44,7 +44,7 @@ useEffect(() => {
   return (
     <div
     ref={popupRef}
-      className={`absolute mt-2 w-64 bg-white rounded-lg shadow-lg p-4 z-50 top-12 right-0
+      className={`absolute mt-2 w-64 bg-white rounded-lg shadow-lg p-4 z-50  top-6 md:top-0 -right-4
     transform transition-all duration-200 ease-out
     ${isProfileOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
   `}

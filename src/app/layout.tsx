@@ -1,11 +1,14 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../../components/Navbar";
+// import Navbar from "../../components/Navbar";
 import localFont from "next/font/local";
 import SessionAuthProvider from "@/components/SessionAuthProvider";
 import CleanFacebookHash from "@/components/CleanFacebookHash";
 import { ReactNode } from "react";
+import Navbar from "@/components/navbar/Navbar";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +28,7 @@ export const metadata = {
 const playFairDisplay = localFont({
   src: [
     {
-      path: './fonts/PlayfairDisplay-VariableFont_wght.ttf',
+      path: './fonts/PlayfairDisplay-Regular.ttf',
       weight: '100 900', // full weight range
       style: 'normal',
     },
@@ -34,30 +37,71 @@ const playFairDisplay = localFont({
   display: 'swap',
 });
 
-const playFairDisplay2 = localFont({
+const DMSans_semiBold = localFont({
   src: [
     {
-      path: './fonts/PlayfairDisplay-Regular.ttf',
+      path: './fonts/DMSans_18pt-SemiBold.ttf',
     },
   ],
-  variable: '--font-play-fair-2',
+  variable: '--font-dm-sans-semibold',
+  display: 'swap',
+});
+const DMSans_Light = localFont({
+  src: [
+    {
+      path: './fonts/DMSans-Light.ttf',
+    },
+  ],
+  variable: '--font-dm-sans-light',
+  display: 'swap',
+});
+const DMSans_regular = localFont({
+  src: [
+    {
+      path: './fonts/DMSans-Regular.ttf',
+    },
+  ],
+  variable: '--font-dm-sans-regular',
+  display: 'swap',
+});
+const monasans_semibold = localFont({
+  src: [
+    {
+      path: './fonts/MonaSans_SemiExpanded-SemiBold.ttf',
+    },
+  ],
+  variable: '--font-monasans-semibold',
+  display: 'swap',
+});
+const DMSans_italic_light = localFont({
+  src: [
+    {
+      path: './fonts/DMSans_18pt-LightItalic.ttf',
+    },
+  ],
+  variable: '--font-dm-sans-italic-light',
   display: 'swap',
 });
 
-  
 
 
-export default function RootLayout({ children }: { children: ReactNode }){
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${playFairDisplay2.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable}  antialiased bg-[#FFFFF0]`}
       >
-          <SessionAuthProvider>
-            <Navbar />
-            <CleanFacebookHash/>
-            <main className="min-h-screen">{children}</main>
-          </SessionAuthProvider>
+
+        {/* <Provider store={store}> */}
+      <SessionAuthProvider>
+        <Navbar />
+        <CleanFacebookHash />
+        <main className="min-h-screen">
+          {children}
+        </main>
+      </SessionAuthProvider>
+    {/* </Provider> */}
 
       </body>
     </html>
