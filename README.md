@@ -11,7 +11,7 @@
 - **TypeScript** – Type-safe development for reliability 
 - **Supabase (PostgreSQL)** – Backend database and API  
 - **NextAuth.js** – Authentication system with OAuth
-**Framer Motion** – Smooth animations & interactive motion effects for UI elements  
+- **Framer Motion** – Smooth animations & interactive motion effects for UI elements  
 
 
 ---

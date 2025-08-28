@@ -6,7 +6,7 @@ export default function FeatureTag({
   color = "#16a34a", // fallback
   className = "",
 //   onClick,
-}) {
+} : any) {
   // derive translucent tones from the base color
   const bgSoft = `${color}14`;   // ~8% fill
   const ringSoft = `${color}33`; // ~20% ring
