@@ -78,7 +78,7 @@ const SignupForm = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow"
+        className="max-w-md mx-auto mt-10 bg-red-300 p-6 rounded-lg shadow"
       >
         <h2 className="text-2xl font-semibold mb-4">SignUp</h2>
 
