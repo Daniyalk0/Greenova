@@ -99,8 +99,8 @@ const NavLinksMobile = () => {
 
                                         <p className="font-semibold text-green-700 mt-3">More</p>
                                         <ul className="ml-2 space-y-1">
-                                            <li className="cursor-pointer hover:text-green-600">Organic Staples</li>
-                                            <li className="cursor-pointer hover:text-green-600">Fresh Juices</li>
+                                            <li className="cursor-pointer hover:text-green-600">Herbs</li>
+                 
                                         </ul>
                                     </div>
                                 )}
