@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Tech Stack Yet..
+## 🚀 Tech Stack Yet...
 
 - **Next.js** – React framework for building fast, SEO-friendly applications with App Router  
 - **Tailwind CSS** – Utility-first CSS framework for rapid UI development  

@@ -7,8 +7,6 @@ import SessionAuthProvider from "@/components/SessionAuthProvider";
 import CleanFacebookHash from "@/components/CleanFacebookHash";
 import { ReactNode } from "react";
 import Navbar from "@/components/navbar/Navbar";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
