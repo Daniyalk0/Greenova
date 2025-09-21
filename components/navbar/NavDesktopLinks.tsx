@@ -9,10 +9,10 @@ type NavLinksProps = {
     isShopOpen: boolean;
     setIsShopOpen: Dispatch<SetStateAction<boolean>>;
 };
-const NavDesktopLinks = ({isShopOpen, setIsShopOpen}: NavLinksProps) => {
-     const Icon = isShopOpen ? <ChevronUp className="w-4 h-4 text-gray-700" /> : <ChevronDown  className="w-4 h-4 text-gray-700" />;
-  return (
-     <div className="w-full flex justify-center">
+const NavDesktopLinks = ({ isShopOpen, setIsShopOpen }: NavLinksProps) => {
+    const Icon = isShopOpen ? <ChevronUp className="w-4 h-4 text-gray-700" /> : <ChevronDown className="w-4 h-4 text-gray-700" />;
+    return (
+        <div className="w-full flex justify-center">
             <div className="links text-[0.7rem] sm:text-[0.9rem] md:text-[0.8rem] lg:text-[0.9rem]  px-3 py-2 rounded-xl flex items-center gap-3 sm:gap-6 md:gap-5">
                 <Link href={'/'}>Home</Link>
 
@@ -56,7 +56,7 @@ const NavDesktopLinks = ({isShopOpen, setIsShopOpen}: NavLinksProps) => {
                                 <p className="font-semibold text-green-700">More</p>
                                 <ul className="mt-1 lg:mt-3 sm:mt-2 sm:space-y-1 text-gray-700 lg:space-y-2">
                                     <li className="cursor-pointer hover:text-green-600">Herbs</li>
-        
+
                                 </ul>
                             </div>
                         </div>
@@ -70,8 +70,8 @@ const NavDesktopLinks = ({isShopOpen, setIsShopOpen}: NavLinksProps) => {
                 <Link href={'/'}>About us</Link>
                 <Link href={'/'}>Contact</Link>
             </div>
-            </div>
-  )
+        </div>
+    )
 }
 
 export default NavDesktopLinks
