@@ -54,7 +54,7 @@ export default function CategoryGrid() {
     <div className="flex w-full items-center justify-center">
 
       <div className="px-5 w-full sm:px-6 lg:px-20 my-8 overflow-hidden min-h-screen">
-        <h1 className="text-2xl font-bold text-center mb-6">Categories</h1>
+        <h1 className="text-2xl md:text-3xl text-center mb-6 font-monasans_semibold">Categories</h1>
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="flex items-start justify-center w-auto gap-3 lg:gap-6"

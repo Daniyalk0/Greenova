@@ -5,6 +5,7 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import Hero from "@/components/hero-section/Hero";
 import Categories from "@/components/categories/Categories";
+import SeasonalFruits from "@/components/seasonalFruits/SeasonalFruits";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -17,6 +18,7 @@ const Home = () => {
 
     <Hero/>
     <Categories/>
+    <SeasonalFruits/>
     </div>
     // <>
     //   <Head>

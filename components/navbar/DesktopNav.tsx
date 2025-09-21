@@ -19,7 +19,6 @@ const DesktopNav = ({ itemCount, data }:
     const [isShopOpen, setIsShopOpen] = useState(false)
     return (
 
-
         <nav className="z-[1000] sticky top-0 bg-white font-playfair py-2 flex items-center w-full">
 
             <div className="mx-auto w-full px-4 sm:px-6 lg:px-12 flex items-center justify-between font-dmsans_semibold text-sm">
