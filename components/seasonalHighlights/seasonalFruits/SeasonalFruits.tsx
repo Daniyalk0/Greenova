@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import ProductCard from '../ui/productCard'
+import ProductCard from '../../ui/productCard'
 
 const SeasonalFruits = () => {
   const options = [
