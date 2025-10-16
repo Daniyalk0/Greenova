@@ -8,18 +8,29 @@ import { ChevronDown, Check } from "lucide-react"
 //   { id: 5, label: "5 kg - ₹550" },
 // ]
 type Option = {
-  id: number
-  label: string
+  weight: number
+  price: number
 }
 type QuantitySelectProps = {
   options: Option[]
+  onSelect: (option: Option) => void
 }
 
 
-export default function QuantitySelect({options = []}: QuantitySelectProps) {
-  const [selected, setSelected] = useState(options[0])
+export default function QuantitySelect({ options, onSelect }: QuantitySelectProps) {
+const defaultOption = options.find(opt => opt.weight === 1) || options[0]
+const [selected, setSelected] = useState(defaultOption)
+
   const [isOpen, setIsOpen] = useState(false)
   const [desktopOpen, setDesktopOpen] = useState(false)
+    const handleSelect = (opt: Option) => {
+    setSelected(opt)
+    onSelect(opt)
+    setIsOpen(false) // close dropdown
+  }
+
+  console.log('options' , options);
+  
 
   return (
     <div className="mt-3 font-dmsans_light relative">
@@ -29,7 +40,9 @@ export default function QuantitySelect({options = []}: QuantitySelectProps) {
           onClick={() => setIsOpen(true)}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white flex justify-between items-center"
         >
-          {selected && selected.label}
+           <span>
+          {selected.weight} kg — ₹{selected.price.toFixed(0)}
+        </span>
           <ChevronDown className="w-4 h-4 text-gray-500" />
         </button>
       </div>
@@ -43,7 +56,9 @@ export default function QuantitySelect({options = []}: QuantitySelectProps) {
       ${desktopOpen ? "bg-green-200 " : "bg-white"}
     `}
         >
-          {selected && selected.label}
+         <span>
+          {selected.weight} kg — ₹{selected.price.toFixed(0)}
+        </span>
           <ChevronDown
             className={`w-4 h-4 text-gray-500 transition-transform ${desktopOpen ? "rotate-180" : ""
               }`}
@@ -53,22 +68,25 @@ export default function QuantitySelect({options = []}: QuantitySelectProps) {
         {/* Dropdown list */}
         {desktopOpen && (
           <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-md">
-            {options.map((opt) => (
+            {options.map((opt, index) => (
               <button
-                key={opt.id}
+                key={index}
                 onClick={() => {
-                  setSelected(opt)
                   setDesktopOpen(false)
+                  handleSelect(opt)
                 }}
-                className={`flex justify-between items-center w-full px-3 py-2 text-sm rounded-lg hover:bg-green-50 ${selected.id === opt.id
+                className={`flex justify-between items-center w-full px-3 py-2 text-sm rounded-lg hover:bg-green-50 ${selected.weight === opt.weight
                     ? "text-green-700 font-medium bg-green-50"
                     : "text-gray-700"
                   }`}
               >
-                {opt.label}
-                {selected && selected.id === opt.id && <Check className="w-4 h-4 text-green-600" />}
+                <span>{opt.weight} kg — ₹{opt.price.toFixed(0)}</span>
+                {selected?.weight === opt.weight && (
+                  <Check className="w-4 h-4 text-green-600" />
+                )}
               </button>
             ))}
+
           </div>
         )}
       </div>
@@ -88,19 +106,18 @@ export default function QuantitySelect({options = []}: QuantitySelectProps) {
               Choose Quantity
             </h3>
             <div className="flex flex-col gap-2">
-              {options.map((opt) => (
+              {options.map((opt, index) => (
                 <button
-                  key={opt.id}
+                  key={index}
                   onClick={() => {
-                    setSelected(opt)
-                    setIsOpen(false)
+                    handleSelect(opt)
                   }}
-                  className={`px-3 py-2 text-sm rounded-lg border text-left ${  selected && selected.id === opt.id
-                      ? "border-green-600 bg-green-50 text-green-700"
-                      : "border-gray-200 hover:bg-gray-100"
+                  className={`px-3 py-2 text-sm rounded-lg border text-left ${selected && selected.weight === opt.weight
+                    ? "border-green-600 bg-green-50 text-green-700"
+                    : "border-gray-200 hover:bg-gray-100"
                     }`}
                 >
-                  {opt.label}
+                 <span>{opt.weight} kg — ₹{opt.price.toFixed(0)}</span>
                 </button>
               ))}
             </div>

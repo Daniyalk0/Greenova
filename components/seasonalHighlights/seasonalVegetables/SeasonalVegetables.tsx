@@ -5,19 +5,19 @@ import ProductCard from '../../ui/productCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/store/store';
 
-const SeasonalFruits = () => {
+const SeasonalVegetables = () => {
   // const options = [
   //   { id: 1, label: "1 kg - ₹120" },
   //   { id: 2, label: "2 kg - ₹230" },
   //   { id: 5, label: "5 kg - ₹550" },
   // ]
   const seasonalNames = [
-    "Mango",
-    "Watermelon",
-    "Kiwi",
-    "Orange",
-    "Pineapple",
-    "Lychee"]
+    "Cucumber",
+    "Tomato",
+    "Capsicum",
+    "Bitter Gourd",
+    "Lady Finger",
+    "Spinach"]
 
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)
@@ -52,11 +52,10 @@ const SeasonalFruits = () => {
   }
   if (loading) return <div>Loading...</div>
   return (
-    <div className="flex w-full lg:px-10 xl:px-20 flex-col ">
+    <div className="flex w-full flex-col lg:px-10 xl:px-20">
 
 
-
-        <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Fruits</h1>
+        <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Vegetables</h1>
 
         <div className='grid place-items-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full '>
 
@@ -78,4 +77,4 @@ const SeasonalFruits = () => {
   )
 }
 
-export default SeasonalFruits
+export default SeasonalVegetables

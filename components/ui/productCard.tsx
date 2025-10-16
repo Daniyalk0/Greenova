@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 import { Heart, ShoppingCart } from "lucide-react"
 import QuantitySelect from "./QuantitySelect"
@@ -7,8 +7,8 @@ import QuantitySelect from "./QuantitySelect"
 
 
 type Option = {
-  id: number
-  label: string
+  weight: number
+  price: number
 }
 
 type ProductCardProps = {
@@ -24,6 +24,8 @@ const ProductCard = ({
   options = [],
   img = "/apple.png"
 }: ProductCardProps) => {
+  const [selectedPrice, setSelectedPrice] = useState<number>(price)
+
   return (
     <div className="w-full bg-white rounded-2xl overflow-visible 
             shadow-[0_0_15px_0_rgba(0,0,0,0.15)] 
@@ -47,11 +49,11 @@ const ProductCard = ({
       <p className="text-xs text-gray-500 font-dmsans_light">Seasonal Special</p>
 
       {/* ✅ Weight / Quantity Selector */}
-      <QuantitySelect options={options} />
+      <QuantitySelect options={options} onSelect={(opt) => setSelectedPrice(opt.price)} />
 
       {/* ✅ Price */}
       <div className="prices flex items-center justify-start gap-1 font-monasans_semibold text-xs my-3">
-        <span>₹{price}</span>
+        <span>₹{selectedPrice}</span>
       </div>
 
       {/* ✅ Actions */}

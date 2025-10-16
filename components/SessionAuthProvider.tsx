@@ -1,6 +1,7 @@
 // components/SessionAuthProvider.tsx
 "use client";
 
+import { store } from "@/src/store/store";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
@@ -22,10 +23,10 @@ function SessionLoader({ children }: { children: ReactNode }) {
 export default function SessionAuthProvider({ children }: { children: ReactNode }) {
   return (
 
-
-    <SessionProvider>
-      <SessionLoader>{children}</SessionLoader>
-    </SessionProvider>
-
+    <Provider store={store}>
+      <SessionProvider>
+        <SessionLoader>{children}</SessionLoader>
+      </SessionProvider>
+    </Provider>
   );
 }
