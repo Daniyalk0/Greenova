@@ -23,9 +23,9 @@ const SeasonalFruits = () => {
   const error = useSelector((state: RootState) => state.products.error)
   const loading = useSelector((state: RootState) => state.products.loading)
 
-  const seasonalProducts = products.filter(product => 
-  seasonalNames.includes(product.name)
-);
+  const seasonalProducts = products.filter((product: any) =>
+    seasonalNames.includes(product.name)
+  );
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
@@ -45,7 +45,7 @@ const SeasonalFruits = () => {
   };
 
 
-   const limitedProducts = seasonalProducts.slice(0, getLimit());
+  const limitedProducts = seasonalProducts.slice(0, getLimit());
 
   if (error) {
     return <div>Error: {error}</div>
@@ -56,25 +56,25 @@ const SeasonalFruits = () => {
 
 
 
-        <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Fruits</h1>
+      <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Fruits</h1>
 
-        <div className='grid place-items-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full '>
+      <div className='grid place-items-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full '>
 
-          {limitedProducts?.map((p: any) => (
-            <ProductCard
-              key={p.id}
-              name={p.name}
-              img={p.imageUrl}
-              price={p.basePricePerKg}
-              options={p.availableWeights.map((w: number) => ({
-                weight: w,
-                price: p.basePricePerKg * w, // ✅ numeric price (not string)
-              }))}
-            />
-          ))}
+        {limitedProducts?.map((p: any) => (
+          <ProductCard
+            key={p.id}
+            name={p.name}
+            img={p.imageUrl}
+            price={p.basePricePerKg}
+            options={p.availableWeights.map((w: number) => ({
+              weight: w,
+              price: p.basePricePerKg * w, // ✅ numeric price (not string)
+            }))}
+          />
+        ))}
 
-        </div>
       </div>
+    </div>
   )
 }
 

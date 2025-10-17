@@ -23,10 +23,10 @@ const SeasonalVegetables = () => {
   const error = useSelector((state: RootState) => state.products.error)
   const loading = useSelector((state: RootState) => state.products.loading)
 
-  const seasonalProducts = products.filter(product => 
-  seasonalNames.includes(product.name)
-);
-
+  const seasonalProducts = products.filter((product: any) =>
+    seasonalNames.includes(product.name)
+  );
+  
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
   useEffect(() => {
