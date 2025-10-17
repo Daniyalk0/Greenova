@@ -21,22 +21,26 @@ model User {
 }
 
 model Product {
-  name          String
-  price         Float
-  category      String
-  description   String?
-  imageUrl      String
-  slug          String  @unique
-  calories      Float?
-  carbohydrates Float?
-  discount      Int?
-  fat           Float?
-  inStock       Boolean @default(true)
-  protein       Float?
-  rating        Float?
-  sugar         Float?
-  id            Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
+  name              String
+  slug              String   @unique
+  category          String
+  subCategory       String?  // ✅ make it optional
+  imageUrl          String
+  calories          Float?
+  fat               Float?
+  sugar             Float?
+  carbohydrates     Float?
+  protein           Float?
+  basePricePerKg    Float?
+  availableWeights  Float[]  // or Json, depending on your schema
+  price             Float?
+  rating            Float?
+  discount          Float?
+  description       String?
+  inStock           Boolean  @default(true)
 }
+
 
 model Order {
   id        String   @id @default(cuid())

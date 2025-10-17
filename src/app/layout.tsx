@@ -7,6 +7,8 @@ import SessionAuthProvider from "@/components/SessionAuthProvider";
 import CleanFacebookHash from "@/components/CleanFacebookHash";
 import { ReactNode } from "react";
 import Navbar from "@/components/navbar/Navbar";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -91,15 +93,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable}  antialiased bg-[#FFFFF0]`}
       >
 
-        {/* <Provider store={store}> */}
-      <SessionAuthProvider>
-        <Navbar />
-        <CleanFacebookHash />
-        <main className="min-h-screen">
-          {children}
-        </main>
-      </SessionAuthProvider>
-    {/* </Provider> */}
+
+          <SessionAuthProvider>
+            <Navbar />
+            <CleanFacebookHash />
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </SessionAuthProvider>
+  
 
       </body>
     </html>

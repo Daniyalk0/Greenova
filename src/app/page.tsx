@@ -1,13 +1,21 @@
-import React from 'react'
-import Home from './(homePage)/Home'
+'use client';
 
-const page = () => {
-  return (
+import React, { useEffect } from 'react';
+import Home from './(homePage)/Home';
+import { useDispatch } from 'react-redux';
+import { fetchProducts } from '../store/productsSlice';
+import { AppDispatch } from '../store/store';
 
+const Page = () => {
+  const dispatch = useDispatch<AppDispatch>();
 
-   <Home/>
- 
-  )
-}
+  useEffect(() => {
+    dispatch(fetchProducts());
+    console.log(fetchProducts);
+    
+  }, [dispatch]);
 
-export default page
+  return <Home />;
+};
+
+export default Page;
