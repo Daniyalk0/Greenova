@@ -9,7 +9,7 @@ const Hero = () => {
     return (
         <>
 
-            <div className=' pt-20 sm:pt-20 relative flex flex-col items-center justify-center w-full px-4 pb-8 sm:px-5 min-h-screen sm:h-auto md:h-screen md:pt-0 md:gap-6 overflow-hidden '>
+            <div className=' pt-20 sm:pt-20 relative flex flex-col items-center justify-center w-full px-4 pb-0 sm:px-5 min-h-screen sm:h-auto md:h-screen md:pt-0 md:gap-6 overflow-hidden '>
                 
 
                 <BouncingIconsContainer />

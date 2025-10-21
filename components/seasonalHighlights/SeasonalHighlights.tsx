@@ -6,7 +6,7 @@ import SeasonalVegetables from './seasonalVegetables/SeasonalVegetables'
 
 const SeasonalHighlights = () => {
     return (
-        <div className="px-5 w-full sm:px-6 lg:px-20 my-8 overflow-hidden min-h-screen">
+        <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14 overflow-hidden min-h-screen">
             <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
 
                 <h1 className="text-xl sm:text-3xl text-center mb-6 font-monasans_semibold">Seasonal Highlights:  </h1>
