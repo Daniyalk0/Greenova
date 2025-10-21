@@ -7,6 +7,7 @@ import Hero from "@/components/hero-section/Hero";
 import Categories from "@/components/categories/Categories";
 import SeasonalFruits from "@/components/seasonalHighlights/seasonalFruits/SeasonalFruits";
 import SeasonalHighlights from "@/components/seasonalHighlights/SeasonalHighlights";
+import Banner from "@/components/Banner";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -20,6 +21,7 @@ const Home = () => {
     <Hero/>
     <Categories/>
     <SeasonalHighlights/>
+    <Banner/>
     </div>
     // <>
     //   <Head>

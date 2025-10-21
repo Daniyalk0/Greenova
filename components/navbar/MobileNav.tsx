@@ -19,7 +19,7 @@ const MobileNav = ({ itemCount, data }:
     return (
 
 
-        <nav className="z-[1000] shadow-md sticky top-0 z-50 font-playfair bg-white pt-2 flex items-center w-full">
+        <nav className="z-[2000] shadow-md sticky top-0  font-playfair bg-white pt-2 flex items-center w-full">
 
             <div className="mx-auto w-full px-4 sm:px-6 lg:px-12 font-dmsans_semibold text-sm py-2">
                 <div className=' flex items-center justify-between '>

@@ -107,3 +107,23 @@ img.dark-mode-fix {
 }
 
 
+/* Make sure the pagination dots show up on top of images */
+.swiper-pagination {
+  bottom: 20px !important; /* Position above bottom edge */
+  z-index: 10 !important;
+}
+
+.swiper-pagination-bullet {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  opacity: 1 !important;
+  width: 10px;
+  height: 10px;
+  margin: 0 6px !important;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #22c55e !important; /* Tailwind green-500 */
+  transform: scale(1.3);
+}
+
