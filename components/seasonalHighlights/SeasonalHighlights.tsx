@@ -6,26 +6,34 @@ import SeasonalVegetables from './seasonalVegetables/SeasonalVegetables'
 
 const SeasonalHighlights = () => {
     return (
-        <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14 overflow-hidden min-h-screen">
-            <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
+        <div className="px-5 w-full sm:px-6 lg:px-20 pb-10 my-6 md:my-14 overflow-hidden min-h-screen">
+            <div className='flex items-center justify-center w-full gap-4 sm:gap-5'>
 
-                <h1 className="text-xl sm:text-3xl text-center mb-6 font-monasans_semibold">Seasonal Highlights:  </h1>
-                <h1 className="text-xl  sm:text-3xl font-playfair  mb-6  ">
-                    <RoughNotation
+                <h1 className="text-xl sm:text-3xl text-center mb-10 lg:mb-10 font-monasans_semibold">    <RoughNotation
+                    type="highlight"
+                    show={true}
+                    color="#a3ff61" // light yellow
+                    animationDuration={1200}
+                    strokeWidth={0.6}
+                >
+                    Seasonal Highlights
+                </RoughNotation> </h1>
+                <h1 className="text-xl  underline sm:text-3xl font-playfair  mb-10 lg:mb-10   ">
+                    {/* <RoughNotation
                         type="highlight"
                         show={true}
-                        color="#a3ff61" // light yellow
+                        color="#D1280B" // light yellow
                         animationDuration={1200}
                         strokeWidth={0.6}
-                    >
+                    > */}
                         Summer
-                    </RoughNotation>
+                    {/* </RoughNotation> */}
                 </h1>
             </div>
             <div className='flex flex-col w-full justify-center gap-16'>
 
-            <SeasonalFruits/>
-            <SeasonalVegetables/>
+                <SeasonalFruits />
+                <SeasonalVegetables />
             </div>
         </div>
     )

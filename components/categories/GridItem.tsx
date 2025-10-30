@@ -25,7 +25,7 @@ const GridItem = ({ className, cat }: any) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       key={cat.id}
-      className={`flex flex-col overflow-hidden gap-[2px]  rounded-3xl ${cat.height}`}
+      className={`flex flex-col overflow-hidden gap-[0px]  rounded-3xl ${cat.height}`}
     >
       {/* Image Section (60% height) */}
       <div className="relative h-full w-full rounded-3xl  
