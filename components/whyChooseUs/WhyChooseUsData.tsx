@@ -1,18 +1,10 @@
-"use client"
-import React from 'react'
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Timeline } from './ui/timeline';
-import { RoughNotation } from 'react-rough-notation';
-
-const WhyChooseUs = () => {
-  const data = [
+ export const WhyChooseUsData = [
     {
       title: "Farm fresh Quality Everytime",
       content: (
 
 
-        <div className="sm:grid grid-cols-2 gap-5 sm:gap-2 mb-10 flex flex-col ">
+        <div className="sm:grid grid-cols-2 gap-5 sm:gap-2 mb-0 flex flex-col ">
 
           <div className="relative h-40 w-full rounded-lg md:h-48 lg:h-52 xl:w-96 bg-green-100 flex justify-center lg:px-4">
             {/* Circle container with overflow-hidden */}
@@ -167,38 +159,3 @@ const WhyChooseUs = () => {
       ),
     },
   ];
-
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0 },
-  };
-  return (
-    <div className="px-2 w-full sm:px-6 lg:px-20 my-6 md:my-14  overflow-hidden min-h-screen" ref={ref}>
-      <div className='flex flex-col items-center justify-center w-full gap-2 sm:gap-5'>
-
-        <h1 className="text-2xl sm:text-3xl text-center mb-6 lg:mb-10 font-monasans_semibold">
-          <span className="inline-block">
-            <RoughNotation
-              type="highlight"
-              show={true}
-              color="#a3ff61"
-              animationDuration={1200}
-              strokeWidth={0.6}
-            >
-              Why Choose Us
-            </RoughNotation>
-          </span>
-        </h1>
-
-        <div className="relative w-full overflow-clip">
-          <Timeline data={data} />
-        </div>
-
-      </div></div>
-  )
-}
-
-export default WhyChooseUs

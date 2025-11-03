@@ -18,6 +18,7 @@ model User {
   accounts      Account[]
   orders        Order[]
   sessions      Session[]
+  reviews       Review[]
 }
 
 model Product {
@@ -84,4 +85,17 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  userName  String   // 👈 Store user’s name here
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userImage String?  
+
+  user User @relation(fields: [userId], references: [id])
 }
