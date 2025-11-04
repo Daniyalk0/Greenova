@@ -1,8 +1,10 @@
 "use client"
 import { ChevronDown, ChevronUp, X } from 'lucide-react'
 import Link from 'next/link';
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { motion } from "framer-motion";
+import NavLink from '../NavLink';
+import { usePathname } from 'next/navigation';
 
 // type NavLinksProps = {
 //     setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -16,8 +18,25 @@ const NavLinksMobile = () => {
     // if (!isOpen) return null;
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+     const modalRef = useRef<HTMLDivElement | null>(null);
+    //   const [showModal, setShowModal] = useState(false);
+    
+    
+      // Close when clicking outside the modal
+      useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+          if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+            setIsDropdownOpen(false);
+          }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [setIsDropdownOpen]);
+
     return (
-        <div className="relative ">
+        <div className="relative " >
             {/* Toggle button */}
             <div className="" >
                 <svg
@@ -49,8 +68,8 @@ const NavLinksMobile = () => {
 
             {/* Dropdown box */}
             {isDropdownOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                    <motion.div className="relative bg-white rounded-xl shadow-xl p-6 w-[90%] sm:w-[80%] md:w-[50rem] max-h-[80vh] overflow-y-auto"
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" >
+                    <motion.div ref={modalRef} className="relative bg-white rounded-xl shadow-xl p-6 py-7 w-[90%] sm:w-[80%] md:w-[50rem] max-h-[84vh] overflow-y-auto"
 
                         layout="position"
                         transition={{
@@ -58,10 +77,18 @@ const NavLinksMobile = () => {
                             ease: "easeInOut",
                             type: "tween"
                         }}>
-                            <X onClick={() => setIsDropdownOpen(false)} className='text-black'/>
+         
+ <X
+    onClick={() => setIsDropdownOpen(false)}
+    className="text-black cursor-pointer absolute right-5 top-5 z-10"
+  />
+
+
+
                         <ul className="flex flex-col gap-3 text-gray-700 text-sm">
-                            <li>
-                                <Link href="/" className="hover:text-green-600">
+                            <li   >
+                                <Link href="/"  
+                                onClick={() => setIsDropdownOpen(false)}className="hover:text-green-600">
                                     Home
                                 </Link>
                             </li>
@@ -69,7 +96,7 @@ const NavLinksMobile = () => {
                             {/* Shop with sub dropdown */}
                             <li>
                                 <div
-                                    className="flex items-center justify-between cursor-pointer hover:text-green-600"
+                                    className={`flex items-center justify-between cursor-pointer  ${isShopOpen ? 'text-[#6ed067]' : 'text-[#000000]'}`}
                                     onClick={() => setIsShopOpen((prev) => !prev)}
                                 >
                                     <span>Shop</span>
@@ -82,45 +109,74 @@ const NavLinksMobile = () => {
                                 {isShopOpen && (
                                     <div className="mt-2 ml-4 flex flex-col gap-2 text-sm text-gray-600">
                                         <p className="font-semibold text-green-700">Fruits</p>
-                                        <ul className="ml-2 space-y-1">
-                                            <li className="cursor-pointer hover:text-green-600">Fresh Fruits</li>
-                                            <li className="cursor-pointer hover:text-green-600">Exotic Fruits</li>
-                                            <li className="cursor-pointer hover:text-green-600">Seasonal Fruits</li>
-                                            <li className="cursor-pointer hover:text-green-600">Dry Fruits</li>
+                                        <ul className="mt-1 space-y-1 text-gray-700 ">
+                                            <li>
+                                                <NavLink href="/fruits/fresh" className="cursor-pointer">
+                                                    Fresh Fruits
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/fruits/exotic" className="cursor-pointer">
+                                                    Exotic Fruits
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/fruits/seasonal" className="cursor-pointer">
+                                                    Seasonal Fruits
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/fruits/dry" className="cursor-pointer">
+                                                    Dry Fruits
+                                                </NavLink>
+                                            </li>
                                         </ul>
 
                                         <p className="font-semibold text-green-700 mt-3">Vegetables</p>
-                                        <ul className="ml-2 space-y-1">
-                                            <li className="cursor-pointer hover:text-green-600">Leafy Greens</li>
-                                            <li className="cursor-pointer hover:text-green-600">Root Vegetables</li>
-                                            <li className="cursor-pointer hover:text-green-600">Organic Vegetables</li>
-                                            <li className="cursor-pointer hover:text-green-600">Seasonal Vegetables</li>
+                                        <ul className="mt-1 text-gray-700 space-y-1">
+                                            <li>
+                                                <NavLink href="/vegetables/leafy" className="cursor-pointer">
+                                                    Leafy Greens
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/vegetables/root" className="cursor-pointer">
+                                                    Root Vegetables
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/vegetables/organic" className="cursor-pointer">
+                                                    Organic Vegetables
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink href="/vegetables/seasonal" className="cursor-pointer">
+                                                    Seasonal Vegetables
+                                                </NavLink>
+                                            </li>
                                         </ul>
-
                                         <p className="font-semibold text-green-700 mt-3">More</p>
                                         <ul className="ml-2 space-y-1">
-                                            <li className="cursor-pointer hover:text-green-600">Herbs</li>
-                 
+                                            <li>
+                                                <NavLink href="/herbs" className="cursor-pointer">
+                                                    Herbs
+                                                </NavLink>
+                                            </li>
+
                                         </ul>
                                     </div>
                                 )}
                             </li>
 
-                            <li>
-                                <Link href="/blog" className="hover:text-green-600">
-                                    Blog
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/about" className="hover:text-green-600">
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="hover:text-green-600">
-                                    Contact
-                                </Link>
-                            </li>
+                            <NavLink href="/blog" className="cursor-pointer">
+                                Blog
+                            </NavLink>
+                            <NavLink href="/about" className="cursor-pointer">
+                                About Us
+                            </NavLink>
+                            <NavLink href="#contact" className="cursor-pointer">
+                                Contact
+                            </NavLink>
                         </ul>
                     </motion.div>
                 </div>

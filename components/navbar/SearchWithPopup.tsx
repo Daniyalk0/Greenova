@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 
 export default function SearchPopup() {
@@ -12,6 +12,23 @@ export default function SearchPopup() {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
+
+       const modalRef = useRef<HTMLDivElement | null>(null);
+      //   const [showModal, setShowModal] = useState(false);
+      
+      
+        // Close when clicking outside the modal
+        useEffect(() => {
+          function handleClickOutside(event: MouseEvent) {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+              setIsOpen(false);
+            }
+          }
+          document.addEventListener("mousedown", handleClickOutside);
+          return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+          };
+        }, [setIsOpen]);
 
   return (
     <div className="relative md:w-[40%] lg:w-[50%]">
@@ -33,7 +50,7 @@ export default function SearchPopup() {
       {/* Overlay & Popup */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-start justify-center z-50">
-          <div className="mt-40 w-[95%] md:w-full max-w-lg bg-white rounded-xl shadow-lg p-4">
+          <div className="mt-40 w-[95%] md:w-full max-w-lg bg-white rounded-xl shadow-lg p-4" ref={modalRef}>
             {/* Header */}
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-sm font-medium text-gray-700">Search Products</h2>
