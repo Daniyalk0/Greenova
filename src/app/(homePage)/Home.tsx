@@ -10,6 +10,7 @@ import SeasonalHighlights from "@/components/seasonalHighlights/SeasonalHighligh
 import Banner from "@/components/Banner";
 import WhyChooseUs from "@/components/whyChooseUs/WhyChooseUs";
 import Reviews from "@/components/reviews/Reviews";
+import Footer from "@/components/footer/Footer";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -26,6 +27,7 @@ const Home = () => {
     <Banner/>
     <WhyChooseUs/>
     <Reviews/>
+    <Footer/>
     </div>
   );
 };

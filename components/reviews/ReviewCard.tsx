@@ -43,7 +43,7 @@ console.log(userName);
 
     return (
         <div
-            className="relative rounded-[2rem]  shadow-md border-2 border-[#d7d7d7] shadow-[#bebebec1]
+            className="relative rounded-[2rem] cursor-context-menu shadow-md border-2 border-[#d7d7d7] shadow-[#bebebec1]
         px-5 py-4 w-full max-w-[18rem] sm:max-w-xs min-h-[140px] flex flex-col justify-start mx-auto
         transition-all duration-300 my-5 bg-[#ffffff] sm:bg-[#f5f5f5]"
             style={{
@@ -80,7 +80,7 @@ console.log(userName);
 
             <div className="flex flex-col justify-start items-start">
                 <p
-                    className="text-[#444444] font-dmsans_semibold sm:text-xs text-[0.6rem] leading-3 
+                    className="text-[#444444] font-dmsans_semibold sm:text-xs text-[0.8rem] leading-3 
                     overflow-hidden line-clamp-3 transition-all duration-300 ease-in-out"
                 >
                     {message}
