@@ -42,7 +42,9 @@ const DesktopNav = ({ itemCount, data }:
 
                     <div className="flex items-center gap-6">
                         {/* Cart */}
+                        <Link href={'/cart'}>
                         <NavCart itemCount={itemCount} />
+                        </Link>
 
                         {/* Auth */}
                         <UserMenu user={data?.user} />

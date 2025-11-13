@@ -3,13 +3,14 @@ import React from 'react'
 import { RoughNotation } from 'react-rough-notation'
 import SeasonalFruits from './seasonalFruits/SeasonalFruits'
 import SeasonalVegetables from './seasonalVegetables/SeasonalVegetables'
+import Heading from '../ui/Heading'
 
 const SeasonalHighlights = () => {
     return (
         <div className="px-5 w-full sm:px-6 lg:px-20 pb-10 my-6 md:my-14 overflow-hidden min-h-screen">
             <div className='flex items-center justify-center w-full gap-4 sm:gap-5'>
 
-                <h1 className="text-xl sm:text-3xl text-center mb-10 lg:mb-10 font-monasans_semibold">    <RoughNotation
+                {/* <h1 className="text-xl sm:text-3xl text-center mb-10 lg:mb-10 font-monasans_semibold">    <RoughNotation
                     type="highlight"
                     show={true}
                     color="#a3ff61" // light yellow
@@ -17,7 +18,8 @@ const SeasonalHighlights = () => {
                     strokeWidth={0.6}
                 >
                     Seasonal Highlights
-                </RoughNotation> </h1>
+                </RoughNotation> </h1> */}
+                <Heading text='Summer Highlights'/>
                 <h1 className="text-xl  underline sm:text-3xl font-playfair  mb-10 lg:mb-10   ">
                     {/* <RoughNotation
                         type="highlight"
@@ -26,7 +28,7 @@ const SeasonalHighlights = () => {
                         animationDuration={1200}
                         strokeWidth={0.6}
                     > */}
-                        Summer
+                        {/* Summer */}
                     {/* </RoughNotation> */}
                 </h1>
             </div>

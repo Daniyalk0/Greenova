@@ -7,13 +7,14 @@ import 'swiper/css';
 import { Autoplay, Pagination } from 'swiper/modules';
 import Image from 'next/image';
 import { RoughNotation } from 'react-rough-notation';
+import Heading from './ui/Heading';
 
 const Banner = () => {
   return (
     <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14  overflow-hidden md:min-h-screen pb-10">
       <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
 
-        <h1 className="text-2xl sm:text-3xl text-center mb-10 lg:mb-10 font-monasans_semibold">    <RoughNotation
+        {/* <h1 className="text-2xl sm:text-3xl text-center mb-10 lg:mb-10 font-monasans_semibold">    <RoughNotation
           type="highlight"
           show={true}
           color="#a3ff61" // light yellow
@@ -21,7 +22,8 @@ const Banner = () => {
           strokeWidth={0.6}
         >
           Offers / Discounts
-        </RoughNotation> </h1>
+        </RoughNotation> </h1> */}
+        <Heading text='Offers / Discounts'/>
       </div>
       <div className="w-full h-[60vw] lg:h-[40vw] xl:h-[38vw] relative overflow-hidden rounded-3xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2  cursor-pointer">
 

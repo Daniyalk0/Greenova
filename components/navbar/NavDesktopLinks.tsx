@@ -34,7 +34,7 @@ const NavDesktopLinks = ({ isShopOpen, setIsShopOpen }: NavLinksProps) => {
                     className="flex  items-center justify-between cursor-pointer rounded-lg md:relative "
                     onClick={() => setIsShopOpen(prev => !prev)}
                 >
-                    <div onMouseEnter={() => setShopHover(true)} onMouseLeave={() => setShopHover(false)} className={`transition-all duration-300 flex items-center justify-center   ${isActive || shopHover ? "text-[#6ed067]" : "text-[#030303]"
+                    <div onMouseEnter={() => setShopHover(true)} onMouseLeave={() => setShopHover(false)} className={`transition-all duration-300 flex items-center justify-center   ${isActive || shopHover ? "text-[#6ed067]" : "text-[#0f3c27]"
                         }`}>
                         <p>Shop</p>
                         {Icon}

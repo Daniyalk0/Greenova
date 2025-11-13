@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            Int       @id @default(autoincrement())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -19,6 +19,7 @@ model User {
   orders        Order[]
   sessions      Session[]
   reviews       Review[]
+  carts         Cart[]
 }
 
 model Product {
@@ -40,12 +41,48 @@ model Product {
   discount          Float?
   description       String?
   inStock           Boolean  @default(true)
+  carts             Cart[]
 }
 
 
+model Cart {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  productId        Int
+  name             String
+  category         String
+  subCategory      String?
+  imageUrl         String
+  weight           Float
+  basePricePerKg   Float
+  totalPrice       Float
+  inStock          Boolean   @default(true)
+  rating           Float?
+  discount         Float?
+  calories         Float?
+  fat              Float?
+  sugar            Float?
+  carbohydrates    Float?
+  protein          Float?
+  price            Float?
+  description      String?
+  availableWeights Float[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+
+  // Relations
+  product          Product   @relation(fields: [productId], references: [id])
+  user             User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, productId, weight]) // 1 product-weight per user
+}
+
+
+
 model Order {
-  id        String   @id @default(cuid())
-  userId    String
+  id        Int      @id @default(autoincrement())
+  userId    Int
   items     Json
   createdAt DateTime @default(now())
   status    String   @default("pending")
@@ -54,8 +91,8 @@ model Order {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                Int     @id @default(autoincrement())
+  userId            Int
   type              String
   provider          String
   providerAccountId String
@@ -68,13 +105,14 @@ model Account {
   session_state     String?
   user              User    @relation(fields: [userId], references: [id])
 
+  
   @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           Int     @id @default(autoincrement())
   sessionToken String   @unique
-  userId       String
+  userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
 }
@@ -89,7 +127,7 @@ model VerificationToken {
 
 model Review {
   id        String   @id @default(cuid())
-  userId    String   @unique
+  userId    Int   @unique
   userName  String   // 👈 Store user’s name here
   rating    Int
   comment   String

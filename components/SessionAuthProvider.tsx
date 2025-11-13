@@ -25,6 +25,7 @@ export default function SessionAuthProvider({ children }: { children: ReactNode 
 
     <Provider store={store}>
       <SessionProvider>
+        
         <SessionLoader>{children}</SessionLoader>
       </SessionProvider>
     </Provider>
