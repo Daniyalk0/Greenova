@@ -1,11 +1,14 @@
 "use client"
-import React, { useState } from 'react'
-import QuantitySelect from '../ui/QuantitySelect'
-import { updateCartWeight } from '@/lib/cartUtils'
-import { Cross, CrossIcon, Weight, X } from 'lucide-react'
+import React from 'react'
+import { CartItem } from '@/lib/cartUtils'
+import { X } from 'lucide-react'
 
+type CartProductCardProps = {
+  product: CartItem;
+  handleRemoveProduct: (productId: number, weight: number) => Promise<void>;
+};
 
-const CartProductcard = ({ product, handleRemoveProduct }) => {
+const CartProductcard = ({ product, handleRemoveProduct }: CartProductCardProps) => {
     const options = product.availableWeights?.map((w) => ({
         weight: w,
         price: (product.basePricePerKg || 0) * w,

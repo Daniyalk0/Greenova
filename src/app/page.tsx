@@ -9,7 +9,6 @@ import { useSession } from 'next-auth/react';
 import { handleCartSyncOnLogin } from '@/lib/syncCart';
 import { fetchProducts } from '../store/productsSlice';
 import { fetchCartProducts } from '../store/cartProductsSlice';
-import { useCartSync } from '@/components/customHooks/useCartSync';
 import { getCartItemsFromSupabase } from './actions/cart';
 
 const Page = () => {
@@ -28,7 +27,6 @@ const Page = () => {
   }, []);
 
 
-  const userId = Number(session?.user?.id);
   // useEffect(() => {
   //   const syncLocalCart = async () => {
   //     if (!userId) return;
