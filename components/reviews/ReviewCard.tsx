@@ -6,9 +6,6 @@ type reviewCardProps = { userName: string; message: string; rating: number; date
 const ReviewCard = ({ userName = "hello", message = "A round avatar circle with the person’s first letter A chat-bubble message card (white background, rounded corners A small “tail” (triangle) to make it look like a speech bubblI name, message, star", rating = 5, date = "2025-10-30T10:45:00Z", userImage }: reviewCardProps) => {
 
 
-console.log('reviewCard re-rendered ❤');
-console.log(userName);
-
 
 
     const [timeAgo, setTimeAgo] = useState("");
@@ -67,20 +64,21 @@ console.log(userName);
                             {userName}
                         </h3>
 
-                        <p className="text-[9px] text-[#313131]  mt-[2px] font-dmsans_light">{timeAgo}</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-[2px]">
+                        <p className="text-[9px] text-[#313131]   mt-[2px] font-dmsans_light">{timeAgo}</p>
+                         <div className="flex items-center gap-[2px] ml-[-4px]">
                     {Array.from({ length: rating }).map((_, i) => (
-                        <span key={i} className="text-yellow-500 text-[20px] leading-none">★</span>
+                        <span key={i} className="text-yellow-500 text-[25px] leading-none">★</span>
                     ))}
                 </div>
+                    </div>
+                </div>
+               
             </div>
 
 
             <div className="flex flex-col justify-start items-start">
                 <p
-                    className="text-[#444444] font-dmsans_semibold sm:text-xs text-[0.8rem] leading-3 
+                    className="text-[#444444] font-dmsans_light sm:font-dmsans_semibold sm:text-xs text-[0.8rem] leading-4 
                     overflow-hidden line-clamp-3 transition-all duration-300 ease-in-out"
                 >
                     {message}

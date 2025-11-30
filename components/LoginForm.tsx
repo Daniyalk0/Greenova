@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +9,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { loginSchema } from "../lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from "next/link";
 import { Eye, EyeClosed } from "lucide-react";
 import OAuthSignIn from "./OAuthSignIn";
@@ -23,6 +23,7 @@ const LoginForm = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [showPassword, setShowPassword] = useState(false);
+  const {data:session} = useSession()
 
   useEffect(() => {
     window.scrollTo(0, 0);

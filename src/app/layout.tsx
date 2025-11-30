@@ -9,6 +9,8 @@ import { ReactNode } from "react";
 import Navbar from "@/components/navbar/Navbar";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import Footer from "@/components/footer/Footer";
+import CartSyncManager from "@/components/CartSyncManager";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,22 +88,28 @@ const DMSans_italic_light = localFont({
 
 
 
+
 export default function RootLayout({ children }: { children: ReactNode }) {
+
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable}  antialiased bg-[#FFFFF0]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable}  antialiased bg-[#ffffff]`}
       >
 
 
-          <SessionAuthProvider>
-            <Navbar />
-            <CleanFacebookHash />
-            <main className="min-h-screen">
-              {children}
-            </main>
-          </SessionAuthProvider>
-  
+        <SessionAuthProvider>
+
+          <Navbar />
+          <CleanFacebookHash />
+          <CartSyncManager />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+        </SessionAuthProvider>
+
 
       </body>
     </html>

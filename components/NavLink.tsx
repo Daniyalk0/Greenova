@@ -19,7 +19,7 @@ export default function NavLink({ href, children, className = "" } : NavLinkProp
   return (
     <Link
       href={href}
-      className={`${className} ${isActive ? "text-[#6ed067]" : "text-[#000000]"} hover:text-[#6ed067] transition-all duration-300`}
+      className={`${className} ${isActive ? "text-[#6ed067]" : "text-[#0f3c27]"} hover:text-[#6ed067] transition-all duration-300`}
     >
       {children}
     </Link>

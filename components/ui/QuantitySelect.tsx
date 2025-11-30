@@ -14,10 +14,12 @@ type Option = {
 type QuantitySelectProps = {
   options: Option[]
   onSelect: (option: Option) => void
+  className?: string
+  headingClass? : string
 }
 
 
-export default function QuantitySelect({ options, onSelect }: QuantitySelectProps) {
+export default function QuantitySelect({ options, onSelect, className, headingClass }: QuantitySelectProps) {
 const defaultOption = options.find(opt => opt.weight === 1) || options[0]
 const [selected, setSelected] = useState(defaultOption)
 
@@ -28,12 +30,10 @@ const [selected, setSelected] = useState(defaultOption)
     onSelect(opt)
     setIsOpen(false) // close dropdown
   }
-
-  console.log('options' , options);
   
 
   return (
-    <div className="mt-3 font-dmsans_light relative">
+    <div className={`mt-3 font-dmsans_light relative ${className}`}>
       {/* ✅ Mobile (< sm) → Trigger button */}
       <div className="block sm:hidden">
         <button
@@ -49,7 +49,7 @@ const [selected, setSelected] = useState(defaultOption)
 
       {/* ✅ Desktop (≥ sm) → Custom styled dropdown */}
       <div className="hidden sm:block">
-        <label className="block text-[0.6rem] text-gray-700 mb-1">Choose Quantity</label>
+        <label className={`${headingClass} block text-[0.6rem] text-gray-700 mb-1`}>Choose Quantity</label>
         <button
           onClick={() => setDesktopOpen(!desktopOpen)}
           className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm flex justify-between items-center focus:outline-none   transition-colors

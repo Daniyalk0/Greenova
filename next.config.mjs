@@ -14,6 +14,12 @@ const nextConfig = {
         hostname: 'pngimg.com',
         pathname: '/**',
       },
+      // Wikimedia images
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        pathname: '/**',
+      },
     ],
   },
 };

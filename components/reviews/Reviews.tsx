@@ -7,6 +7,7 @@ import Marquee from "react-fast-marquee";
 import { RoughNotation } from 'react-rough-notation';
 import AddReview from './AddReview'
 import { useSession } from 'next-auth/react'
+import Heading from '../ui/Heading'
 
 const Reviews = () => {
 
@@ -35,19 +36,13 @@ const Reviews = () => {
     setIsUserHasReview(hasReview);
   }, [session, reviews]);
 
-  console.log(reviews)
 
-
-  // if (userHasReview) {
-  //   const userReview = reviews.find(
-  //     (review) => review.userId === session?.user?.id
-  //   );
 
 
   return (
     <section className="py-10  w-full md:w-[90%] mx-auto px-8">
       <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
-
+{/* 
         <h1 className="text-2xl sm:text-3xl text-center mb-10 lg:mb-14 font-monasans_semibold">    <RoughNotation
           type="highlight"
           show={true}
@@ -56,7 +51,9 @@ const Reviews = () => {
           strokeWidth={0.6}
         >
           Reviews
-        </RoughNotation> </h1>
+        </RoughNotation> </h1> */}
+
+        <Heading text='Reviews'/>
       </div>
 
       <div className='flex items-center justify-center w-full flex-col sm:flex-row gap-3 md:gap-6 lg:gap-14'>

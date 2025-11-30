@@ -19,16 +19,15 @@ const SeasonalFruits = () => {
     "Pineapple",
     "Lychee"]
 
+  const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
+  const cartError = useSelector((state: RootState) => state.cartProducts.error);
+  const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
+
+
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)
   const loading = useSelector((state: RootState) => state.products.loading)
-
-  const seasonalProducts = products.filter((product: any) =>
-    seasonalNames.includes(product.name)
-  );
-
   const [windowWidth, setWindowWidth] = useState<number>(0);
-
   useEffect(() => {
     setWindowWidth(window.innerWidth);
 
@@ -38,6 +37,12 @@ const SeasonalFruits = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const seasonalProducts = products.filter((product: any) =>
+    seasonalNames.includes(product.name)
+  );
+
+
+
   const getLimit = () => {
     if (windowWidth < 768) return 6;
     if (windowWidth >= 768 && windowWidth < 1025) return 4;
@@ -46,6 +51,8 @@ const SeasonalFruits = () => {
 
 
   const limitedProducts = seasonalProducts.slice(0, getLimit());
+  console.log("limitedProducts:", limitedProducts);
+
 
   if (error) {
     return <div>Error: {error}</div>
@@ -60,18 +67,26 @@ const SeasonalFruits = () => {
 
       <div className='grid place-items-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full '>
 
-        {limitedProducts?.map((p: any) => (
-          <ProductCard
-            key={p.id}
-            name={p.name}
-            img={p.imageUrl}
-            price={p.basePricePerKg}
-            options={p.availableWeights.map((w: number) => ({
-              weight: w,
-              price: p.basePricePerKg * w, // ✅ numeric price (not string)
-            }))}
-          />
-        ))}
+        {limitedProducts.map((p: any) => {
+          if (!p) return null;
+          console.log("ProductCard received:", p.name);
+          return (
+            <ProductCard
+              key={p.id || p.name}
+              product={p}
+              cart={cartProducts && cartProducts}
+              options={
+                p.availableWeights?.map((w: number) => ({
+                  weight: w,
+                  price: (p.basePricePerKg || 0) * w,
+                })) || []
+              }
+            />
+          );
+        })
+
+
+        }
 
       </div>
     </div>

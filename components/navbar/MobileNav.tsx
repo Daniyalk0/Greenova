@@ -25,17 +25,17 @@ const MobileNav = ({ itemCount, data }:
                 <div className=' flex items-center justify-between '>
                     <div className='flex items-center w-fit gap-2'>
 
-                    <NavLinksMobile />
-                    {/* Left: Logo */}
-                    <Link href="/" className="font-bold text-cyan-700 flex-shrink-0 pb-2">
-                        <Image
-                            src={'/logo.png'}
-                            width={100}
-                            height={100}
-                            className="w-[6rem] lg:w-[8rem] xl:w-[9rem]"
-                            alt="logo"
-                        />
-                    </Link>
+                        <NavLinksMobile />
+                        {/* Left: Logo */}
+                        <Link href="/" className="font-bold text-cyan-700 flex-shrink-0 pb-2">
+                            <Image
+                                src={'/logo.png'}
+                                width={100}
+                                height={100}
+                                className="w-[6rem] lg:w-[8rem] xl:w-[9rem]"
+                                alt="logo"
+                            />
+                        </Link>
                     </div>
 
 
