@@ -23,26 +23,6 @@ const CartProductcard = ({ product, handleRemoveProduct }: CartProductCardProps)
 
 
     return (
-
-        /* Headings */
-        /* <div className="flex items-center justify-between w-full border-b   border-gray-300 py-0 mb-2 font-monasans_semibold text-sm sm:text-base">
-        
-            <div className="flex items-center gap-3">
-                <span>Item</span>
-            </div>
-
-        
-            <div className="flex items-center justify-center w-[20%] ml-24  ">
-                <span>Quantity</span>
-            </div>
-
-            <div className="flex items-center justify-center w-[20%]">
-                <span>Total</span>
-            </div>
-        </div> 
-
-        {/* Products List */
-
         <div
             key={product.id}
             className="flex items-center w-full border-b border-gray-200 py-3 relative"

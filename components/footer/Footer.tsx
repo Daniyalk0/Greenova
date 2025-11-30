@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="w-full px-4 mt-36 sm:mt-40 relative flex justify-center pt-20 sm:pt-48 md:pt-32 lg:mt-48
 before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-24
 before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent 
- before:pointer-events-none bg-[#FCFCFC] ">
+ before:pointer-events-none bg-[#F0F0F0] ">
             {/* your content here */}
 
             <div

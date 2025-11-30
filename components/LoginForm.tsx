@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -13,7 +13,6 @@ import { signIn, useSession } from 'next-auth/react';
 import Link from "next/link";
 import { Eye, EyeClosed } from "lucide-react";
 import OAuthSignIn from "./OAuthSignIn";
-import { handleCartSyncOnLogin } from "@/lib/syncCart";
 
 
 type LoginInput = z.infer<typeof loginSchema>;

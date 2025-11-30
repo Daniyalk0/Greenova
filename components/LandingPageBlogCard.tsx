@@ -1,5 +1,5 @@
 "use client"
-import { ArrowBigDownDash, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import React from 'react'
 import { motion, useAnimation } from "framer-motion";
 

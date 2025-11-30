@@ -108,22 +108,32 @@ const ProductCard = ({
       return;
     }
 
+      const previous = [...cart];
+
+  // -------------- 1️⃣ OPTIMISTIC UPDATE --------------
+  const updatedOptimistic = [...cart, productWithWeight];
+  dispatch(setLocalCart(updatedOptimistic)); // instant visual update
+   alert(`${selectedWeightPrice.weight} kg of ${product.name} added to your online cart!`);
+
     if (session?.user?.id) {
+      // dispatch(setLocalCart())
       try {
         await syncLocalCartToSupabase(Number(session.user.id), [productWithWeight]);
-        alert(`${selectedWeightPrice.weight} kg of ${product.name} added to your online cart!`);
+       
         // const updatedCart = await getCartItemsFromSupabase(Number(session?.user?.id))
-        // setLocalProducts(updatedCart)
-        dispatch(fetchCartProducts(session?.user?.id));
-      } catch (error) {
-        console.error("Error syncing cart to Supabase:", error);
-        alert("Failed to add item to cart. Please try again.");
-      }
+       setTimeout(() => {
+        dispatch(fetchCartProducts(Number(session.user.id))); // true sync
+      }, 150);
+       } catch (error) {
+      console.error("Failed syncing:", error);
+
+      // rollback if failed
+      dispatch(setLocalCart(previous));
+      alert("Failed to add item. Please try again.");
+    }
     } else {
       addToCart(productWithWeight, selectedWeightPrice.weight);
-      const updatedLocal = getCart();
-      setLocalProducts(updatedLocal);
-        dispatch(setLocalCart(updatedLocal)); // <-- add this line
+    dispatch(setLocalCart(getCart())); // instant state
       alert(`${selectedWeightPrice.weight} kg of ${product.name} added to local cart!`);
     }
   };

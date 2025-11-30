@@ -26,7 +26,7 @@ export default function CartSyncManager() {
       if (localCart.length > 0) {
         console.log("🔁 Syncing local cart for user:", userId);
         await handleCartSyncOnLogin(Number(userId)); // Push local -> Supabase
-        dispatch(fetchCartProducts(userId)); // Then re-fetch updated data
+        dispatch(fetchCartProducts(Number(userId))); // Then re-fetch updated data
         localStorage.removeItem("cart");
       }
     };
@@ -36,7 +36,7 @@ export default function CartSyncManager() {
   // 2️⃣ Always fetch cart when user logs in or reloads
   useEffect(() => {
     if (!userId) return;
-    dispatch(fetchCartProducts(userId)); // ✅ only this, no manual fetch
+    dispatch(fetchCartProducts(Number(userId))); // ✅ only this, no manual fetch
   }, [userId, dispatch]);
 
   return null;

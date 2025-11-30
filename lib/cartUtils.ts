@@ -97,7 +97,6 @@ export const clearCart = () => {
   localStorage.removeItem("cart");
 };
 
-export const calculateCartTotal = (): number => {
-  const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
+export const calculateCartTotal = (cart: CartItem[]): number => {
   return cart.reduce((sum, item) => sum + item.totalPrice, 0);
 };

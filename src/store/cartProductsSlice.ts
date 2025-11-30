@@ -1,7 +1,7 @@
 'use client'
 import { createClient } from "@supabase/supabase-js";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { CartItem } from "@/lib/cartUtils";
+import { CartItem, getCart } from "@/lib/cartUtils";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,18 +11,21 @@ const supabase = createClient(
 
 export const fetchCartProducts = createAsyncThunk(
   "cart/fetchCartProducts",
-  async (userId: string | number) => {
-    if (!userId) throw new Error("User ID is required to fetch cart products.");
+   async (userId: number | null) => {
+    if (userId) {
+      // Logged-in user
+      const { data, error } = await supabase
+        .from("Cart")
+        .select("*")
+        .eq("userId", userId);
 
-    const { data, error } = await supabase
-      .from("Cart")
-      .select("*")
-      .eq("userId", userId); // ✅ fetch only user-specific items
-
-    if (error) throw new Error(error.message);
-
-    console.log("Fetched user cart:", data);
-    return data;
+      if (error) throw new Error(error.message);
+      return data || [];
+    } else {
+      // Guest user
+      const cartData = getCart()
+      return cartData
+    }
   }
 );
 
