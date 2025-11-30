@@ -99,7 +99,7 @@ export const authConfig: NextAuthOptions = {
     async jwt({ token, user, account }) {
       // When user logs in (first time JWT call)
       if (user) {
-        token.id = user.id;
+        token.id = user.id as number;
         token.role = (user as any).role ?? "customer";
       }
       return token;
@@ -107,7 +107,7 @@ export const authConfig: NextAuthOptions = {
 
     async session({ session, token }) {
       if (session.user && token.id) {
-        session.user.id = token.id as string;
+        session.user.id = token.id as number;
         session.user.role = token.role as string;
       }
       return session;
