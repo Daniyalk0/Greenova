@@ -10,14 +10,20 @@ import Heading from './ui/Heading';
 
 const Banner = () => {
   return (
-    <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14  overflow-hidden md:min-h-screen pb-10">
+    <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14  md:min-h-screen pb-10">
       <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
 
-        <Heading text='Offers / Discounts'/>
+        <Heading text='Offers / Discounts' />
       </div>
-      <div className="w-full h-[60vw] lg:h-[40vw] xl:h-[38vw] relative overflow-hidden rounded-3xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2  cursor-pointer">
+      <div className="w-full h-[60vw] lg:h-[40vw] xl:h-[38vw] 
+     relative rounded-3xl transition-all duration-500 
+     cursor-pointer hover:-translate-y-2
+     hover:shadow-[0_0_50px_rgba(0,0,0,0.30)]">
+
+
 
         <Swiper
+
           slidesPerView={1}
           autoplay={{
             delay: 2500,
@@ -35,7 +41,7 @@ const Banner = () => {
         >
           <SwiperSlide className="relative w-full h-full ">
             <Image
-              src="/almondsBanner.png"
+              src="/banners/almondsBanner.webp"
               alt="almonds banner"
               fill
               className="object-cover object-center "
@@ -47,7 +53,7 @@ const Banner = () => {
 
           <SwiperSlide className="relative w-full h-full">
             <Image
-              src="/kiwiBanner.png"
+              src="/banners/kiwiBanner.webp"
               alt="kiwi banner"
               fill
               className="object-cover object-center"
@@ -57,7 +63,15 @@ const Banner = () => {
 
           <SwiperSlide className="relative w-full h-full">
             <Image
-              src="/tomatoBanner.png"
+              src="/banners/orangesBanner.webp"
+              alt="tomato banner"
+              fill
+              className="object-cover object-center"
+            />
+          </SwiperSlide>
+          <SwiperSlide className="relative w-full h-full">
+            <Image
+              src="/banners/spinachBanner.webp"
               alt="tomato banner"
               fill
               className="object-cover object-center"

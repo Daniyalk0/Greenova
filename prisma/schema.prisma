@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   reviews       Review[]
   carts         Cart[]
+  wishlist      Wishlist[]
 }
 
 model Product {
@@ -42,42 +43,38 @@ model Product {
   description       String?
   inStock           Boolean  @default(true)
   carts             Cart[]
+  wishlist          Wishlist[]
 }
 
 
 model Cart {
-  id               Int      @id @default(autoincrement())
-  userId           Int
-  productId        Int
-  name             String
-  category         String
-  subCategory      String?
-  imageUrl         String
-  weight           Float
-  basePricePerKg   Float
-  totalPrice       Float
-  inStock          Boolean   @default(true)
-  rating           Float?
-  discount         Float?
-  calories         Float?
-  fat              Float?
-  sugar            Float?
-  carbohydrates    Float?
-  protein          Float?
-  price            Float?
-  description      String?
-  availableWeights Float[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  weight    Float     // user-selected
+  totalPrice Float    // based on selected weight
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
+  product   Product   @relation(fields: [productId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 
-  // Relations
-  product          Product   @relation(fields: [productId], references: [id])
-  user             User      @relation(fields: [userId], references: [id])
-
-  @@unique([userId, productId, weight]) // 1 product-weight per user
+  @@unique([userId, productId, weight])
 }
 
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId]) // prevent duplicate likes
+}
 
 
 model Order {

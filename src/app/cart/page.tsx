@@ -1,11 +1,9 @@
 "use client"
 import CartProductcard from '@/components/cartComponents/CartProductcard'
 import OrderSummary from '@/components/cartComponents/OrderSummary'
-import ProductCard from '@/components/ui/productCard'
-import QuantitySelect from '@/components/ui/QuantitySelect'
-import { calculateCartTotal, CartItem, getCart, removeFromCart, updateCartWeight } from '@/lib/cartUtils'
+import { removeFromCart} from '@/lib/cartUtils'
 import { useSession } from 'next-auth/react'
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { removeCartItem } from '../actions/cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/src/store/store'
@@ -41,6 +39,8 @@ const Page = () => {
 //   useEffect(() => {
 //   dispatch(fetchCartProducts(userId));
 // }, [userId]);
+
+console.log('reduxxCartt', reduxCart);
 
 
 const handleRemoveProduct = async (
@@ -101,7 +101,7 @@ const handleRemoveProduct = async (
         </div>
         {reduxCart?.map((c) => {
           return (
-            <CartProductcard product={c} key={`${c.id}-${c.weight}`}
+            <CartProductcard item={c} key={`${c.id}-${c.weight}`}
               handleRemoveProduct={handleRemoveProduct} />
           )
         })}

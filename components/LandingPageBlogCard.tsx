@@ -2,6 +2,7 @@
 import { ArrowRight } from 'lucide-react'
 import React from 'react'
 import { motion, useAnimation } from "framer-motion";
+import Image from 'next/image';
 
 const LandingPageBlogCard = () => {
     const controlsMain = useAnimation();
@@ -23,7 +24,14 @@ const LandingPageBlogCard = () => {
             onMouseLeave={handleMouseLeave}
         >
 
-            <img src="/stacked-waves-haikei.svg" alt="Blog background" className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(80%)" }} />
+         <Image
+  src="/stacked-waves-haikei.svg"
+  alt="Blog background"
+  fill
+  className="absolute inset-0 w-full h-full object-cover"
+  style={{ filter: "brightness(80%)" }}
+  unoptimized
+/>
 
             <span className="relative w-fit top-0 -left-1 sm:-left-1 sm:top-1  px-2 py-1 rounded-full text-[#001d15]  shadow-md bg-[#b4f7ed4d]  font-dmsans_italic_light text-[0.6rem]">
                 BLOG

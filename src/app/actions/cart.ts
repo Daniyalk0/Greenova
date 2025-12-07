@@ -2,7 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 
-export async function syncLocalCartToSupabase(userId: number, localCart: any[]) {
+export async function syncLocalCartToSupabase(
+  userId: number,
+  localCart: any[]
+) {
   if (!localCart || localCart.length === 0) return;
 
   try {
@@ -18,67 +21,38 @@ export async function syncLocalCartToSupabase(userId: number, localCart: any[]) 
         update: {
           totalPrice: item.totalPrice,
           weight: item.weight,
-          basePricePerKg: item.basePricePerKg,
-          inStock: item.inStock ?? true,
-          rating: item.rating ?? null,
-          discount: item.discount ?? null,
-          calories: item.calories ?? null,
-          fat: item.fat ?? null,
-          sugar: item.sugar ?? null,
-          carbohydrates: item.carbohydrates ?? null,
-          protein: item.protein ?? null,
-          price: item.price ?? null,
-          description: item.description ?? null,
-          availableWeights: item.availableWeights ?? [],
           updatedAt: new Date(),
         },
         create: {
           userId,
           productId: item.productId || item.id,
-          name: item.name,
-          category: item.category,
-          subCategory: item.subCategory ?? null,
-          imageUrl: item.imageUrl,
           weight: item.weight,
-          basePricePerKg: item.basePricePerKg,
           totalPrice: item.totalPrice,
-          inStock: item.inStock ?? true,
-          rating: item.rating ?? null,
-          discount: item.discount ?? null,
-          calories: item.calories ?? null,
-          fat: item.fat ?? null,
-          sugar: item.sugar ?? null,
-          carbohydrates: item.carbohydrates ?? null,
-          protein: item.protein ?? null,
-          price: item.price ?? null,
-          description: item.description ?? null,
-          availableWeights: item.availableWeights ?? [],
         },
       });
 
       console.log("✅ Cart item synced:", createdCart);
     }
 
-    console.log("✅ Local cart synced successfully to Supabase.");
+    console.log("✅ Local cart synced successfully.");
   } catch (error) {
     console.error("❌ Error syncing cart:", error);
   }
 }
 
 
-export async function getCartItemsFromSupabase(userId: number)  {
-try {
-  if (!userId) throw new Error("Missing User Id")
-  const cart = await prisma.cart.findMany({
-    where: {userId},
-    orderBy: {createdAt: 'desc'},
-  })
-  return cart
-} catch (error) {
-  console.error("❌ Error getting cart:", error);
+export async function getCartItemsFromSupabase(userId: number) {
+  try {
+    if (!userId) throw new Error("Missing User Id");
+    const cart = await prisma.cart.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+    return cart;
+  } catch (error) {
+    console.error("❌ Error getting cart:", error);
+  }
 }
-}
-
 
 export async function removeCartItem(
   userId: number,
@@ -108,6 +82,3 @@ export async function removeCartItem(
     throw error;
   }
 }
-
-
-

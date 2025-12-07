@@ -11,6 +11,7 @@ import { fetchProducts } from '../store/productsSlice';
 import { fetchCartProducts } from '../store/cartProductsSlice';
 import { getCartItemsFromSupabase } from './actions/cart';
 
+
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: session, status } = useSession();
@@ -20,9 +21,11 @@ const Page = () => {
   }, [dispatch, session?.user?.id]);
 
 
+
   useEffect(() => {
     if (!localStorage.getItem("sessionId")) {
-      localStorage.setItem("sessionId", crypto.randomUUID());
+      const id = Math.random().toString(36).substring(2, 12);
+      localStorage.setItem("sessionId", id);
     }
   }, []);
 
