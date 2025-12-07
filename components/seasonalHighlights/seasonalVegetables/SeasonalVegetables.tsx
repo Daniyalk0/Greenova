@@ -28,6 +28,10 @@ const SeasonalVegetables = () => {
   const error = useSelector((state: RootState) => state.products.error)
   const loading = useSelector((state: RootState) => state.products.loading)
 
+    const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
+  const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
+  const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
+
   const seasonalProducts = products.filter((product: any) =>
     seasonalNames.includes(product.name)
   );
@@ -68,9 +72,10 @@ const SeasonalVegetables = () => {
           if (!p) return null;
           console.log("ProductCard received:", p.name);
           return (
-            <ProductCard
+             <ProductCard
               key={p.id || p.name}
               product={p}
+              wishlist={wishlistItems && wishlistItems}
               cart={cartProducts && cartProducts}
               options={
                 p.availableWeights?.map((w: number) => ({

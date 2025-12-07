@@ -1,30 +1,6 @@
-export type CartItem = {
-  name: string;
-  imageUrl: string;
-  basePricePerKg: number;
-  weight: number; // selected weight in kg
-  totalPrice: number;
-  category?: string;
-  subCategory?: string;
-  slug?: string;
-  inStock?: boolean;
-  rating?: number;
-  discount?: number;
-  calories?: number;
-  fat?: number;
-  sugar?: number;
-  carbohydrates?: number;
-  protein?: number;
-  availableWeights?: number[];
-  price?: number;
-  description?: string;
-  sessionId: string | null;
-  productId: number;
-  id?:number;
-};
 
 export const addToCart = (product: any, selectedWeight: number) => {
-  const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart:any[] = JSON.parse(localStorage.getItem("cart") || "[]");
   const sessionId = localStorage.getItem("sessionId");
 
   const existingIndex = cart?.findIndex(
@@ -84,7 +60,7 @@ export const removeFromCart = (id: number, weight?: number) => {
 };
 
 export const updateCartWeight = (productId: number, newWeight: number) => {
-  const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart: any[] = JSON.parse(localStorage.getItem("cart") || "[]");
   const item = cart.find((i) => i.id === productId);
   if (item) {
     item.weight = newWeight;
@@ -97,6 +73,6 @@ export const clearCart = () => {
   localStorage.removeItem("cart");
 };
 
-export const calculateCartTotal = (cart: CartItem[]): number => {
+export const calculateCartTotal = (cart: any[]): number => {
   return cart.reduce((sum, item) => sum + item.totalPrice, 0);
 };

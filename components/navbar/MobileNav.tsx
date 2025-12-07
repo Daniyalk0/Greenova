@@ -6,16 +6,23 @@ import NavLinksMobile from './NavLinksMobile';
 import NavCart from './NavCart';
 import UserMenu from './UserMenu';
 import SearchWithPopup from './SearchWithPopup';
+import NavHeart from './NavHeart';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type UserMenuProps = {
     data: any; // refine later to actual User type
     itemCount: number | null;
+    likedItemCount: number | null;
+    setDrawerOpen: (open: boolean) => void;
 };
 
 
-const MobileNav = ({ itemCount, data }:
+const MobileNav = ({ itemCount, likedItemCount, data, setDrawerOpen }:
     UserMenuProps) => {
     const [isOpen, setIsOpen] = useState(true)
+    const { data: session } = useSession()
+    const router = useRouter();
     return (
 
 
@@ -45,9 +52,26 @@ const MobileNav = ({ itemCount, data }:
                     {/* Right: Search + Cart*/}
                     <div className="flex items-center justify-end gap-5 max-w-fit">
                         <SearchWithPopup />
+                        <div
+                            onClick={() => {
+                                if (!session?.user) {
+                                    router.push('/login');
+                                    return; // 🔥 stop execution so drawer doesn't open
+                                } else {
 
 
-                        <NavCart itemCount={itemCount} />
+                                    setDrawerOpen(true);
+                                    console.log('clicked!!');
+                                }
+                            }}
+                        >
+                            <NavHeart LikedItemCount={likedItemCount} />
+                        </div>
+
+
+                        <Link href={'/cart'}>
+                            <NavCart itemCount={itemCount} />
+                        </Link>
 
                         {/* Auth */}
                         <UserMenu user={data?.user} />

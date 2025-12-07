@@ -1,17 +1,27 @@
-import { CartItem } from "@/lib/cartUtils";
+
 import React from "react";
 
-const OrderSummary = ({ address, products }: { address?: string; products: CartItem[] }) => {
+const OrderSummary = ({ address, products }: { address?: string; products: any[] }) => {
 
   // Calculate subtotal
-  const subtotal = products.reduce((acc, product) => {
-    const weight = product.weight; // default weight
-    return acc + product.basePricePerKg * weight;
-  }, 0);
+const subtotal = Math.max(
+  0,
+  products.reduce((sum, item) => {
+    const weight = item?.weight ?? 0;
+    const price = item?.Product?.basePricePerKg ?? 0;
+    return sum + price * weight;
+  }, 0)
+);
 
-  const deliveryFee = 30; // Example delivery fee
-  const discount = 50; // Example discount
-  const total = subtotal + deliveryFee - discount;
+const hasProducts = products && products.length > 0;
+
+const deliveryFee = hasProducts ? 30 : 0;
+const discount = hasProducts ? 50 : 0;
+
+
+const total = Math.max(0, subtotal + deliveryFee - discount);
+
+
 
   console.log('products in orderSummary', products);
 
@@ -41,13 +51,13 @@ const OrderSummary = ({ address, products }: { address?: string; products: CartI
               className="flex justify-between items-center border-b pb-2"
             >
               <div className="flex flex-col">
-                <span className="font-semibold font-dmsans_semibold">{product.name}</span>
+                <span className="font-semibold font-dmsans_semibold">{product.Product.name}</span>
                 <span className="text-xs text-gray-500 font-dmsans_light">
                   {product.weight} kg
                 </span>
               </div>
               <span className="font-dmsans_semibold ">
-                ₹{product.basePricePerKg * product.weight}
+                ₹{product.Product.basePricePerKg * product.weight}
               </span>
             </div>
           ))}

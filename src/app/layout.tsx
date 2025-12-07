@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import { store } from "../store/store";
 import Footer from "@/components/footer/Footer";
 import CartSyncManager from "@/components/CartSyncManager";
+import WishlistSyncManager from "@/components/WishlistSyncManager";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -104,6 +105,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Navbar />
           <CleanFacebookHash />
           <CartSyncManager />
+          <WishlistSyncManager/>
           <main className="min-h-screen">
             {children}
           </main>

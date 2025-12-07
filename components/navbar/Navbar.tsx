@@ -5,12 +5,21 @@ import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
+import LikedDrawer from "../likedProducts/LikedPopup";
 
 const Navbar = () => {
   const [itemCount, setItemCount] = useState<number | null>(10);
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
+  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
   const { data } = useSession();
   const [isMobileView, setIsMobileView] = useState(false);
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
+    
+    
+    useEffect(() => {
+      console.log('isDrawerOpen', isDrawerOpen);
+    }, [isDrawerOpen])
+    
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,11 +36,19 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return isMobileView ? (
-    <MobileNav itemCount={itemCount} data={data} />
-  ) : (
-    <DesktopNav itemCount={cartProducts.length && cartProducts.length } data={data} />
-  );
+return (
+  <>
+    {isMobileView ? (
+      <MobileNav itemCount={cartProducts.length} likedItemCount={wishlistItems.length} data={data}  setDrawerOpen={setDrawerOpen}/>
+    ) : (
+      <DesktopNav likedItemCount={wishlistItems.length}  itemCount={cartProducts.length} data={data} setDrawerOpen={setDrawerOpen} />
+    )}
+
+    {/* Always render LikedDrawer */}
+    <LikedDrawer isOpen={isDrawerOpen}  onClose={() => setDrawerOpen(false)} />
+  </>
+);
+
 };
 
 export default Navbar;

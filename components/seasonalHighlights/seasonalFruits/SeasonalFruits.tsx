@@ -23,6 +23,11 @@ const SeasonalFruits = () => {
   const cartError = useSelector((state: RootState) => state.cartProducts.error);
   const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
 
+  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
+const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
+const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
+
+
 
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)
@@ -74,6 +79,7 @@ const SeasonalFruits = () => {
             <ProductCard
               key={p.id || p.name}
               product={p}
+              wishlist={wishlistItems && wishlistItems}
               cart={cartProducts && cartProducts}
               options={
                 p.availableWeights?.map((w: number) => ({

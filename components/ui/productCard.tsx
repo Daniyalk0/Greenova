@@ -5,11 +5,16 @@ import { Heart, ShoppingCart } from "lucide-react"
 import QuantitySelect from "./QuantitySelect"
 import { addToCart, getCart } from "@/lib/cartUtils"
 import { useSession } from "next-auth/react"
-import { getCartItemsFromSupabase, syncLocalCartToSupabase } from "@/src/app/actions/cart"
+import { getCartItemsFromSupabase, removeCartItem, syncLocalCartToSupabase } from "@/src/app/actions/cart"
 import { useDispatch } from "react-redux"
 import { AppDispatch } from "@/src/store/store"
 import { fetchCartProducts, setLocalCart } from "@/src/store/cartProductsSlice"
-import { CartItem } from "@/lib/cartUtils"
+import { addToWishlist, removeWishlistItem } from "@/src/app/actions/like"
+import { fetchWishlistProducts, setLocalWishlist } from "@/src/store/wishListSlice"
+import { toggleWishlistUtil } from "@/lib/wishlistUtils"
+import { addToCartUtil } from "@/lib/addToCartUtil"
+import Link from "next/link"
+
 
 
 
@@ -43,8 +48,9 @@ type Option = {
 type ProductCardProps = {
   options?: Option[]   // 👈 fix here
   // product: Product
-  cart: CartItem[]
-  product: CartItem
+  cart: any[]
+  product: any
+  wishlist: any[]
 }
 
 type SelectedWeightPrice = {
@@ -59,10 +65,13 @@ const ProductCard = ({
   product,
   // img = "/apple.png"
   cart,
+  wishlist
 }: ProductCardProps) => {
 
   const [localProducts, setLocalProducts] = useState(cart || []);
-    const { data: session } = useSession()
+  // const [wishList, setwishList] = useState(wishlist || [])
+  const { data: session } = useSession()
+
 
   useEffect(() => {
     if (Array.isArray(cart)) {
@@ -71,8 +80,8 @@ const ProductCard = ({
     }
   }, [cart, session]);
 
-  console.log('carttttt', cart);
-  
+
+
 
 
   // const { data: session } = useSession()
@@ -83,61 +92,138 @@ const ProductCard = ({
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleAddToCart = async () => {
-    const totalPrice = (product.basePricePerKg || 0) * (selectedWeightPrice.weight || 0);
+  // const handleAddToCart = async () => {
+  //   const totalPrice = (product.basePricePerKg || 0) * (selectedWeightPrice.weight || 0);
 
-    const productWithWeight = {
-      ...product,
-      weight: selectedWeightPrice.weight,
-      totalPrice,
-    };
+  //   const productWithWeight = {
+  //     ...product,
+  //     weight: selectedWeightPrice.weight,
+  //     totalPrice,
+  //   };
+
+  //   const existingItem = Array.isArray(localProducts)
+  //     ? localProducts.find(
+  //       (item) =>
+  //         item.productId === product.id &&
+  //         item.weight === selectedWeightPrice.weight
+  //     )
+  //     : null;
+
+  //   if (existingItem) {
+  //     alert(
+  //       `This variant (${selectedWeightPrice.weight} kg) of ${product.name} is already in your cart.`
+  //     );
+  //     return;
+  //   }
+
+  //   const previous = [...cart];
+
+  //   // -------------- 1️⃣ OPTIMISTIC UPDATE --------------
+  //   const updatedOptimistic = [...cart, productWithWeight];
+  //   dispatch(setLocalCart(updatedOptimistic)); // instant visual update
+  //   alert(`${selectedWeightPrice.weight} kg of ${product.name} added to your online cart!`);
+
+  //   if (session?.user?.id) {
+  //     // dispatch(setLocalCart())
+  //     try {
+  //       await syncLocalCartToSupabase(Number(session.user.id), [productWithWeight]);
+
+  //       // const updatedCart = await getCartItemsFromSupabase(Number(session?.user?.id))
+  //       setTimeout(() => {
+  //         dispatch(fetchCartProducts(Number(session.user.id))); // true sync
+  //       }, 150);
+  //     } catch (error) {
+  //       console.error("Failed syncing:", error);
+
+  //       // rollback if failed
+  //       dispatch(setLocalCart(previous));
+  //       alert("Failed to add item. Please try again.");
+  //     }
+  //   } else {
+  //     addToCart(productWithWeight, selectedWeightPrice.weight);
+  //     dispatch(setLocalCart(getCart())); // instant state
+  //     alert(`${selectedWeightPrice.weight} kg of ${product.name} added to local cart!`);
+  //   }
+  // };
 
 
-    const existingItem = Array.isArray(localProducts)
-      ? localProducts.find(
-        (item) =>
-          item.productId === product.id &&
-          item.weight === selectedWeightPrice.weight
-      )
-      : null;
 
-    if (existingItem) {
-      alert(
-        `This variant (${selectedWeightPrice.weight} kg) of ${product.name} is already in your cart.`
-      );
-      return;
-    }
 
-      const previous = [...cart];
 
-  // -------------- 1️⃣ OPTIMISTIC UPDATE --------------
-  const updatedOptimistic = [...cart, productWithWeight];
-  dispatch(setLocalCart(updatedOptimistic)); // instant visual update
-   alert(`${selectedWeightPrice.weight} kg of ${product.name} added to your online cart!`);
+  // const isInWishlist = wishlist?.some(item => item.productId === product.id);
 
-    if (session?.user?.id) {
-      // dispatch(setLocalCart())
-      try {
-        await syncLocalCartToSupabase(Number(session.user.id), [productWithWeight]);
-       
-        // const updatedCart = await getCartItemsFromSupabase(Number(session?.user?.id))
-       setTimeout(() => {
-        dispatch(fetchCartProducts(Number(session.user.id))); // true sync
-      }, 150);
-       } catch (error) {
-      console.error("Failed syncing:", error);
+  // const handleToggleWishlist = async () => {
+  //   if (!session?.user?.id) {
+  //     alert("❌ You must be logged in to modify the wishlist.");
+  //     return;
+  //   }
 
-      // rollback if failed
-      dispatch(setLocalCart(previous));
-      alert("Failed to add item. Please try again.");
-    }
-    } else {
-      addToCart(productWithWeight, selectedWeightPrice.weight);
-    dispatch(setLocalCart(getCart())); // instant state
-      alert(`${selectedWeightPrice.weight} kg of ${product.name} added to local cart!`);
-    }
-  };
+  //   const userId = Number(session.user.id);
 
+  //   const previousWishlist = [...wishlist];
+
+  //   if (isInWishlist) {
+  //     // -------------- REMOVE ITEM --------------
+  //     const updatedOptimistic = wishlist.filter(item => item.productId !== product.id);
+  //     dispatch(setLocalWishlist(updatedOptimistic)); // instant visual update
+  //     alert(`${product.name} removed from your wishlist.`);
+
+  //     try {
+  //       await removeWishlistItem(product?.id); // server action
+  //       setTimeout(() => dispatch(fetchWishlistProducts(userId)), 150);
+  //     } catch (error) {
+  //       console.error("Failed removing from wishlist:", error);
+  //       dispatch(setLocalWishlist(previousWishlist)); // rollback
+  //       alert("Failed to remove item. Please try again.");
+  //     }
+  //   } else {
+  //     // -------------- ADD ITEM --------------
+  //     const updatedOptimistic = [...wishlist, { productId: product.id, ...product }];
+  //     dispatch(setLocalWishlist(updatedOptimistic)); // instant visual update
+  //     alert(`${product.name} added to your wishlist!`);
+
+  //     try {
+  //       await addToWishlist(userId, product.id); // server action
+  //       setTimeout(() => dispatch(fetchWishlistProducts(userId)), 150);
+  //     } catch (error) {
+  //       console.error("Failed adding to wishlist:", error);
+  //       dispatch(setLocalWishlist(previousWishlist)); // rollback
+  //       alert("Failed to add item. Please try again.");
+  //     }
+  //   }
+  // };
+
+  const isInCart = cart?.some(item => item.productId === product.id);
+
+
+  const handleAddToCart = () =>
+    addToCartUtil({
+      product,
+      selectedWeightPrice,
+      cart,
+      localProducts,
+      session,
+      dispatch,
+      setLocalCart,
+      syncLocalCartToSupabase,
+      fetchCartProducts,
+      addToCart,
+      getCart,
+    });
+
+  const isInWishlist = wishlist?.some(item => item.productId === product.id);
+
+  const handleToggleWishlist = () =>
+    toggleWishlistUtil({
+      product,
+      wishlist,
+      session,
+      dispatch,
+      setLocalWishlist,
+      fetchWishlistProducts,
+      addToWishlist,
+      removeWishlistItem,
+    });
 
   return (
     <div className="w-full bg-white rounded-2xl overflow-visible 
@@ -176,15 +262,26 @@ const ProductCard = ({
       {/* ✅ Actions */}
       <div className="flex items-center gap-2 mt-3">
         {/* Save Icon */}
-        <button className="flex-1 max-w-[20%] flex justify-center items-center p-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-          <Heart className="w-5 h-5 text-gray-600" />
+        <button
+          className={`flex-1 max-w-[20%] flex justify-center items-center p-2 border rounded-lg hover:bg-gray-100 ${isInWishlist ? "border-red-500" : "border-gray-300"
+            }`}
+          onClick={handleToggleWishlist}
+        >
+          <Heart
+            className={`w-5 h-5 text-gray-600 ${isInWishlist ? "fill-red-500 text-red-500" : ""}`}
+          />
         </button>
 
         {/* Add to Cart Button */}
-        <button className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onClick={handleAddToCart}>
-          <ShoppingCart className="w-5 h-5" />
-          <span className="text-[0.7rem] font-dmsans_italic_light">Add to Cart</span>
-        </button>
+        {isInCart ? (<Link href={'/cart'} className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" >
+         <ShoppingCart className="w-5 h-5" />
+          <span className="text-[0.7rem] font-dmsans_italic_light">Go to Cart</span>
+        </Link>) : (
+          <button className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onClick={handleAddToCart}>
+            <ShoppingCart className="w-5 h-5" />
+            <span className="text-[0.7rem] font-dmsans_italic_light">Add to Cart</span>
+          </button>
+        )}
       </div>
     </div>
   )

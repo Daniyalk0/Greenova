@@ -8,11 +8,11 @@ const Footer = () => {
         <div className="w-full px-4 mt-36 sm:mt-40 relative flex justify-center pt-20 sm:pt-48 md:pt-32 lg:mt-48
 before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-24
 before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent 
- before:pointer-events-none bg-[#F0F0F0] ">
+ before:pointer-events-none bg-[#ffffff] ">
             {/* your content here */}
 
             <div
-                className="absolute overflow-hidden  w-full sm:w-[40%] h-[50%] left-0 sm:left-[30%] -bottom-12 sm:bottom-0 bg-cover bg-center opacity-80 sm:opacity-90"
+                className="absolute overflow-hidden  w-full sm:w-[40%] h-[35%] left-0 sm:left-[30%] -bottom-0 sm:bottom-0 bg-cover bg-center opacity-80 sm:opacity-90"
                 style={{ backgroundImage: "url('/branchBg.jpg')" }}
             ></div>
 
@@ -21,7 +21,7 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
             <FooterCard />
             <div className="footer w-full relative  text-gray-300 px-6 md:px-20 pt-10 pb-5 flex flex-col items-center justify-end">
                 {/* Main Footer Section */}
-                <div className="flex flex-col sm:flex-row justify-between gap-13 border-b border-gray-700 pb-8 w-full  ">
+                <div className="flex flex-col sm:flex-row justify-between gap-12 border-b border-gray-700 pb-8 w-full  ">
 
                     {/* Logo & Description */}
                     <div className="w-full sm:w-[50%]">
@@ -39,12 +39,12 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                     {/* Links Section */}
                     <div className="flex flex-row sm:flex-row md:gap-16 gap-8 text-[#0f3c27]">
                         <div>
-                            <h3 className="text-lg font-semibold text-white mb-3 font-dmsans_light">Useful Links</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3 font-dmsans_light hidden md:block">Useful Links</h3>
                             <ul className="space-y-2 text-sm flex flex-col gap-2 font-dmsans_light sm:font-monasans_semibold">
                                 <li>
                                     <Link
                                         href="/"
-                                       className=" transition cursor-pointer duration-300 hover:underline"
+                                        className=" transition cursor-pointer duration-300 hover:underline"
                                     >
                                         Home
                                     </Link>
@@ -52,7 +52,7 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                                 <li>
                                     <Link
                                         href="/about"
-                                       className=" transition cursor-pointer duration-300 hover:underline"
+                                        className=" transition cursor-pointer duration-300 hover:underline"
                                     >
                                         About Us
                                     </Link>
@@ -60,7 +60,7 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                                 <li>
                                     <Link
                                         href="/contact"
-                                       className=" transition cursor-pointer duration-300 hover:underline"
+                                        className=" transition cursor-pointer duration-300 hover:underline"
                                     >
                                         Contact
                                     </Link>
@@ -68,8 +68,8 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                                 <li>
                                     <Link
                                         href="/blog"
-                                        
-                                      className=" transition cursor-pointer duration-300 hover:underline"
+
+                                        className=" transition cursor-pointer duration-300 hover:underline"
                                     >
                                         Blog
                                     </Link>
@@ -78,7 +78,7 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-white mb-3 font-dmsans_light">Socials</h3>
+                            <h3 className="text-lg font-semibold text-white mb-3 font-dmsans_light hidden md:block">Socials</h3>
                             <ul className="space-y-2 text-sm flex flex-col gap-2 font-dmsans_light sm:font-monasans_semibold">
                                 <li>
                                     <a href="https://twitter.com/daniyalkhandev" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">X (Twitter)</a>

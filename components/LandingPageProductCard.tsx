@@ -5,6 +5,7 @@ import RotatingFruit from './ui/RotateFruits';
 import { motion, AnimatePresence } from "framer-motion";
 import { useResponsiveSize } from '@/lib/useResponsiveSize';
 import { Check } from 'lucide-react';
+import Image from 'next/image';
 
 const fruitData = [
     {
@@ -136,11 +137,13 @@ const LandingPageProductCard = () => {
             style={{ backgroundColor: fruit.color }}
         >
             {/* Background overlay (SVG on top of bg color) */}
-            <img
-                src="/blob-scene-haikei.svg"
-                alt="Blog background"
-                className="absolute inset-0 w-full h-full object-cover rounded-2xl mix-blend-overlay opacity-70"
-            />
+           <Image
+  src="/blob-scene-haikei.svg"
+  alt="Blog background"
+  fill
+  className="absolute inset-0 w-full h-full object-cover rounded-2xl mix-blend-overlay opacity-70"
+  unoptimized
+/>
 
 
             <div className="flex flex-col justify-center z-10 h-full w-[50%]   sm:w-[65%] md:w-[50%] gap-3 md:gap-5 ">

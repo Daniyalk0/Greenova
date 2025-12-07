@@ -7,16 +7,25 @@ import NavCart from './NavCart'
 import UserMenu from './UserMenu'
 import SearchWithPopup from './SearchWithPopup'
 import NavDesktopLinks from './NavDesktopLinks'
+import { Heart } from 'lucide-react'
+import NavHeart from './NavHeart'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 type UserMenuProps = {
     data: any; // refine later to actual User type
     itemCount: number | null;
+    likedItemCount: number | null;
+    setDrawerOpen: (open: boolean) => void;
 };
 
 
-const DesktopNav = ({ itemCount, data }:
+
+const DesktopNav = ({ itemCount, likedItemCount, data, setDrawerOpen }:
     UserMenuProps) => {
     const [isShopOpen, setIsShopOpen] = useState(false)
+    const { data: session } = useSession()
+    const router = useRouter();
     return (
 
         <nav className="z-[2000] sticky top-0 bg-white font-playfair py-2 flex items-center w-full">
@@ -35,15 +44,33 @@ const DesktopNav = ({ itemCount, data }:
                 </Link>
 
                 {/* Center: Links */}
-           <NavDesktopLinks isShopOpen={isShopOpen}  setIsShopOpen={setIsShopOpen}/>
+                <NavDesktopLinks isShopOpen={isShopOpen} setIsShopOpen={setIsShopOpen} />
                 {/* Right: Search + Cart*/}
                 <div className="flex items-center justify-end gap-8 max-w-fit">
                     <SearchWithPopup />
 
                     <div className="flex items-center gap-6">
+
+                        <div
+                            onClick={() => {
+                                if (!session?.user) {
+                                    router.push('/login');
+                                    return; // 🔥 stop execution so drawer doesn't open
+                                } else {
+
+
+                                    setDrawerOpen(true);
+                                    console.log('clicked!!');
+                                }
+                            }}
+                        >
+                            <NavHeart LikedItemCount={likedItemCount} />
+                        </div>
+
+
                         {/* Cart */}
                         <Link href={'/cart'}>
-                        <NavCart itemCount={itemCount} />
+                            <NavCart itemCount={itemCount} />
                         </Link>
 
                         {/* Auth */}
