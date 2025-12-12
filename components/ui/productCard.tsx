@@ -263,7 +263,7 @@ const ProductCard = ({
       <div className="flex items-center gap-2 mt-3">
         {/* Save Icon */}
         <button
-          className={`flex-1 max-w-[20%] flex justify-center items-center p-2 border rounded-lg hover:bg-gray-100 ${isInWishlist ? "border-red-500" : "border-gray-300"
+          className={`flex-1 w-[50%] sm:max-w-[20%] flex justify-center items-center p-2 border rounded-lg hover:bg-gray-100 ${isInWishlist ? "border-red-500" : "border-gray-300"
             }`}
           onClick={handleToggleWishlist}
         >
@@ -273,15 +273,37 @@ const ProductCard = ({
         </button>
 
         {/* Add to Cart Button */}
-        {isInCart ? (<Link href={'/cart'} className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" >
-         <ShoppingCart className="w-5 h-5" />
-          <span className="text-[0.7rem] font-dmsans_italic_light">Go to Cart</span>
-        </Link>) : (
-          <button className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onClick={handleAddToCart}>
+        {isInCart ? (
+         <Link
+  href="/cart"
+  className="
+    flex-[4] w-full flex items-center justify-center gap-2
+    py-2 rounded-lg transition-colors
+    bg-blue-600 text-white hover:bg-blue-700
+    active:scale-[0.97]
+  "
+>
+  <ShoppingCart className="w-5 h-5" />
+
+  {/* Show text only above 640px */}
+  <span className="hidden sm:inline text-[0.7rem] font-dmsans_italic_light">
+    Go to Cart
+  </span>
+</Link>
+
+        ) : (
+          <button
+            className="flex-[4] w-full flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            onClick={handleAddToCart}
+          >
             <ShoppingCart className="w-5 h-5" />
-            <span className="text-[0.7rem] font-dmsans_italic_light">Add to Cart</span>
+            {/* Text hidden on mobile, visible from 640px+ */}
+            <span className="hidden sm:inline text-[0.7rem] font-dmsans_italic_light">
+              Add to Cart
+            </span>
           </button>
         )}
+
       </div>
     </div>
   )

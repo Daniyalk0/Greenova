@@ -18,22 +18,22 @@ const NavLinksMobile = () => {
     // if (!isOpen) return null;
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-     const modalRef = useRef<HTMLDivElement | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
     //   const [showModal, setShowModal] = useState(false);
-    
-    
-      // Close when clicking outside the modal
-      useEffect(() => {
+
+
+    // Close when clicking outside the modal
+    useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-          if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-            setIsDropdownOpen(false);
-          }
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, [setIsDropdownOpen]);
+    }, [setIsDropdownOpen]);
 
     return (
         <div className="relative " >
@@ -77,18 +77,18 @@ const NavLinksMobile = () => {
                             ease: "easeInOut",
                             type: "tween"
                         }}>
-         
- <X
-    onClick={() => setIsDropdownOpen(false)}
-    className="text-black cursor-pointer absolute right-5 top-5 z-10"
-  />
+
+                        <X
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="text-black cursor-pointer absolute right-5 top-5 z-10"
+                        />
 
 
 
                         <ul className="flex flex-col gap-3 text-gray-700 text-sm">
                             <li   >
-                                <Link href="/"  
-                                onClick={() => setIsDropdownOpen(false)}className="hover:text-green-600">
+                                <Link href="/"
+                                    onClick={() => setIsDropdownOpen(false)} className="hover:text-green-600">
                                     Home
                                 </Link>
                             </li>
@@ -111,22 +111,22 @@ const NavLinksMobile = () => {
                                         <p className="font-semibold text-green-700">Fruits</p>
                                         <ul className="mt-1 space-y-1 text-gray-700 ">
                                             <li>
-                                                <NavLink href="/fruits/fresh" className="cursor-pointer">
+                                                <NavLink href="/categories/freshFruits" className="cursor-pointer">
                                                     Fresh Fruits
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/fruits/exotic" className="cursor-pointer">
+                                                <NavLink href="/categories/exoticFruits" className="cursor-pointer">
                                                     Exotic Fruits
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/fruits/seasonal" className="cursor-pointer">
+                                                <NavLink href="/categories/seasonalFruits" className="cursor-pointer">
                                                     Seasonal Fruits
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/fruits/dry" className="cursor-pointer">
+                                                <NavLink href="/categories/dryFruits" className="cursor-pointer">
                                                     Dry Fruits
                                                 </NavLink>
                                             </li>
@@ -135,22 +135,22 @@ const NavLinksMobile = () => {
                                         <p className="font-semibold text-green-700 mt-3">Vegetables</p>
                                         <ul className="mt-1 text-gray-700 space-y-1">
                                             <li>
-                                                <NavLink href="/vegetables/leafy" className="cursor-pointer">
+                                                <NavLink href="/categories/leafyGreens" className="cursor-pointer">
                                                     Leafy Greens
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/vegetables/root" className="cursor-pointer">
+                                                <NavLink href="/categories/rootVegetables" className="cursor-pointer">
                                                     Root Vegetables
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/vegetables/organic" className="cursor-pointer">
+                                                <NavLink href="/categories/organicVegetables" className="cursor-pointer">
                                                     Organic Vegetables
                                                 </NavLink>
                                             </li>
                                             <li>
-                                                <NavLink href="/vegetables/seasonal" className="cursor-pointer">
+                                                <NavLink href="/categories/seasonalVegetables" className="cursor-pointer">
                                                     Seasonal Vegetables
                                                 </NavLink>
                                             </li>
@@ -158,7 +158,7 @@ const NavLinksMobile = () => {
                                         <p className="font-semibold text-green-700 mt-3">More</p>
                                         <ul className="ml-2 space-y-1">
                                             <li>
-                                                <NavLink href="/herbs" className="cursor-pointer">
+                                                <NavLink href="categories/herbs" className="cursor-pointer">
                                                     Herbs
                                                 </NavLink>
                                             </li>
