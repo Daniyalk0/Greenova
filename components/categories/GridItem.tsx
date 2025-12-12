@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import React, { useState } from 'react'
 import { motion, useAnimation } from "framer-motion";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const GridItem = ({ className, cat }: any) => {
   const controlsMain = useAnimation();
@@ -20,12 +21,15 @@ const GridItem = ({ className, cat }: any) => {
     controlsMain.start({ x: 0, transition: { type: "spring", stiffness: 300, damping: 20 } });
     controlsSecond.start({ x: -6, y: 11, opacity: 0, transition: { type: "spring", stiffness: 400, damping: 20 } });
   };
+
+  const router = useRouter();
   return (
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={() => router.push(`/categories/${cat.route}`)}
       key={cat.id}
-      className={`flex flex-col overflow-hidden gap-[0px]  rounded-3xl ${cat.height}`}
+      className={`flex flex-col cursor-pointer overflow-hidden gap-[0px]  rounded-3xl ${cat.height}`}
     >
       {/* Image Section (60% height) */}
       <div className="relative h-full w-full rounded-3xl  

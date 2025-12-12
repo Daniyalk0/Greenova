@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown, Check } from "lucide-react"
 
 // const options = [
@@ -30,6 +30,15 @@ const [selected, setSelected] = useState(defaultOption)
     onSelect(opt)
     setIsOpen(false) // close dropdown
   }
+
+  useEffect(() => {
+  if (isOpen) {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
+  }
+}, [isOpen]);
+
   
 
   return (
@@ -92,38 +101,48 @@ const [selected, setSelected] = useState(defaultOption)
       </div>
 
       {/* ✅ Mobile Bottom Sheet Dropdown */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end sm:hidden">
-          {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsOpen(false)}
-          />
+     {isOpen && (
+  <div className="fixed inset-0 z-50 sm:hidden flex flex-col">
+    {/* Overlay */}
+    <div
+      className="absolute inset-0 bg-black/50"
+      onClick={() => setIsOpen(false)}
+    />
 
-          {/* Bottom Sheet */}
-          <div className="relative bg-white rounded-t-2xl shadow-lg p-4 h-[30vh] w-full animate-slideUp">
-            <h3 className="text-sm font-medium mb-3 text-gray-700">
-              Choose Quantity
-            </h3>
-            <div className="flex flex-col gap-2">
-              {options.map((opt, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    handleSelect(opt)
-                  }}
-                  className={`px-3 py-2 text-sm rounded-lg border text-left ${selected && selected.weight === opt.weight
-                    ? "border-green-600 bg-green-50 text-green-700"
-                    : "border-gray-200 hover:bg-gray-100"
-                    }`}
-                >
-                 <span>{opt.weight} kg — ₹{opt.price.toFixed(0)}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+    {/* Bottom Sheet */}
+    <div className="
+      mt-auto 
+      bg-white 
+      rounded-t-2xl 
+      shadow-lg 
+      p-4 
+      w-full 
+      h-[35vh] 
+      animate-slideUp 
+      relative
+    ">
+      <h3 className="text-sm font-medium mb-3 text-gray-700">Choose Quantity</h3>
+
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-[28vh]">
+        {options.map((opt, index) => (
+          <button
+            key={index}
+            onClick={() => handleSelect(opt)}
+            className={`px-3 py-2 text-sm rounded-lg border text-left 
+              ${selected?.weight === opt.weight
+                ? "border-green-600 bg-green-50 text-green-700"
+                : "border-gray-200 hover:bg-gray-100"
+              }
+            `}
+          >
+            <span>{opt.weight} kg — ₹{opt.price.toFixed(0)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   )
 }

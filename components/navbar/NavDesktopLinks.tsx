@@ -49,22 +49,22 @@ const NavDesktopLinks = ({ isShopOpen, setIsShopOpen }: NavLinksProps) => {
                                 <p className="font-semibold text-green-700">Fruits</p>
                                 <ul className="mt-1 sm:mt-2 sm:space-y-1 text-gray-700 lg:mt-3 lg:space-y-2">
                                     <li>
-                                        <NavLink href="/fruits/fresh" className="cursor-pointer">
+                                        <NavLink href="/categories/freshFruits" className="cursor-pointer">
                                             Fresh Fruits
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/fruits/exotic" className="cursor-pointer">
+                                        <NavLink href="/categories/exoticFruits" className="cursor-pointer">
                                             Exotic Fruits
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/fruits/seasonal" className="cursor-pointer">
+                                        <NavLink href="/categories/seasonalFruits" className="cursor-pointer">
                                             Seasonal Fruits
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/fruits/dry" className="cursor-pointer">
+                                        <NavLink href="/categories/dryFruits" className="cursor-pointer">
                                             Dry Fruits
                                         </NavLink>
                                     </li>
@@ -76,22 +76,22 @@ const NavDesktopLinks = ({ isShopOpen, setIsShopOpen }: NavLinksProps) => {
                                 <p className="font-semibold text-green-700">Vegetables</p>
                                 <ul className="mt-1 lg:mt-3 sm:mt-2 sm:space-y-1 text-gray-700 lg:space-y-2">
                                     <li>
-                                        <NavLink href="/vegetables/leafy" className="cursor-pointer">
+                                        <NavLink href="/categories/leafyGreens" className="cursor-pointer">
                                             Leafy Greens
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/vegetables/root" className="cursor-pointer">
+                                        <NavLink href="/categories/rootVegetables" className="cursor-pointer">
                                             Root Vegetables
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/vegetables/organic" className="cursor-pointer">
+                                        <NavLink href="/categories/organicVegetables" className="cursor-pointer">
                                             Organic Vegetables
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink href="/vegetables/seasonal" className="cursor-pointer">
+                                        <NavLink href="/categories/seasonalVegetables" className="cursor-pointer">
                                             Seasonal Vegetables
                                         </NavLink>
                                     </li>
@@ -103,7 +103,7 @@ const NavDesktopLinks = ({ isShopOpen, setIsShopOpen }: NavLinksProps) => {
                                 <p className="font-semibold text-green-700">More</p>
                                 <ul className="mt-1 lg:mt-3 sm:mt-2 sm:space-y-1 text-gray-700 lg:space-y-2">
                                     <li>
-                                        <NavLink href="/herbs" className="cursor-pointer">
+                                        <NavLink href="/categories/herbs" className="cursor-pointer">
                                             Herbs
                                         </NavLink>
                                     </li>
