@@ -9,7 +9,7 @@ type Props = {
 const WishlistIndicator = ({ likedItemCount, className }: Props) => {
   return (
     <AnimatePresence>
-      {likedItemCount > 0 && (
+      {likedItemCount && likedItemCount > 0 && (
         <motion.div
           initial={{ opacity: 0, x: 12, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}

@@ -11,14 +11,14 @@ import { getProductBySlug } from "@/lib/products";
 import { Star } from "lucide-react";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 export default async function ProductPage({ params }: PageProps) {
-  const product = await getProductBySlug(params.slug);
-  console.log(product);
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return <div>Product not found</div>;

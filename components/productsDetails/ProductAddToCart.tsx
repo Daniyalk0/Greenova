@@ -32,7 +32,7 @@ export default function ProductAddToCart({
     price: (product.basePricePerKg ?? 0) * w,
   })) ?? [];
 
-  const defaultOption = weightOptions.find(opt => opt.weight === 1) || weightOptions[0]
+  const defaultOption = weightOptions.find((opt: SelectedWeightPrice) => opt.weight === 1) || weightOptions[0]
 
   const [selectedWeightPrice, setSelectedWeightPrice] = useState<SelectedWeightPrice>(defaultOption);
 
