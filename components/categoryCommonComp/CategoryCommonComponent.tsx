@@ -56,7 +56,6 @@ useEffect(() => {
         item.name &&
         map[selectedSeason].includes(item.name.toLowerCase())
     );
-    console.log("matched in if", matched);
   } else {
     // Non-seasonal fallback (normal category pages)
     matched = products.filter(
@@ -82,9 +81,9 @@ useEffect(() => {
     <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-6">
 
       {/* Page Navigation Pills */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <RouteCategoryPills />
-      </div>
+      </div> */}
 
       {/* Season Selector only on seasonal pages */}
       {isSeasonalPage && (

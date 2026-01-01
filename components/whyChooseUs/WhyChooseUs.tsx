@@ -27,7 +27,7 @@ const WhyChooseUs = () => {
             </RoughNotation>
           </span>
         </h1> */}
-        <Heading text="Why Choose Us"/>
+        {/* <Heading text="Why Choose Us"/> */}
 
         <div className="relative w-full overflow-clip">
           <Timeline data={data} />

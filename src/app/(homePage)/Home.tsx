@@ -22,9 +22,10 @@ const Home = () => {
     <div className="">
 
     <Hero/>
-    <Categories/>
-    <SeasonalHighlights/>
     <Banner/>
+    <SeasonalHighlights/>
+    {/* <Categories/> */}
+    {/* <Banner/> */}
     <WhyChooseUs/>
     <Reviews/>
     {/* <Footer/> */}

@@ -6,6 +6,7 @@ import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import LikedDrawer from "../likedProducts/LikedPopup";
+import { calcOrderSummary } from "@/lib/calcOrderSummary";
 
 const Navbar = () => {
   const [itemCount, setItemCount] = useState<number | null>(10);
@@ -14,6 +15,8 @@ const Navbar = () => {
   const { data } = useSession();
   const [isMobileView, setIsMobileView] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+    const {total} = calcOrderSummary(cartProducts)
     
     
     useEffect(() => {
@@ -23,7 +26,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobileView(window.innerWidth <= 768);
+      setIsMobileView(window.innerWidth <= 640);
     };
 
     // Run once on mount
@@ -39,9 +42,9 @@ const Navbar = () => {
 return (
   <>
     {isMobileView ? (
-      <MobileNav itemCount={cartProducts.length} likedItemCount={wishlistItems.length} data={data}  setDrawerOpen={setDrawerOpen}/>
+      <MobileNav itemCount={cartProducts.length} likedItemCount={wishlistItems.length} data={data}  setDrawerOpen={setDrawerOpen} total={total}/>
     ) : (
-      <DesktopNav likedItemCount={wishlistItems.length}  itemCount={cartProducts.length} data={data} setDrawerOpen={setDrawerOpen} />
+      <DesktopNav likedItemCount={wishlistItems.length}  itemCount={cartProducts.length} data={data} setDrawerOpen={setDrawerOpen} total={total}/>
     )}
 
     {/* Always render LikedDrawer */}

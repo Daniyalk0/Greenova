@@ -1,7 +1,8 @@
+"use client";
 import { useEffect, useState } from "react";
 import { RoughNotation } from "react-rough-notation";
 
-export default function Heading({text = "heading"} : {text:string}) {
+export default function Heading({text = "heading", className = "", notationType = "highlight", color = "#a3ff61" } : {text:string, className?: string, notationType?: any, color?: string}) {
   const [mountedKey, setMountedKey] = useState(0);
 
   useEffect(() => {
@@ -12,12 +13,12 @@ export default function Heading({text = "heading"} : {text:string}) {
 
 
   return (
-    <h1 className="text-2xl sm:text-3xl text-center mb-6 lg:mb-10 font-monasans_semibold">
+    <h1 className={`text-[2.5rem] sm:text-[3rem]  text-center font-playfair ${className}`}>
       <RoughNotation
         key={mountedKey}  
-        type="highlight"
+      type={notationType}
         show={true}
-        color="#a3ff61"
+        color={color}
         animationDuration={1200}
         strokeWidth={0.6}
       >

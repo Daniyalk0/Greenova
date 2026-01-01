@@ -27,6 +27,9 @@ module.exports = {
   			dmsans_italic_light: [
   				'var(--font-dm-sans-italic-light)',
   			],
+  			monasans_bold: [
+  				'var(--font-monasans-black)',
+  			],
 
   		},
   		borderRadius: {

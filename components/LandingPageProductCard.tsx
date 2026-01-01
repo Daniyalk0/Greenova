@@ -56,7 +56,7 @@ const fruitData = [
         highlights: [
             "Packed with antioxidants",
             "Juice, salads, desserts",
-            "Season: September–February",
+            "Season: Sept – Feb",
         ],
         nutritions: {
             calories: 83.0, // Pomegranate ~83 cal per 100g
@@ -84,8 +84,8 @@ const fruitData = [
        visibleColor: "#426900", // soft pale yellow for contrast
         glassBg: `linear-gradient(135deg, #FFB30066, #FFB30033)`, // translucent golden gradient
         highlights: [
-            "Good source of fiber & antioxidants",
-            "Great roasted, boiled, or in soups",
+            "Good source of fiber",
+            "roasted, boiled, or soups",
             "Season: Summer–Autumn",
         ],
         nutritions: {
@@ -103,7 +103,7 @@ const fruitData = [
         glassBg: `linear-gradient(135deg, #2E7D3266, #2E7D3233)`, // translucent green gradient
         highlights: [
             "Rich in vitamins C & K",
-            "Great in salads, stir-fry, soups",
+            "salads, stir-fry, soups",
             "Season: Year-round",
         ],
         nutritions: {
@@ -133,7 +133,7 @@ const LandingPageProductCard = () => {
     const fruit = fruitData[index];
     return (
         <div
-            className={`w-full sm:w-[60%] md:w-[50%] lg:w-[35%] h-48 md:h-60 rounded-2xl shadow-2xl overflow-visible relative px-3 py-4 sm:px-4 md:py-4 md:px-5 flex flex-col justify-between transition-all duration-700`}
+            className={`w-full  h-48 md:h-60 rounded-2xl shadow-2xl overflow-visible relative px-3 py-4 sm:px-4 md:py-4 md:px-5 flex flex-col justify-between transition-all duration-700`}
             style={{ backgroundColor: fruit.color }}
         >
             {/* Background overlay (SVG on top of bg color) */}

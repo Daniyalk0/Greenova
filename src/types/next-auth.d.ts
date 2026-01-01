@@ -28,3 +28,6 @@ declare module "next-auth/jwt" {
     role: string
   }
 }
+
+declare module "react-inner-image-zoom/lib/styles.min.css";
+
