@@ -1,93 +1,112 @@
-"use client"
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useState } from 'react'
-import NavLinksMobile from './NavLinksMobile';
-import NavCart from './NavCart';
-import UserMenu from './UserMenu';
-import SearchWithPopup from './SearchWithPopup';
-import NavHeart from './NavHeart';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+"use client";
 
-type UserMenuProps = {
-    data: any; // refine later to actual User type
-    itemCount: number | null;
-    likedItemCount: number | null;
-    setDrawerOpen: (open: boolean) => void;
-};
+import Link from "next/link";
+import SearchWithPopup from "./SearchWithPopup";
+import { ChevronDown, UserIcon } from "lucide-react";
+import WishlistIndicator from "../ui/WishlistIndicator";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import LocationModel from "../ui/LocationModel";
+import LocationModal from "../ui/LocationModel";
+import CartTagIndicator from "../ui/CartIndicator";
+import CartBottomBadge from "../ui/CartIndicator";
+import { UserMenuProps } from "./DesktopNav";
+// import CartBottomBadge from "../ui/WishlistIndicator";
 
-
-const MobileNav = ({ itemCount, likedItemCount, data, setDrawerOpen }:
-    UserMenuProps) => {
-    const [isOpen, setIsOpen] = useState(true)
-    const { data: session } = useSession()
+const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: UserMenuProps) => {
+    const { data: session } = useSession();
     const router = useRouter();
+    const [locationOpen, setLocationOpen] = useState(false)
+    const [location, setLocation] = useState('')
+
+
+    const [showTopActions, setShowTopActions] = useState(true);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // only apply on mobile
+            if (window.innerWidth >= 640) {
+                setShowTopActions(true);
+                return;
+            }
+
+            // show only when user is near top
+            setShowTopActions(window.scrollY < 20);
+        };
+
+        handleScroll(); // initial check
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+
     return (
+        <div className="sticky top-0 z-[2000] bg-white sm:hidden border-2 ">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between px-4 py-3">
+                {/* Location */}
+                <button
+                    onClick={() => setLocationOpen(true)}
+                    className="flex flex-col items-start"
+                >
+                    <span className="text-xs text-gray-500">Delivery to</span>
+                    <div className="flex items-center gap-1">
+                        <span className="text-sm font-semibold text-gray-900">
+                            Add delivery location
+                        </span>
+                        <ChevronDown className="w-3 h-3 text-gray-600" />
+                    </div>
+                </button>
 
 
-        <nav className="z-[2000] shadow-md sticky top-0  font-playfair bg-white pt-2 flex items-center w-full">
+                {/* User */}
+                <Link href="/profile" className="flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+                        <UserIcon />
+                    </div>
+                </Link>
+            </div>
 
-            <div className="mx-auto w-full px-4 sm:px-6 lg:px-12 font-dmsans_semibold text-sm py-2">
-                <div className=' flex items-center justify-between '>
-                    <div className='flex items-center w-fit gap-2'>
-
-                        <NavLinksMobile />
-                        {/* Left: Logo */}
-                        <Link href="/" className="font-bold text-cyan-700 flex-shrink-0 pb-2">
-                            <Image
-                                src={'/logo.png'}
-                                width={100}
-                                height={100}
-                                className="w-[6rem] lg:w-[8rem] xl:w-[9rem]"
-                                alt="logo"
-                            />
-                        </Link>
+            {/* Floating Search */}
+            <div
+                className={`
+                 overflow-hidden transition-all duration-300 ease-out
+                 ${showTopActions
+                        ? "max-h-[120px] opacity-100"
+                        : "max-h-0 opacity-0"}
+  `}
+            >
+                <div className="flex items-center gap-2 px-4 pb-3">
+                    <div className="flex-1">
+                        <SearchWithPopup />
                     </div>
 
-
-                    {/* Center: Links */}
-
-
-                    {/* Right: Search + Cart*/}
-                    <div className="flex items-center justify-end gap-5 max-w-fit">
-                        <SearchWithPopup />
-                        <div
-                            onClick={() => {
-                                if (!session?.user) {
-                                    router.push('/login');
-                                    return; // 🔥 stop execution so drawer doesn't open
-                                } else {
-
-
-                                    setDrawerOpen(true);
-                                    console.log('clicked!!');
-                                }
-                            }}
-                        >
-                            <NavHeart LikedItemCount={likedItemCount} />
-                        </div>
-
-
-                        <Link href={'/cart'}>
-                            <NavCart itemCount={itemCount} />
-                        </Link>
-
-                        {/* Auth */}
-                        <UserMenu user={data?.user} />
-
+                    <div
+                        onClick={() => {
+                            if (!session?.user) {
+                                router.push("/login");
+                                return;
+                            }
+                            setDrawerOpen(true);
+                        }}
+                        className="cursor-pointer"
+                    >
+                        <WishlistIndicator likedItemCount={likedItemCount} />
                     </div>
                 </div>
-
             </div>
 
 
+            <LocationModal
+                open={locationOpen}
+                onClose={() => setLocationOpen(false)}
+                onSelect={(loc) => setLocation(loc)}
+            />
+            <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
+        </div>
+    );
+};
 
-        </nav>
-
-
-
-    )
-}
-
-export default MobileNav
+export default MobileNav;

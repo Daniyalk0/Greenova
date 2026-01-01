@@ -53,7 +53,7 @@ const Reviews = () => {
           Reviews
         </RoughNotation> </h1> */}
 
-        <Heading text='Reviews'/>
+        {/* <Heading text='Reviews'/> */}
       </div>
 
       <div className='flex items-center justify-center w-full flex-col sm:flex-row gap-3 md:gap-6 lg:gap-14'>

@@ -47,20 +47,16 @@ const UserMenu = ({ user }: UserMenuProps) => {
             alt="Profile"
             className="w-8 h-8 rounded-full"
           />
-          {isOpen ? (
-            <ChevronUp className="w-4 h-4 md:w-6 md:h-6 text-gray-700" />
-          ) : (
-            <ChevronDown className="w-4 h-4 md:w-6 md:h-6 text-gray-700" />
-          )}
+    
         </div>
       </div>
 
       {/* UserProfilePopUp */}
-      {isOpen && (
+      {/* {isOpen && (
         <div className="absolute right-0 mt-2 z-50">
           <UserProfilePopUp isProfileOpen={isOpen} pfpRef={pfpRef} setIsProfileOpen={setIsOpen} />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

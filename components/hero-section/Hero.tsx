@@ -3,35 +3,45 @@ import React, { useEffect, useState } from 'react'
 import LandingPageProductCard from '../LandingPageProductCard';
 import LandingPageBlogCard from '../LandingPageBlogCard';
 import BouncingIconsContainer from '../BouncingIconsContainer';
+import Banner from '../Banner';
+import SeasonalHighlights from '../seasonalHighlights/SeasonalHighlights';
+import Heading from '../ui/Heading';
 
 const Hero = () => {
 
     return (
         <>
+            <div className=' sm:py-10 relative flex flex-col items-center justify-start mt-0 pb-6  md:py-16 w-full px-4  sm:px-5 h-auto md:gap-6 overflow-hidden '>
 
-            <div className=' pt-20 sm:pt-20 relative flex flex-col items-center justify-center w-full px-4 pb-0 sm:px-5 min-h-screen sm:h-auto md:h-screen md:pt-0 md:gap-6 overflow-hidden '>
-                
 
-                <BouncingIconsContainer />
 
-                <div className="left flex flex-col items-center justify-center gap-5  sm:w-[90%] md:w-[70%] relative z-[50]">
-                    <h1 className='font-monasans_semibold text-[2.4rem] sm:text-[3rem]  text-center leading-tight '>
-                        Bringing the Market to Your <span className='font-playfair text-[3rem]'>Home</span>
-                    </h1>
-                    <h2 className='text-center font-dmsans_light text-xl '>Discover the taste of freshness with handpicked fruits and vegetables delivered straight from farms to your doorstep, every single day.</h2>
-                    {/* <div className="calltoaction">checkout</div> */}
-                    <div className="trust_elements w-full">
-                        <div className="first bg-red-500 "></div>
+                <BouncingIconsContainer className='hidden lg:block' />
+
+                {/* <div className="left flex flex-col items-center justify-center gap-5  sm:w-[90%] md:w-[70%] relative z-[50]">
+                    <div className='flex flex-col sm:flex-row items-center justify-center w-full gap-0 sm:gap-2'>
+
+                        <h1 className='font-monasans_semibold text-[2.1rem] sm:text-[3rem]  text-center leading-tight '>
+                            Bringing the Market to Your
+
+                        </h1>
+                        <Heading text='Home' />
+                    </div>
+
+        
+                </div> */}
+
+                <div className="right w-full flex justify-center mt-10 sm:mt-0 overflow-visible flex-row-reverse gap-2 items-center ">
+                    <div className="w-[60%] sm:w-[55%] lg:w-[45%]  xl:w-[40%]  flex-shrink-0  flex items-center justify-center">
+                        <LandingPageProductCard />
+                    </div>
+
+                    <div className="w-[37%] sm:w-[35%] lg:w-[35%] xl:w-[30%] flex items-center justify-center flex-shrink-0">
+                        <LandingPageBlogCard />
                     </div>
                 </div>
 
-                <div className="right w-full flex justify-center mt-10 sm:mt-0 overflow-visible flex-col sm:flex-row-reverse gap-4">
-                    <LandingPageProductCard />
-                    <LandingPageBlogCard />
-
-                </div>
+                {/* <SeasonalHighlights/> */}
             </div>
-
 
         </>
     )

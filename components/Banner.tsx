@@ -1,86 +1,81 @@
-"use client"
-import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+"use client";
 
-// Import required modules
-import { Autoplay, Pagination } from 'swiper/modules';
-import Image from 'next/image';
-import Heading from './ui/Heading';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Autoplay, Pagination } from "swiper/modules";
+import BannerSlide from "./BannerSlide";
+
+export const BANNERS = [
+  {
+    id: 1,
+    title: "Fresh tomatoes – 15% off",
+    subtitle: "Direct from farms",
+    badge: "Today’s Deal",
+    price: 89,
+    originalPrice: 105,
+    discountText: "15% OFF",
+    cta: "Shop now",
+    meta: "Free delivery",
+    imageUrl: "/banners/tomato.png",
+
+   colors: {
+  text: "text-red-900",
+  subText: "text-red-700",
+  badgeBg: "bg-red-200",
+  badgeText: "text-red-800",
+  ctaBg: "bg-white",
+  ctaText: "text-red-900",
+}
+
+  },
+  // {
+  //   id: 2,
+  //   title: "Seasonal fruits combo",
+  //   subtitle: "Sweet & handpicked",
+  //   badge: "Limited Stock",
+  //   price: 199,
+  //   originalPrice: 249,
+  //   discountText: "Save ₹50",
+  //   cta: "Buy combo",
+  //   meta: "Arrives in 10 mins",
+  //   imageUrl: "/banners/fruits.png",
+
+  //   colors: {
+  //     text: "text-white",
+  //     subText: "text-white/80",
+  //     badgeBg: "bg-white/20",
+  //     badgeText: "text-white",
+  //     ctaBg: "bg-white",
+  //     ctaText: "text-black",
+  //   },
+  // },
+];
+
 
 const Banner = () => {
   return (
-    <div className="px-5 w-full sm:px-6 lg:px-20 my-6 md:my-14  md:min-h-screen pb-10">
-      <div className='flex items-center justify-center w-full gap-2 sm:gap-5'>
-
-        <Heading text='Offers / Discounts' />
-      </div>
-      <div className="w-full h-[60vw] lg:h-[40vw] xl:h-[38vw] 
-     relative rounded-3xl transition-all duration-500 
-     cursor-pointer hover:-translate-y-2
-     hover:shadow-[0_0_50px_rgba(0,0,0,0.30)]">
-
-
-
-        <Swiper
-
-          slidesPerView={1}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          loop={true}
-
-
-          pagination={{
-            clickable: true, // ✅ enable dots
-          }}
-          modules={[Autoplay, Pagination]} // ✅ include Pagination module
-          speed={500}
-          className="w-full h-full rounded-3xl overflow-hidden relative"
-        >
-          <SwiperSlide className="relative w-full h-full ">
-            <Image
-              src="/banners/almondsBanner.webp"
-              alt="almonds banner"
-              fill
-              className="object-cover object-center "
-              priority
-            />
-
-          </SwiperSlide>
-
-
-          <SwiperSlide className="relative w-full h-full">
-            <Image
-              src="/banners/kiwiBanner.webp"
-              alt="kiwi banner"
-              fill
-              className="object-cover object-center"
-            />
-          </SwiperSlide>
-
-
-          <SwiperSlide className="relative w-full h-full">
-            <Image
-              src="/banners/orangesBanner.webp"
-              alt="tomato banner"
-              fill
-              className="object-cover object-center"
-            />
-          </SwiperSlide>
-          <SwiperSlide className="relative w-full h-full">
-            <Image
-              src="/banners/spinachBanner.webp"
-              alt="tomato banner"
-              fill
-              className="object-cover object-center"
-            />
-          </SwiperSlide>
+    <div className="px-4 sm:px-6 lg:px-9 my-0 ">
+      <div
+        className="
+          w-full max-w-[1400px] mx-auto
+          h-[160px] sm:h-[180px] md:h-[190px] lg:h-[200px]
+          rounded-3xl overflow-hidden
+          transition-all duration-500
+          hover:-translate-y-1
+          hover:shadow-[0_0_40px_rgba(0,0,0,0.25)]
+        "
+      >
+        <Swiper slidesPerView={1} loop autoplay={{ delay: 2500 }} className="h-full">
+          {BANNERS.map((banner) => (
+            <SwiperSlide key={banner.id}>
+              <BannerSlide {...banner} />
+            </SwiperSlide>
+          ))}
         </Swiper>
+
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Banner
+export default Banner;

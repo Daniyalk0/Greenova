@@ -24,8 +24,8 @@ const SeasonalFruits = () => {
   const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
 
   const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
-const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
-const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
+  const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
+  const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
 
 
 
@@ -64,38 +64,47 @@ const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts
   }
   if (loading) return <div>Loading...</div>
   return (
-    <div className="flex w-full lg:px-10 xl:px-20 flex-col ">
+ <div className="flex w-full lg:px-10 xl:px-20 flex-col">
+  <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full mb-4 font-dmsans_light text-green-900">
+    Fresh Fruits
+  </h1>
+
+   <div
+    className="
+      flex gap-4 overflow-x-auto scrollbar-hide
+      md:grid md:grid-cols-4 md:overflow-visible
+      lg:grid-cols-5
+    "
+  >
+    {limitedProducts.map((p: any) => {
+      if (!p) return null;
+
+      return (
+        <div
+          key={p.id || p.name}
+          className="
+            min-w-[160px]
+            md:min-w-0
+          "
+        >
+          <ProductCard
+            product={p}
+            wishlist={wishlistItems}
+            cart={cartProducts}
+            options={
+              p.availableWeights?.map((w: number) => ({
+                weight: w,
+                price: (p.basePricePerKg || 0) * w,
+              })) || []
+            }
+          />
+        </div>
+      );
+    })}
+  </div>
+</div>
 
 
-
-      <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Fruits</h1>
-
-      <div className='grid place-items-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full '>
-
-        {limitedProducts.map((p: any) => {
-          if (!p) return null;
-          console.log("ProductCard received:", p.name);
-          return (
-            <ProductCard
-              key={p.id || p.name}
-              product={p}
-              wishlist={wishlistItems && wishlistItems}
-              cart={cartProducts && cartProducts}
-              options={
-                p.availableWeights?.map((w: number) => ({
-                  weight: w,
-                  price: (p.basePricePerKg || 0) * w,
-                })) || []
-              }
-            />
-          );
-        })
-
-
-        }
-
-      </div>
-    </div>
   )
 }
 

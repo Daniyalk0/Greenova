@@ -13,6 +13,7 @@ import Footer from "@/components/footer/Footer";
 import CartSyncManager from "@/components/CartSyncManager";
 import WishlistSyncManager from "@/components/WishlistSyncManager";
 import ProductsSyncManager from "@/components/ProductsSyncManager";
+import CategoriesBar from "@/components/categoriesBar/Categoriesbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,9 +87,15 @@ const DMSans_italic_light = localFont({
   variable: '--font-dm-sans-italic-light',
   display: 'swap',
 });
-
-
-
+const monasans_bold = localFont({
+  src: [
+    {
+      path: './fonts/MonaSans-Black.ttf',
+    },
+  ],
+  variable: '--font-monasans-black',
+  display: 'swap',
+});
 
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -97,13 +104,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable}  antialiased bg-[#ffffff]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable} ${monasans_bold.variable} antialiased bg-[#ffffff]`}
       >
 
 
         <SessionAuthProvider>
 
           <Navbar />
+          <CategoriesBar/>
           <CleanFacebookHash />
           <CartSyncManager />
           <WishlistSyncManager/>
