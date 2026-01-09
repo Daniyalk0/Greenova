@@ -137,6 +137,15 @@ export default function SearchPopup() {
     });
 
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+
   return (
     <div className="relative w-[100%]  transition-all duration-200">
       {/* Search Input */}
@@ -153,10 +162,9 @@ export default function SearchPopup() {
         {/* Input */}
         <input
           type="text"
-          onClick={(e) => {
-            e.preventDefault();   // prevents focus
-            setIsOpen(true);      // open modal
-          }}
+          readOnly
+          onFocus={(e) => e.target.blur()} // prevents typing + caret
+          onClick={() => setIsOpen(true)}
           className="
     relative z-10
     w-full
@@ -247,6 +255,7 @@ export default function SearchPopup() {
           <div className="relative">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
+              ref={inputRef}
               type="text"
               onChange={handleSearch}
               placeholder="Type to search..."

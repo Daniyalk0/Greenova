@@ -8,18 +8,18 @@ import { removeCartItem } from '../actions/cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/src/store/store'
 import { fetchCartProducts, setLocalCart } from '@/src/store/cartProductsSlice'
+import { calcOrderSummary } from '@/lib/calcOrderSummary'
 // import { setLocalCart } from "../../store/cartProductsSlice"
 
 const Page = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const reduxCart = useSelector((state: RootState) => state.cartProducts.items);
-  console.log('reduxCart', reduxCart);
 
-  // const [cart, setCart] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
+
   const { data: session } = useSession()
   const userId = session?.user?.id ? Number(session.user.id) : null;
+  const {discountedPrice, total} = calcOrderSummary(reduxCart);
 
   // useEffect(() => {
   //   let cartData: any[] = [];
@@ -100,9 +100,10 @@ const handleRemoveProduct = async (
           </div>
         </div>
         {reduxCart?.map((c) => {
+
           return (
             <CartProductcard item={c} key={`${c.id}-${c.weight}`}
-              handleRemoveProduct={handleRemoveProduct} />
+              handleRemoveProduct={handleRemoveProduct}/>
           )
         })}
       </div>
