@@ -1,6 +1,6 @@
 # `Greenova` Fruits & Vegetables E-commerce Web App
 
-### _A modern and responsive frontend web application for an e-commerce platform that sells fresh fruits and vegetables. Built with performance, accessibility, and scalability in mind._
+### _A modern and responsive full stack web application for an e-commerce platform that sells fresh fruits and vegetables. Built with performance, accessibility, and scalability in mind._
 
 ---
 
@@ -30,18 +30,6 @@
 - Real-time form validation with React Hook Form + Zod  
 - Loading states and UX feedback for all auth actions  
 - Friendly error handling for invalid credentials, OAuth conflicts, and network issues  
-
-## 🏠 Homepage Features
-
-- Hero section with bouncing icons for an engaging first impression  
-- Blog Card preview → links directly to the blog page  
-- Animated Products Card displaying random fruits & vegetables with nutrition details  
-
-## 🗂️ Categories Page Features
-
-- Showcases all product types we sell (fruits, vegetables, herbs, etc.)  
-- Sleek modern grid layout for easy browsing and visual appeal  
-
 
 ## 🌐 Live Demo
 

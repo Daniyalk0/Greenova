@@ -12,8 +12,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import LocationModal from "../ui/LocationModel";
 import WishlistIndicator from "../ui/WishlistIndicator";
-import CartIndicator from "../ui/CartIndicator";
-import CartTagIndicator from "../ui/CartIndicator";
 import CartBottomBadge from "../ui/CartIndicator";
 
 export type UserMenuProps = {

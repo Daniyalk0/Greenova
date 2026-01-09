@@ -1,8 +1,10 @@
 "use client";
 
+import { openCart } from "@/src/store/cartPreviewUISlice";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 type Props = {
   itemCount: number;
@@ -10,10 +12,12 @@ type Props = {
 };
 
 const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
+  const dispatch = useDispatch();
   if (itemCount <= 0) return null;
 
+
   return (
-    <Link href="/cart" >
+    <div onClick={() => dispatch(openCart())}>
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -74,8 +78,8 @@ const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
           </div>
 
           {/* GO TO CART (mobile only) */}
-          <Link
-            href="/cart"
+          <div
+            onClick={() => dispatch(openCart())}
             className="
               sm:hidden flex items-center gap-1
               text-sm text-green-700 font-monasans_semibold
@@ -83,11 +87,11 @@ const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
           >
             View
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
-    </Link>
+    </div>
   );
 };
 

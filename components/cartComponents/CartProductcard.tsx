@@ -6,6 +6,7 @@ import Image from 'next/image';
 type CartProductCardProps = {
     item: any;
     handleRemoveProduct: (productId: number, weight: number) => Promise<void>;
+
 };
 
 const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) => {
@@ -14,6 +15,11 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
     //     price: (item.basePricePerKg || 0) * w,
     // })) || [];
 
+const basePrice = item.Product.basePricePerKg * item.weight;
+const discountedPrice =
+  item?.Product?.discount > 0
+    ? Math.round(basePrice - (basePrice * item?.Product?.discount) / 100)
+    : Math.round(basePrice);
 
 
     return (
@@ -35,9 +41,31 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
                     <h1 className="font-monasans_semibold text-sm sm:text-lg md:text-sm">
                         {item?.Product?.name}
                     </h1>
-                    <p className="font-dmsans_light text-[0.7rem] sm:text-[0.9rem]">
-                        ₹{item?.Product?.basePricePerKg}/kg
-                    </p>
+                {item.Product.discount > 0 ? (
+    <div className="flex items-center gap-2">
+      {/* Original price with strike-through */}
+    
+
+      {/* Discounted price */}
+      <span className=" text-[0.7rem] sm:text-[0.8rem] font-dmsans_light">
+        ₹{discountedPrice}/kg
+      </span>
+
+        <span className="line-through font-dmsans_light text-gray-500 text-[0.6rem] sm:text-[0.7rem]">
+        ₹{item.Product.basePricePerKg * item.weight}/kg
+      </span>
+
+      {/* % off badge */}
+      <span className="bg-green-100 font-dmsans_light text-green-800 text-[0.6rem] sm:text-[0.7rem] px-1 rounded">
+        {item.Product.discount}% OFF
+      </span>
+    </div>
+  ) : (
+    // No discount, just show price
+    <span className="font-dmsans_light text-[0.7rem] sm:text-[0.9rem]">
+      ₹{discountedPrice}/kg
+    </span>
+  )}
                 </div>
             </div>
 
@@ -48,7 +76,7 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
 
             {/* Column 3: Total */}
             <div className="w-[25%] flex flex-col items-center justify-center font-monasans_semibold">
-                <p className="text-sm font-bold">{item?.totalPrice}</p>
+                <p className="text-sm font-bold">{discountedPrice}</p>
             </div>
 
             {/* Delete button */}

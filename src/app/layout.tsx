@@ -14,6 +14,7 @@ import CartSyncManager from "@/components/CartSyncManager";
 import WishlistSyncManager from "@/components/WishlistSyncManager";
 import ProductsSyncManager from "@/components/ProductsSyncManager";
 import CategoriesBar from "@/components/categoriesBar/Categoriesbar";
+import CartPreview from "@/components/cartComponents/CartPreview";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -116,6 +117,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <CartSyncManager />
           <WishlistSyncManager/>
           <ProductsSyncManager/>
+          <CartPreview/>
           <main className="min-h-screen">
             {children}
           </main>

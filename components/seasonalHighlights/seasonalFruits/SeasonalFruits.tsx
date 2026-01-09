@@ -4,6 +4,8 @@ import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
 import ProductCard from '../../ui/productCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/store/store';
+import { applyDiscount } from '@/lib/applyDiscount';
+import { buildProductOptions } from '@/lib/productOptions';
 
 const SeasonalFruits = () => {
   // const options = [
@@ -64,45 +66,40 @@ const SeasonalFruits = () => {
   }
   if (loading) return <div>Loading...</div>
   return (
- <div className="flex w-full lg:px-10 xl:px-20 flex-col">
-  <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full mb-4 font-dmsans_light text-green-900">
-    Fresh Fruits
-  </h1>
+    <div className="flex w-full lg:px-10 xl:px-20 flex-col">
+      <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full mb-4 font-dmsans_light text-green-900">
+        Fresh Fruits
+      </h1>
 
-   <div
-    className="
+      <div
+        className="
       flex gap-4 overflow-x-auto scrollbar-hide
       md:grid md:grid-cols-4 md:overflow-visible
       lg:grid-cols-5
     "
-  >
-    {limitedProducts.map((p: any) => {
-      if (!p) return null;
+      >
+        {limitedProducts.map((p: any) => {
+          if (!p) return null;
 
-      return (
-        <div
-          key={p.id || p.name}
-          className="
+          return (
+            <div
+              key={p.id || p.name}
+              className="
             min-w-[160px]
             md:min-w-0
           "
-        >
-          <ProductCard
-            product={p}
-            wishlist={wishlistItems}
-            cart={cartProducts}
-            options={
-              p.availableWeights?.map((w: number) => ({
-                weight: w,
-                price: (p.basePricePerKg || 0) * w,
-              })) || []
-            }
-          />
-        </div>
-      );
-    })}
-  </div>
-</div>
+            >
+              <ProductCard
+                product={p}
+                wishlist={wishlistItems}
+                cart={cartProducts}
+                 options={buildProductOptions(p)}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
 
 
   )

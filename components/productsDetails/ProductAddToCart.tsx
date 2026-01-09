@@ -59,6 +59,14 @@ export default function ProductAddToCart({
       getCart,
     });
 
+
+    const isExactInCart = cartProducts.some(
+  (item) =>
+    item.productId === product.id &&
+    item.weight === selectedWeightPrice?.weight
+);
+
+
   return (
     <div className="space-y-3">
       {/* Weight / quantity dropdown */}
@@ -71,20 +79,26 @@ export default function ProductAddToCart({
 
 
       {/* Add to cart button */}
-      <button
-        disabled={!selectedWeightPrice}
-        onClick={handleAddToCart
-        }
-        className={`w-full font-dmsans_semibold py-3 rounded-xl font-medium transition
-          ${selectedWeightPrice
-            ? "bg-green-600 hover:bg-green-700 text-white"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
-      >
-        {selectedWeightPrice
-          ? `Add to Cart • ₹${selectedWeightPrice.price}`
-          : "Select quantity"}
-      </button>
+<button
+  disabled={!selectedWeightPrice || isExactInCart}
+  onClick={handleAddToCart}
+  className={`
+    w-full font-dmsans_semibold py-3 rounded-xl transition
+    ${!selectedWeightPrice || isExactInCart
+      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+      : "bg-green-600 hover:bg-green-700 text-white"
+    }
+  `}
+>
+  {!selectedWeightPrice
+    ? "Select quantity"
+    : isExactInCart
+      ? "Already in Cart"
+      : `Add to Cart • ₹${selectedWeightPrice.price}`
+  }
+</button>
+
+
     </div>
   );
 }
