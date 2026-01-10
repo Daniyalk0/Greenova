@@ -47,9 +47,8 @@ export default function ProductAddToCart({
   const handleAddToCart = () =>
     addToCartUtil({
       product,
-      selectedWeightPrice,
+      weight: selectedWeightPrice.weight,
       cart : cartProducts,
-      localProducts,
       session,
       dispatch,
       setLocalCart,

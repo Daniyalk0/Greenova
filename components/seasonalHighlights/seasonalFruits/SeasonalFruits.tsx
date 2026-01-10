@@ -1,10 +1,8 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
 import ProductCard from '../../ui/productCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/store/store';
-import { applyDiscount } from '@/lib/applyDiscount';
 import { buildProductOptions } from '@/lib/productOptions';
 
 const SeasonalFruits = () => {

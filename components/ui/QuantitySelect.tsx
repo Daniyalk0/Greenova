@@ -10,6 +10,7 @@ import { ChevronDown, Check } from "lucide-react"
 type Option = {
   weight: number
   price: number
+  originalPrice?: number
 }
 type QuantitySelectProps = {
   options: Option[]
