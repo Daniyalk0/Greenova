@@ -42,11 +42,19 @@ export async function removeWishlistItem(productId: number) {
   const userId = Number(session.user.id); // make sure it's a number
 
   try {
-    const deleted = await prisma.wishlist.delete({
+   const deleted = await prisma.wishlist.delete({
       where: {
         userId_productId: {
           userId,
           productId,
+        },
+      },
+      // 👈 Add this to fetch the product name from the Product table
+      include: {
+        product: {
+          select: {
+            name: true,
+          },
         },
       },
     });

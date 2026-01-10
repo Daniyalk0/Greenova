@@ -2,12 +2,13 @@
 import { calcOrderSummary } from '@/lib/calcOrderSummary';
 import { closeCart } from '@/src/store/cartPreviewUISlice'
 import { RootState } from '@/src/store/store';
+import { X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-const MobileCartPreview = ({ products }: any) => {
+const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
     const dispatch = useDispatch();
     const isOpen = useSelector(
         (state: RootState) => state.cartUI.isCartOpen
@@ -18,7 +19,7 @@ const MobileCartPreview = ({ products }: any) => {
     const CLOSE_THRESHOLD = 120;
     const [dragY, setDragY] = React.useState(0);
     const [isDragging, setIsDragging] = React.useState(false);
-const router = useRouter();
+    const router = useRouter();
 
     const startYRef = React.useRef(0);
 
@@ -102,63 +103,70 @@ const router = useRouter();
                 <div className="flex-1 overflow-y-auto px-4">
                     {products.map((p: any) => {
                         const basePrice = p?.Product?.basePricePerKg * p?.weight;
-const discountedPrice =
-  p?.Product?.discount > 0
-    ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
-    : Math.round(basePrice);
+                        const discountedPrice =
+                            p?.Product?.discount > 0
+                                ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
+                                : Math.round(basePrice);
 
-return(
-                        <div
-                            key={p.id}
-                            className="flex gap-3 py-4 border-b"
-                        >
-                            {/* Image */}
-                            <div className="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden shrink-0">
-                                <img
-                                    src={p?.Product?.imageUrl}
-                                    alt={p?.name}
-                                    className="w-full h-full object-cover"
-                                />
+                        return (
+                            <div
+                                key={p.id}
+                                className="flex gap-3 py-4 border-b"
+                            >
+                                {/* Image */}
+                                <div className="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden shrink-0">
+                                    <img
+                                        src={p?.Product?.imageUrl}
+                                        alt={p?.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+
+                                         <button
+                                                  onClick={() => handleRemoveProduct(p?.productId, p?.weight)}
+                                                  className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
+                                                >
+                                                  <X width={13} height={13} strokeWidth={3} />
+                                                </button>
+
+                                {/* Info */}
+                                <div className="flex-1 font-dmsans_semibold">
+                                    <p className="text-sm">
+                                        {p?.Product?.name}
+                                    </p>
+
+                                    <p className="text-xs text-gray-500 font-dmsans_light">
+                                        {p?.weight} kg
+                                    </p>
+
+                                    <div className="flex justify-between mt-2 items-center">
+                                        {/* Price */}
+                                        <div className="flex items-center gap-2 font-dmsans_light">
+                                            {/* Discounted price */}
+                                            <span className="text-sm font-semibold text-black">
+                                                ₹{discountedPrice}
+                                            </span>
+
+                                            {/* Original price with strike-through */}
+                                            {p?.Product?.discount > 0 && (
+                                                <>
+                                                    <span className="text-xs text-gray-400 line-through">
+                                                        ₹{basePrice}
+                                                    </span>
+                                                    <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
+                                                        {p?.Product?.discount}% OFF
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+
+                                        {/* Quantity / Add control */}
+                                        <div className="h-7 w-20 bg-green-100 rounded" />
+                                    </div>
+                                </div>
                             </div>
-
-                            {/* Info */}
-                            <div className="flex-1 font-dmsans_semibold">
-                                <p className="text-sm">
-                                    {p?.Product?.name}
-                                </p>
-
-                                <p className="text-xs text-gray-500 font-dmsans_light">
-                                    {p?.weight} kg
-                                </p>
-
-                                       <div className="flex justify-between mt-2 items-center">
-                    {/* Price */}
-                    <div className="flex items-center gap-2 font-dmsans_light">
-                      {/* Discounted price */}
-                      <span className="text-sm font-semibold text-black">
-                        ₹{discountedPrice}
-                      </span>
-
-                      {/* Original price with strike-through */}
-                      {p?.Product?.discount > 0 && (
-                        <>
-                          <span className="text-xs text-gray-400 line-through">
-                            ₹{basePrice}
-                          </span>
-                          <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                            {p?.Product?.discount}% OFF
-                          </span>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Quantity / Add control */}
-                    <div className="h-7 w-20 bg-green-100 rounded" />
-                  </div>
-                            </div>
-                        </div>
-)
-})}
+                        )
+                    })}
                 </div>
 
                 {/* Sticky Footer */}
@@ -168,8 +176,8 @@ return(
                         <span className="font-semibold">{total}</span>
                     </div>
                     <div
-                      onClick={handleNavigate}
-                    
+                        onClick={handleNavigate}
+
                         className="
                             flex items-center cursor-pointer justify-center w-full bg-green-600 text-white py-3 rounded-xl font-dmsans_semibold"
                     >

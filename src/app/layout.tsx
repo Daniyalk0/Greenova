@@ -15,6 +15,9 @@ import WishlistSyncManager from "@/components/WishlistSyncManager";
 import ProductsSyncManager from "@/components/ProductsSyncManager";
 import CategoriesBar from "@/components/categoriesBar/Categoriesbar";
 import CartPreview from "@/components/cartComponents/CartPreview";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -112,15 +115,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SessionAuthProvider>
 
           <Navbar />
-          <CategoriesBar/>
+          <CategoriesBar />
           <CleanFacebookHash />
           <CartSyncManager />
-          <WishlistSyncManager/>
-          <ProductsSyncManager/>
-          <CartPreview/>
+          <WishlistSyncManager />
+          <ProductsSyncManager />
+          <CartPreview />
           <main className="min-h-screen">
             {children}
           </main>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            closeOnClick
+            pauseOnHover
+            draggable
+          />
           <Footer />
         </SessionAuthProvider>
 

@@ -9,7 +9,7 @@ import { calcOrderSummary } from "@/lib/calcOrderSummary";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const DesktopCartPreview = ({ products }: any) => {
+const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(
@@ -76,14 +76,14 @@ const DesktopCartPreview = ({ products }: any) => {
         <div className="flex-1 overflow-y-auto px-4 py-3 ">
           {products.map((p: any) => {
             const basePrice = p?.Product?.basePricePerKg * p?.weight;
-           const discountedPrice =
-  p?.Product?.discount > 0
-    ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
-    : Math.round(basePrice);
+            const discountedPrice =
+              p?.Product?.discount > 0
+                ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
+                : Math.round(basePrice);
 
 
             return (
-              <div key={p.id} className="flex gap-3 py-3 border-b">
+              <div key={p.id} className="flex gap-3 py-3 border-b relative">
                 {/* Image */}
                 <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
                   {p?.Product?.imageUrl && (
@@ -94,6 +94,12 @@ const DesktopCartPreview = ({ products }: any) => {
                     />
                   )}
                 </div>
+                <button
+                  onClick={() => handleRemoveProduct(p?.productId, p?.weight, p)}
+                  className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
+                >
+                  <X width={13} height={13} strokeWidth={3} />
+                </button>
 
                 {/* Info */}
                 <div className="flex-1">

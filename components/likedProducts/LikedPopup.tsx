@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 // import { removeWishlistItem } from "@/src/store/wishListSlice";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 import { removeWishlistItem } from "@/src/app/actions/like";
 
 interface LikedPopupProps {
@@ -24,25 +25,24 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
     setLocalWishlistState(wishlist);
   }, [wishlist]);
 
- 
-  
 
-  const handleRemoveItem = async (productId: number) => {
+
+
+  const handleRemoveItem = async (product: any, productId: number) => {
     // Optimistic UI
     const updated = localWishlist.filter(item => item.Product.id !== productId);
     setLocalWishlistState(updated);
-
+    
+    const productName = product?.Product?.name || product?.name || "Item";
+    toast.success(`${productName} removed!`);
     try {
-      await removeWishlistItem(productId); // 👈 only send productId
-      
+      await removeWishlistItem(productId);
+
     } catch (error) {
       console.log("Delete failed, rolling back...");
       setLocalWishlistState(localWishlist);
     }
   };
-
-
-
   return (
     <>
       {/* Backdrop */}
@@ -86,29 +86,59 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
               No liked items yet ❤️
             </div>
           ) : (
-            localWishlist.map(item => (
-              <div key={item.id} className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Image
-                    src={item?.Product?.imageUrl}
-                    alt={item?.Product?.name}
-                    width={60}
-                    height={60}
-                    className="rounded object-cover"
-                  />
-                  <div>
-                    <h3 className="text-sm font-dmsans_semibold">{item?.Product?.name}</h3>
-                    <p className="text-sm text-gray-600 font-dmsans_light">${item?.Product?.price}</p>
+            localWishlist.map(item => {
+              const basePrice = item?.Product?.basePricePerKg * item?.Product?.availableWeights[0];
+              const discountedPrice =
+                item?.Product?.discount > 0
+                  ? Math.round(basePrice - (basePrice * item?.Product?.discount) / 100)
+                  : Math.round(basePrice);
+              return (
+                <div key={item.id} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Image
+                      src={item?.Product?.imageUrl}
+                      alt={item?.Product?.name}
+                      width={60}
+                      height={60}
+                      className="rounded object-cover"
+                    />
+                    <div>
+                      <h3 className="text-sm font-dmsans_semibold">{item?.Product?.name}</h3>
+                      <div className="flex justify-between mt-2 items-center">
+                        {/* Price */}
+                        <div className="flex items-center gap-2 font-dmsans_light">
+                          {/* Discounted price */}
+                          <span className="text-sm font-semibold text-black">
+                            ₹{discountedPrice}
+                          </span>
+
+                          {/* Original price with strike-through */}
+                          {item?.Product?.discount > 0 && (
+                            <>
+                              <span className="text-xs text-gray-400 line-through">
+                                ₹{basePrice}
+                              </span>
+                              <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
+                                {item?.Product?.discount}% OFF
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Quantity / Add control */}
+                        <div className="h-7 w-20 bg-green-100 rounded" />
+                      </div>
+                    </div>
                   </div>
+                  <button
+                    onClick={() => handleRemoveItem(item, item?.Product?.id)}
+                    className="text-red-500 hover:text-red-700 text-lg font-bold"
+                  >
+                    ×
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleRemoveItem(item?.Product?.id)}
-                  className="text-red-500 hover:text-red-700 text-lg font-bold"
-                >
-                  ×
-                </button>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
 

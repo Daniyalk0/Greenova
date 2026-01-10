@@ -43,7 +43,7 @@ const Page = () => {
 console.log('reduxxCartt', reduxCart);
 
 
-const handleRemoveProduct = async (
+ const handleRemoveProduct = async (
   productId: number,
   weight: number
 ): Promise<void> => {
@@ -74,9 +74,6 @@ const handleRemoveProduct = async (
     removeFromCart(productId, weight);
   }
 };
-
-
-
 
   return (
     <div className='py-5 gap-6 md:p-12 lg:p-32 flex flex-col md:flex-row items-start justify-start relative '>

@@ -22,14 +22,7 @@ const SeasonalFruits = () => {
     "Lychee"]
 
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
-  const cartError = useSelector((state: RootState) => state.cartProducts.error);
-  const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
-
-  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
-  const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
-  const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
-
-
+  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);;
 
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)
@@ -58,8 +51,6 @@ const SeasonalFruits = () => {
 
 
   const limitedProducts = seasonalProducts.slice(0, getLimit());
-  console.log("limitedProducts:", limitedProducts);
-
 
   if (error) {
     return <div>Error: {error}</div>
