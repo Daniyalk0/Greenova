@@ -3,8 +3,8 @@ import React from 'react'
 import LandingPageProductCard from '../LandingPageProductCard';
 import LandingPageBlogCard from '../LandingPageBlogCard';
 import BouncingIconsContainer from '../BouncingIconsContainer';
-const Hero = () => {
 
+const Hero = () => {
     return (
         <>
             <div className=' sm:py-10 relative flex flex-col items-center justify-start mt-0 pb-6  md:py-16 w-full px-4  sm:px-5 h-auto md:gap-6 overflow-hidden '>

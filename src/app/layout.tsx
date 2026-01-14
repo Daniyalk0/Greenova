@@ -7,13 +7,10 @@ import SessionAuthProvider from "@/components/SessionAuthProvider";
 import CleanFacebookHash from "@/components/CleanFacebookHash";
 import { ReactNode } from "react";
 import Navbar from "@/components/navbar/Navbar";
-import { Provider } from "react-redux";
-import { store } from "../store/store";
 import Footer from "@/components/footer/Footer";
 import CartSyncManager from "@/components/CartSyncManager";
 import WishlistSyncManager from "@/components/WishlistSyncManager";
 import ProductsSyncManager from "@/components/ProductsSyncManager";
-import CategoriesBar from "@/components/categoriesBar/Categoriesbar";
 import CartPreview from "@/components/cartComponents/CartPreview";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -115,7 +112,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SessionAuthProvider>
 
           <Navbar />
-          <CategoriesBar />
+          {/* <CategoriesBar /> */}
           <CleanFacebookHash />
           <CartSyncManager />
           <WishlistSyncManager />
@@ -127,11 +124,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ToastContainer
             position="bottom-center"
             autoClose={3000}
-            hideProgressBar={false}
             closeOnClick
             pauseOnHover
             draggable
+            toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
+            className="!w-[90vw] sm:!w-auto"
           />
+
           <Footer />
         </SessionAuthProvider>
 

@@ -1,11 +1,12 @@
 
 import { calcOrderSummary } from "@/lib/calcOrderSummary";
+import { useAuthSource } from "@/lib/useAuthSource";
 import React from "react";
 
 const OrderSummary = ({ address, products }: { address?: string; products: any[] }) => {
-
+ const { isNextAuthUser } = useAuthSource();
  const { subtotal, deliveryFee, discount, total } =
-    calcOrderSummary(products);
+    calcOrderSummary(products, isNextAuthUser);
 
 
   return (

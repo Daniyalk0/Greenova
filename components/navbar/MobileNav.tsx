@@ -12,6 +12,8 @@ import LocationModal from "../ui/LocationModel";
 import CartTagIndicator from "../ui/CartIndicator";
 import CartBottomBadge from "../ui/CartIndicator";
 import { UserMenuProps } from "./DesktopNav";
+import UserMenu from "./UserProfilePopUp";
+import Categoriesbar from "../categoriesBar/Categoriesbar";
 // import CartBottomBadge from "../ui/WishlistIndicator";
 
 const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: UserMenuProps) => {
@@ -62,11 +64,7 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: Us
 
 
                 {/* User */}
-                <Link href="/profile" className="flex items-center justify-center">
-                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-                        <UserIcon />
-                    </div>
-                </Link>
+             <UserMenu />
             </div>
 
             {/* Floating Search */}
@@ -104,7 +102,8 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: Us
                 onClose={() => setLocationOpen(false)}
                 onSelect={(loc) => setLocation(loc)}
             />
-            <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
+            <CartBottomBadge itemCount={itemCount || 0} totalPrice={total}  />
+            <Categoriesbar showTopActions={showTopActions}/>
         </div>
     );
 };

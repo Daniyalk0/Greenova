@@ -96,21 +96,7 @@ useEffect(() => {
             />
           </div>
 
-          {/* Suggestions */}
-          <div className="space-y-2">
-            {["Sector 62, Noida", "Connaught Place, Delhi"].map((loc) => (
-              <button
-                key={loc}
-                onClick={() => {
-                  onSelect?.(loc);
-                  onClose();
-                }}
-                className="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition"
-              >
-                <p className="text-sm font-medium text-gray-900 font-dmsans_semibold">{loc}</p>
-              </button>
-            ))}
-          </div>
+      
 
           {/* Footer */}
           <button

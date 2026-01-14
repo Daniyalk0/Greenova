@@ -10,7 +10,7 @@ export const addToCartUtil = async ({
   fetchCartProducts,
   addToCart,
   getCart,
-  onOptimisticAdd
+  onOptimisticAdd,
 }: {
   product: any;
   weight: number;
@@ -23,7 +23,7 @@ export const addToCartUtil = async ({
   fetchCartProducts: (userId: number) => void;
   addToCart: (productWithWeight: any, weight: number) => void;
   getCart: () => any[];
-   onOptimisticAdd?: (message: string) => void;
+  onOptimisticAdd?: (message: string) => void;
 }) => {
   const totalPrice = (product.basePricePerKg || 0) * (weight || 0);
 
@@ -35,9 +35,7 @@ export const addToCartUtil = async ({
 
   const existingItem = Array.isArray(cart)
     ? cart.find(
-        (item) =>
-          item.productId === product.id &&
-          item.weight === weight
+        (item) => item.productId === product.id && item.weight === weight
       )
     : null;
 
@@ -54,11 +52,13 @@ export const addToCartUtil = async ({
   const updatedOptimistic = [...cart, productWithWeight];
   dispatch(setLocalCart(updatedOptimistic));
   // alert(`${weight} kg of ${product.name} added to your cart!`);
-    onOptimisticAdd?.(`${weight} kg of ${product.name} added to your cart!`);
+  onOptimisticAdd?.(`${weight} kg of ${product.name} added to your cart!`);
 
   if (session?.user?.id) {
     try {
-      await syncLocalCartToSupabase(Number(session.user.id), [productWithWeight]);
+      await syncLocalCartToSupabase(Number(session.user.id), [
+        productWithWeight,
+      ]);
       setTimeout(() => {
         dispatch(fetchCartProducts(Number(session.user.id)));
       }, 150);
@@ -66,19 +66,14 @@ export const addToCartUtil = async ({
       console.error("Failed syncing:", error);
       dispatch(setLocalCart(previous)); // rollback
       // alert("Failed to add item. Please try again.");
-       return {
+      return {
         type: "error",
         message: "Failed to add item. Please try again.",
       };
     }
   } else {
     // local cart only
-    addToCart(productWithWeight,weight);
+    addToCart(product, productWithWeight.weight);
     dispatch(setLocalCart(getCart()));
-    // alert(`${weight} kg of ${product.name} added to local cart!`);
-    return {
-    type: "local-added",
-    message: `${weight} kg of ${product.name} added to local cart!`,
-  }
   }
 };

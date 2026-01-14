@@ -1,5 +1,3 @@
-
-
 // export const calcOrderSummary = (products: any[]) => {
 //   const subtotal = Math.max(
 //     0,
@@ -26,13 +24,18 @@
 //   };
 // };
 
-
-export const calcOrderSummary = (products: any[]) => {
+export const calcOrderSummary = (
+  products: any[],
+  isNextAuthUser: boolean // pass this flag from your component
+) => {
   const { subtotal, discount } = products.reduce(
     (acc, item) => {
+      // Normalize product object
+      const product = isNextAuthUser ? item?.Product : item;
+
       const weight = item?.weight ?? 0;
-      const pricePerKg = item?.Product?.basePricePerKg ?? 0;
-      const discountPercent = item?.Product?.discount ?? 0; // e.g. 7 = 7%
+      const pricePerKg = product?.basePricePerKg ?? 0;
+      const discountPercent = product?.discount ?? 0; // e.g. 7 = 7%
 
       const itemTotal = pricePerKg * weight;
       const itemDiscount = itemTotal * (discountPercent / 100);
@@ -45,11 +48,13 @@ export const calcOrderSummary = (products: any[]) => {
     { subtotal: 0, discount: 0 }
   );
 
-const safeSubtotal = Math.max(0, Math.round(subtotal));
-const safeDiscount = Math.min(safeSubtotal, Math.max(0, Math.round(discount)));
+  const safeSubtotal = Math.max(0, Math.round(subtotal));
+  const safeDiscount = Math.min(
+    safeSubtotal,
+    Math.max(0, Math.round(discount))
+  );
 
-const discountedPrice = Math.max(0, safeSubtotal - safeDiscount);
-
+  const discountedPrice = Math.max(0, safeSubtotal - safeDiscount);
 
   const hasProducts = products.length > 0;
   const deliveryFee = hasProducts ? 30 : 0;
@@ -57,11 +62,12 @@ const discountedPrice = Math.max(0, safeSubtotal - safeDiscount);
   const total = Math.max(0, discountedPrice + deliveryFee);
 
   return {
-    subtotal: safeSubtotal,          // before discount
-    discount: safeDiscount,          // total discount amount
-    discountedPrice,                 // after discount, before delivery
+    subtotal: safeSubtotal,       // before discount
+    discount: safeDiscount,       // total discount amount
+    discountedPrice,              // after discount, before delivery
     deliveryFee,
-    total,                           // final payable amount
+    total,                        // final payable amount
     hasProducts,
   };
 };
+

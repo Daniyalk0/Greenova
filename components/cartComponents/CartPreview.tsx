@@ -39,6 +39,9 @@ export default function CartPreview() {
 
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
 
+  console.log( cartProducts);
+  
+
   const handleAddToCart = (product: any, weight: number) =>
     addToCartUtil({
       product,

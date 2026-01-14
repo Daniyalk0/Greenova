@@ -1,5 +1,6 @@
 "use client";
 import { calcOrderSummary } from '@/lib/calcOrderSummary';
+import { useAuthSource } from '@/lib/useAuthSource';
 import { closeCart } from '@/src/store/cartPreviewUISlice'
 import { RootState } from '@/src/store/store';
 import { X } from 'lucide-react';
@@ -13,8 +14,8 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
     const isOpen = useSelector(
         (state: RootState) => state.cartUI.isCartOpen
     );
-
-    const { total } = calcOrderSummary(products);
+    const { isNextAuthUser } = useAuthSource();
+    const { total } = calcOrderSummary(products, isNextAuthUser);
 
     const CLOSE_THRESHOLD = 120;
     const [dragY, setDragY] = React.useState(0);
@@ -54,6 +55,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
         dispatch(closeCart());
         router.push('/cart');
     }
+
 
 
     return (
@@ -101,42 +103,46 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
 
                 {/* Scrollable Items */}
                 <div className="flex-1 overflow-y-auto px-4">
-                    {products.map((p: any) => {
-                        const basePrice = p?.Product?.basePricePerKg * p?.weight;
-                        const discountedPrice =
-                            p?.Product?.discount > 0
-                                ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
-                                : Math.round(basePrice);
+                    {products.map((cartItem: any) => {
+                        const product = isNextAuthUser ? cartItem?.Product : cartItem;
 
+                        const basePrice =
+                            (product?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
+                        const discountedPrice =
+                            product?.discount > 0
+                                ? Math.round(
+                                    basePrice - (basePrice * product.discount) / 100
+                                )
+                                : Math.round(basePrice);
                         return (
                             <div
-                                key={p.id}
-                                className="flex gap-3 py-4 border-b"
+                                key={cartItem.id}
+                                className="flex gap-3 py-4 border-b relative"
                             >
                                 {/* Image */}
                                 <div className="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden shrink-0">
                                     <img
-                                        src={p?.Product?.imageUrl}
-                                        alt={p?.name}
+                                        src={product?.imageUrl}
+                                        alt={product?.name}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
 
-                                         <button
-                                                  onClick={() => handleRemoveProduct(p?.productId, p?.weight)}
-                                                  className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
-                                                >
-                                                  <X width={13} height={13} strokeWidth={3} />
-                                                </button>
+                                <button
+                                    onClick={() => handleRemoveProduct(cartItem?.productId, cartItem?.weight)}
+                                    className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
+                                >
+                                    <X width={13} height={13} strokeWidth={3} />
+                                </button>
 
                                 {/* Info */}
                                 <div className="flex-1 font-dmsans_semibold">
                                     <p className="text-sm">
-                                        {p?.Product?.name}
+                                        {product?.name}
                                     </p>
 
                                     <p className="text-xs text-gray-500 font-dmsans_light">
-                                        {p?.weight} kg
+                                        {cartItem?.weight} kg
                                     </p>
 
                                     <div className="flex justify-between mt-2 items-center">
@@ -148,13 +154,13 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                             </span>
 
                                             {/* Original price with strike-through */}
-                                            {p?.Product?.discount > 0 && (
+                                            {product?.discount > 0 && (
                                                 <>
                                                     <span className="text-xs text-gray-400 line-through">
                                                         ₹{basePrice}
                                                     </span>
                                                     <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                                                        {p?.Product?.discount}% OFF
+                                                        {product?.discount}% OFF
                                                     </span>
                                                 </>
                                             )}

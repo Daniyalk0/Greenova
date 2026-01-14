@@ -8,6 +8,7 @@ import { RootState } from "@/src/store/store";
 import { calcOrderSummary } from "@/lib/calcOrderSummary";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuthSource } from "@/lib/useAuthSource";
 
 const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const dispatch = useDispatch();
@@ -15,8 +16,9 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const isOpen = useSelector(
     (state: RootState) => state.cartUI.isCartOpen
   );
+    const { isNextAuthUser } = useAuthSource();
 
-  const { total, discountedPrice } = calcOrderSummary(products)
+  const { total, discountedPrice } = calcOrderSummary(products, isNextAuthUser);
   console.log(total);
 
   const router = useRouter();
@@ -25,6 +27,10 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
     dispatch(closeCart());
     router.push('/cart');
   }
+
+
+
+
 
   return (
     <div className="hidden md:block">
@@ -74,28 +80,39 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
 
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto px-4 py-3 ">
-          {products.map((p: any) => {
-            const basePrice = p?.Product?.basePricePerKg * p?.weight;
+          {products.map((cartItem: any) => {
+            const product = isNextAuthUser ? cartItem?.Product : cartItem;
+
+            const basePrice =
+              (product?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
             const discountedPrice =
-              p?.Product?.discount > 0
-                ? Math.round(basePrice - (basePrice * p?.Product?.discount) / 100)
+              product?.discount > 0
+                ? Math.round(
+                  basePrice - (basePrice * product.discount) / 100
+                )
                 : Math.round(basePrice);
 
-
             return (
-              <div key={p.id} className="flex gap-3 py-3 border-b relative">
+              <div key={cartItem.id} className="flex gap-3 py-3 border-b relative">
                 {/* Image */}
                 <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                  {p?.Product?.imageUrl && (
+                  {product?.imageUrl && (
                     <img
-                      src={p?.Product?.imageUrl}
-                      alt={p?.Product?.name}
+                      src={product.imageUrl}
+                      alt={product.name}
                       className="w-full h-full object-cover"
                     />
                   )}
                 </div>
+
                 <button
-                  onClick={() => handleRemoveProduct(p?.productId, p?.weight, p)}
+                  onClick={() =>
+                    handleRemoveProduct(
+                      cartItem?.productId,
+                      cartItem?.weight,
+                      cartItem
+                    )
+                  }
                   className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
                 >
                   <X width={13} height={13} strokeWidth={3} />
@@ -104,40 +121,39 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                 {/* Info */}
                 <div className="flex-1">
                   {/* Product Name */}
-                  <p className="text-sm font-dmsans_semibold">{p?.Product?.name}</p>
+                  <p className="text-sm font-dmsans_semibold">
+                    {product?.name}
+                  </p>
 
                   {/* Weight */}
                   <p className="text-xs text-gray-500 font-dmsans_light">
-                    {p?.weight} kg
+                    {cartItem?.weight} kg
                   </p>
 
                   {/* Price & Subtotal */}
                   <div className="flex justify-between mt-2 items-center">
-                    {/* Price */}
                     <div className="flex items-center gap-2 font-dmsans_light">
-                      {/* Discounted price */}
                       <span className="text-sm font-semibold text-black">
                         ₹{discountedPrice}
                       </span>
 
-                      {/* Original price with strike-through */}
-                      {p?.Product?.discount > 0 && (
+                      {product?.discount > 0 && (
                         <>
                           <span className="text-xs text-gray-400 line-through">
                             ₹{basePrice}
                           </span>
                           <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                            {p?.Product?.discount}% OFF
+                            {product.discount}% OFF
                           </span>
                         </>
                       )}
                     </div>
 
-                    {/* Quantity / Add control */}
                     <div className="h-7 w-20 bg-green-100 rounded" />
                   </div>
                 </div>
               </div>
+
             );
           })}
 

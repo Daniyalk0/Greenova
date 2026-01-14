@@ -19,25 +19,30 @@ export default function CartSyncManager() {
 
   // Sync local cart on login
   useEffect(() => {
-    const syncLocalCart = async () => {
-      if (!userId) return;
-
-      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
-      if (localCart.length > 0) {
-        console.log("🔁 Syncing local cart for user:", userId);
-        await handleCartSyncOnLogin(Number(userId)); // Push local -> Supabase
-        dispatch(fetchCartProducts(Number(userId))); // Then re-fetch updated data
-        localStorage.removeItem("cart");
-      }
-    };
-    syncLocalCart();
+    if (userId) {
+      // Auth user: sync localStorage -> DB, then fetch cart
+      const syncLocalCart = async () => {
+        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+        if (localCart.length > 0) {
+          console.log("🔁 Syncing local cart for user:", userId);
+          await handleCartSyncOnLogin(Number(userId)); // push local -> DB
+          localStorage.removeItem("cart");
+        }
+        dispatch(fetchCartProducts(Number(userId))); // fetch DB cart
+      };
+      syncLocalCart();
+    } else {
+      // Guest user: just fetch localStorage cart
+      const guestCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      dispatch(fetchCartProducts(null)); // or dispatch guestCart directly if thunk allows
+    }
   }, [userId, dispatch]);
 
   // 2️⃣ Always fetch cart when user logs in or reloads
-  useEffect(() => {
-    if (!userId) return;
-    dispatch(fetchCartProducts(Number(userId))); // ✅ only this, no manual fetch
-  }, [userId, dispatch]);
+  // useEffect(() => {
+  //   if (!userId) return;
+  //   dispatch(fetchCartProducts(Number(userId))); 
+  // }, [userId, dispatch]);
 
   return null;
 }

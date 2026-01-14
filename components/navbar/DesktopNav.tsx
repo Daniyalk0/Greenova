@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import NavCart from "./NavCart";
-import UserMenu from "./UserMenu";
 import SearchWithPopup from "./SearchWithPopup";
 import NavHeart from "./NavHeart";
 import { MapPin, ChevronDown } from "lucide-react";
@@ -13,6 +12,9 @@ import { useRouter } from "next/navigation";
 import LocationModal from "../ui/LocationModel";
 import WishlistIndicator from "../ui/WishlistIndicator";
 import CartBottomBadge from "../ui/CartIndicator";
+import UserProfilePopUp from "./UserProfilePopUp";
+import UserMenu from "./UserProfilePopUp";
+import Categoriesbar from "../categoriesBar/Categoriesbar";
 
 export type UserMenuProps = {
   data: any;
@@ -86,7 +88,8 @@ const DesktopNav = ({
               <WishlistIndicator likedItemCount={likedItemCount} className="" />
             </div>
 
-            <UserMenu user={data?.user} />
+            <UserMenu />
+            {/* <UserProfilePopUp/> */}
           </div>
         </div>
       </div>
@@ -96,7 +99,7 @@ const DesktopNav = ({
         onSelect={(loc) => setLocation(loc)}
       />
       <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-      
+      <Categoriesbar/>
     </nav>
   );
 };

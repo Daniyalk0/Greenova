@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import LikedDrawer from "../likedProducts/LikedPopup";
 import { calcOrderSummary } from "@/lib/calcOrderSummary";
+import { useAuthSource } from "@/lib/useAuthSource";
 
 const Navbar = () => {
   const [itemCount, setItemCount] = useState<number | null>(10);
@@ -16,14 +17,9 @@ const Navbar = () => {
   const [isMobileView, setIsMobileView] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-    const {total} = calcOrderSummary(cartProducts)
+    const { isNextAuthUser } = useAuthSource();
+    const {total} = calcOrderSummary(cartProducts, isNextAuthUser);
     
-    
-    useEffect(() => {
-      console.log('isDrawerOpen', isDrawerOpen);
-    }, [isDrawerOpen])
-    
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobileView(window.innerWidth <= 640);

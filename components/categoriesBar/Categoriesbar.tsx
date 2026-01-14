@@ -6,13 +6,26 @@ import { CATEGORIES } from "./data";
 import Image from "next/image";
 // import { TOP_CATEGORIES } from "./topCategories";
 
-export default function TopCategoryBar() {
+export default function TopCategoryBar({ showTopActions }: { showTopActions?: boolean; }) {
   const pathname = usePathname();
 
   return (
-    <div className="sticky top-[56px] z-[1500] bg-green-200 sm:static 
-                lg:[mask-image:linear-gradient(to_left,transparent,black_30%)]
-                lg:[-webkit-mask-image:linear-gradient(to_left,transparent,black_30%)]">
+    <div
+      className={`
+    sticky top-[56px] z-[1500] bg-green-200
+    transition-all duration-300 ease-in-out
+
+    /* Mobile only */
+    ${showTopActions ? "max-h-[120px] opacity-100" : "max-h-0 opacity-0"}
+
+    /* Disable animation + force visible on sm+ */
+    sm:max-h-none sm:opacity-100 sm:static
+
+    lg:[mask-image:linear-gradient(to_left,transparent,black_30%)]
+    lg:[-webkit-mask-image:linear-gradient(to_left,transparent,black_30%)]
+  `}
+    >
+
 
       <div className="relative">
         {/* Edge fade (mobile) */}
