@@ -1,6 +1,9 @@
 
+const CART_STORAGE_KEY = "cart";
+
+
 export const addToCart = (product: any, selectedWeight: number) => {
-  const cart:any[] = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart:any[] = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
   const sessionId = localStorage.getItem("sessionId");
 
   const existingIndex = cart?.findIndex(
@@ -35,16 +38,13 @@ export const addToCart = (product: any, selectedWeight: number) => {
       availableWeights: product.availableWeights ?? [],
     });
   }
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 };
 
-export const getCart = () => {
-  return JSON.parse(localStorage.getItem("cart") || "[]");
-};
 
 // ✅ Remove only one product variant (id + weight)
-export const removeFromCart = (id: number, weight?: number) => {
-  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+export const removeItemLocalStorage = (id: number, weight?: number) => {
+  let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
 
   if (weight !== undefined) {
     // Remove only that specific weight
@@ -56,23 +56,42 @@ export const removeFromCart = (id: number, weight?: number) => {
     cart = cart.filter((item: any) => item.productId !== id);
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 };
 
 export const updateCartWeight = (productId: number, newWeight: number) => {
-  const cart: any[] = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart: any[] = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
   const item = cart.find((i) => i.id === productId);
   if (item) {
     item.weight = newWeight;
     item.totalPrice = item.basePricePerKg * newWeight;
   }
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 };
 
-export const clearCart = () => {
-  localStorage.removeItem("cart");
+export const clearCartLocalStorage = () => {
+  localStorage.removeItem(CART_STORAGE_KEY);
 };
 
 export const calculateCartTotal = (cart: any[]): number => {
   return cart.reduce((sum, item) => sum + item.totalPrice, 0);
 };
+
+
+
+/**
+ * Get cart from localStorage
+ */
+export function getCartFromLocalStorage(): any[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY);
+    if (!stored) return [];
+    return JSON.parse(stored) as any[];
+  } catch (err) {
+    console.error("Failed to read cart from localStorage:", err);
+    return [];
+  }
+}
+

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function syncLocalCartToSupabase(
   userId: number,
-  localCart: any[]
+  localCart: any[],
 ) {
   if (!localCart || localCart.length === 0) return;
 
@@ -40,24 +40,38 @@ export async function syncLocalCartToSupabase(
   }
 }
 
-
-export async function getCartItemsFromSupabase(userId: number) {
+export async function getCartItemsFromSupabase(userId: number): Promise<any[]> {
   try {
     if (!userId) throw new Error("Missing User Id");
+
     const cart = await prisma.cart.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
+      include: { product: true }, // ✅ include full product details
     });
-    return cart;
+
+    return cart.map((item) => ({
+      productId: item.productId,
+      weight: item.weight,
+      totalPrice: item.totalPrice,
+      
+      // UI snapshot rebuilt here 👇
+      discount: item.product.discount,
+      name: item.product.name,
+      imageUrl: item.product.imageUrl,
+      basePricePerKg: item.product.basePricePerKg,
+      inStock: item.product.inStock ?? true,
+    }));
   } catch (error) {
     console.error("❌ Error getting cart:", error);
+    return [];
   }
 }
 
 export async function removeCartItem(
   userId: number,
   productId: number,
-  weight: number
+  weight: number,
 ) {
   try {
     // Check if the item exists first

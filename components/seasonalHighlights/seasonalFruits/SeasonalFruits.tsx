@@ -20,7 +20,7 @@ const SeasonalFruits = () => {
     "Lychee"]
 
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
-  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);;
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items);;
 
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)

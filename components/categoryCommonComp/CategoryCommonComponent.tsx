@@ -71,7 +71,7 @@ useEffect(() => {
 
 
   const wishlistItems = useSelector(
-    (state: RootState) => state.wishlistProducts.items
+    (state: RootState) => state.wishlist.items
   );
   const cartProducts = useSelector(
     (state: RootState) => state.cartProducts.items

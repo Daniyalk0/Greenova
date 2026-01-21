@@ -19,23 +19,19 @@ const SeasonalVegetables = () => {
     "Lady Finger",
     "Spinach"]
 
-      const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
-      const cartError = useSelector((state: RootState) => state.cartProducts.error);
-      const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
-    
+  const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
+
 
   const products = useSelector((state: RootState) => state.products.items)
   const error = useSelector((state: RootState) => state.products.error)
   const loading = useSelector((state: RootState) => state.products.loading)
 
-    const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
-  const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
-  const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
 
   const seasonalProducts = products.filter((product: any) =>
     seasonalNames.includes(product.name)
   );
-  
+
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
   useEffect(() => {
@@ -54,7 +50,7 @@ const SeasonalVegetables = () => {
   };
 
 
-   const limitedProducts = seasonalProducts.slice(0, getLimit());
+  const limitedProducts = seasonalProducts.slice(0, getLimit());
 
   if (error) {
     return <div>Error: {error}</div>
@@ -64,42 +60,42 @@ const SeasonalVegetables = () => {
     <div className="flex w-full flex-col lg:px-10 xl:px-20">
 
 
-        <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Vegetables</h1>
+      <h1 className="text-md bg-[#c4fee5] w-fit px-3 py-1 rounded-full text-left mb-6 font-dmsans_light text-green-900">Fresh Vegetables</h1>
 
-     <div
-    className="
+      <div
+        className="
       flex gap-4 overflow-x-auto scrollbar-hide
       md:grid md:grid-cols-4 md:overflow-visible
       lg:grid-cols-5
     "
-  >
-    {limitedProducts.map((p: any) => {
-      if (!p) return null;
+      >
+        {limitedProducts.map((p: any) => {
+          if (!p) return null;
 
-      return (
-        <div
-          key={p.id || p.name}
-          className="
+          return (
+            <div
+              key={p.id || p.name}
+              className="
             min-w-[160px]
             md:min-w-0
           "
-        >
-          <ProductCard
-            product={p}
-            wishlist={wishlistItems}
-            cart={cartProducts}
-            options={
-              p.availableWeights?.map((w: number) => ({
-                weight: w,
-                price: (p.basePricePerKg || 0) * w,
-              })) || []
-            }
-          />
-        </div>
-      );
-    })}
-  </div>
-</div>
+            >
+              <ProductCard
+                product={p}
+                wishlist={wishlistItems}
+                cart={cartProducts}
+                options={
+                  p.availableWeights?.map((w: number) => ({
+                    weight: w,
+                    price: (p.basePricePerKg || 0) * w,
+                  })) || []
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
   )
 }
 

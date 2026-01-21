@@ -15,6 +15,14 @@ import CartBottomBadge from "../ui/CartIndicator";
 import UserProfilePopUp from "./UserProfilePopUp";
 import UserMenu from "./UserProfilePopUp";
 import Categoriesbar from "../categoriesBar/Categoriesbar";
+import { AppLocation } from "@/src/types/next-auth";
+import { useDispatch, useSelector } from "react-redux";
+import { persistLocation } from "@/lib/persistLocation";
+import { setLocation } from "@/src/store/locationSlice";
+import { RootState } from "@/src/store/store";
+import { setLocationToLocalStorage } from "@/lib/localStorageLocation";
+import { syncUserLocation } from "@/src/app/actions/syncLocation";
+import { useUI } from "@/src/context/ui-context";
 
 export type UserMenuProps = {
   data: any;
@@ -22,6 +30,7 @@ export type UserMenuProps = {
   likedItemCount: number | null;
   setDrawerOpen: (open: boolean) => void;
   total: number;
+  handleLocationSelect: any;
 };
 
 const DesktopNav = ({
@@ -29,12 +38,55 @@ const DesktopNav = ({
   likedItemCount,
   data,
   setDrawerOpen,
-  total
+  total,
+  handleLocationSelect
 }: UserMenuProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const [locationOpen, setLocationOpen] = useState(false)
-  const [location, setLocation] = useState('')
+  const [locationOpen, setLocationOpen] = useState(false);
+  // const [locationn, setLocationn] = useState<AppLocation | null>(null);
+  const dispatch = useDispatch();
+
+  const location = useSelector(
+    (state: RootState) => state.location.location
+  );
+  const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
+
+// const handleLocationSelect = async (newLocation: AppLocation) => {
+//   // Get current location from Redux
+//   const sessionUserId = session?.user?.id;
+
+//   // 1️⃣ Check if the new location is identical to the current one
+//   const isSame =
+//     location &&
+//     location.lat === newLocation.lat &&
+//     location.lng === newLocation.lng;
+
+//   if (isSame) {
+//     // Optional: show toast or ignore
+//     return; // nothing to do
+//   }
+
+//   // 2️⃣ Update Redux immediately for UI responsiveness
+//   dispatch(
+//     setLocation({
+//       location: newLocation,
+//       source: sessionUserId ? "db" : "local",
+//     })
+//   );
+
+//   // 3️⃣ Persist the change
+//   if (!sessionUserId) {
+//     // Guest: save to localStorage only
+//     setLocationToLocalStorage(newLocation);
+//     return;
+//   }
+
+//   // Logged-in user: update DB via server action
+//   await syncUserLocation(sessionUserId, newLocation);
+// };
+
+
   return (
     <nav className="sticky top-0 z-[2000] bg-white border-b p-2">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-9">
@@ -54,14 +106,15 @@ const DesktopNav = ({
 
             {/* Location Button */}
             <button
-              onClick={() => setLocationOpen(true)}
+              onClick={openLocationModal}
               className="flex flex-col items-start f"
             >
               <span className="text-xs text-gray-500 font-dmsans_light">Delivery to</span>
               <div className="flex items-center gap-1">
-                <span className="text-sm font-semibold text-gray-900 font-monasans_semibold">
-                  Add delivery location
+                <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
+                  {location ? location.address : "Add delivery location"}
                 </span>
+
                 <ChevronDown className="w-3 h-3 text-gray-600" />
               </div>
             </button>
@@ -94,12 +147,13 @@ const DesktopNav = ({
         </div>
       </div>
       <LocationModal
-        open={locationOpen}
-        onClose={() => setLocationOpen(false)}
-        onSelect={(loc) => setLocation(loc)}
+        open={isLocationModalOpen}
+        onClose={closeLocationModal}
+        onSelect={handleLocationSelect}
       />
+
       <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-      <Categoriesbar/>
+      <Categoriesbar />
     </nav>
   );
 };

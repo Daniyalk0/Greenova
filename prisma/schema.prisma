@@ -8,74 +8,69 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("customer")
+  role          String        @default("customer")
   accounts      Account[]
-  orders        Order[]
-  sessions      Session[]
-  reviews       Review[]
   carts         Cart[]
+  orders        Order[]
+  reviews       Review?
+  sessions      Session[]
+  locations     UserLocation?
   wishlist      Wishlist[]
 }
 
 model Product {
-  id                Int      @id @default(autoincrement())
-  name              String
-  slug              String   @unique
-  category          String
-  subCategory       String?  // ✅ make it optional
-  imageUrl          String
-  calories          Float?
-  fat               Float?
-  sugar             Float?
-  carbohydrates     Float?
-  protein           Float?
-  basePricePerKg    Float?
-  availableWeights  Float[]  // or Json, depending on your schema
-  price             Float?
-  rating            Float?
-  discount          Float?
-  description       String?
-  inStock           Boolean  @default(true)
-  carts             Cart[]
-  wishlist          Wishlist[]
+  id               Int        @id @default(autoincrement())
+  name             String
+  slug             String     @unique
+  category         String
+  subCategory      String?
+  imageUrl         String
+  calories         Float?
+  fat              Float?
+  sugar            Float?
+  carbohydrates    Float?
+  protein          Float?
+  basePricePerKg   Float?
+  availableWeights Float[]
+  price            Float?
+  rating           Float?
+  discount         Float?
+  description      String?
+  inStock          Boolean    @default(true)
+  carts            Cart[]
+  wishlist         Wishlist[]
 }
 
-
 model Cart {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  productId Int
-  weight    Float     // user-selected
-  totalPrice Float    // based on selected weight
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  product   Product   @relation(fields: [productId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  productId  Int
+  weight     Float
+  totalPrice Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, productId, weight])
 }
-
 
 model Wishlist {
   id        Int      @id @default(autoincrement())
   userId    Int
   productId Int
   createdAt DateTime @default(now())
-
-  // Relations
-  user      User     @relation(fields: [userId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@unique([userId, productId]) // prevent duplicate likes
+  @@unique([userId, productId])
 }
-
 
 model Order {
   id        Int      @id @default(autoincrement())
@@ -102,12 +97,11 @@ model Account {
   session_state     String?
   user              User    @relation(fields: [userId], references: [id])
 
-  
   @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id           Int     @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   sessionToken String   @unique
   userId       Int
   expires      DateTime
@@ -124,13 +118,26 @@ model VerificationToken {
 
 model Review {
   id        String   @id @default(cuid())
-  userId    Int   @unique
-  userName  String   // 👈 Store user’s name here
+  userId    Int      @unique
+  userName  String
   rating    Int
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userImage String?  
+  userImage String?
+  user      User     @relation(fields: [userId], references: [id])
+}
 
-  user User @relation(fields: [userId], references: [id])
+model UserLocation {
+  id        String   @id @default(uuid())
+  userId    Int      @unique
+  label     String?
+  address   String
+  lat       Float
+  lng       Float
+  city      String?
+  state     String?
+  pincode   String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }

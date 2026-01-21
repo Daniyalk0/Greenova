@@ -28,6 +28,16 @@ declare module "next-auth/jwt" {
     role: string
   }
 }
+export type AppLocation = {
+  address: string;
+  lat: number;
+  lng: number;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  label?: string;
+};
+
 
 declare module "react-inner-image-zoom/lib/styles.min.css";
 

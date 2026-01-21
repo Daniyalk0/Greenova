@@ -14,14 +14,22 @@ import CartBottomBadge from "../ui/CartIndicator";
 import { UserMenuProps } from "./DesktopNav";
 import UserMenu from "./UserProfilePopUp";
 import Categoriesbar from "../categoriesBar/Categoriesbar";
+import { RootState } from "@/src/store/store";
+import { useSelector } from "react-redux";
+import { useUI } from "@/src/context/ui-context";
 // import CartBottomBadge from "../ui/WishlistIndicator";
 
-const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: UserMenuProps) => {
+const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, handleLocationSelect }: UserMenuProps) => {
     const { data: session } = useSession();
     const router = useRouter();
     const [locationOpen, setLocationOpen] = useState(false)
-    const [location, setLocation] = useState('')
+    // const [location, setLocation] = useState('')
+    const location = useSelector(
+        (state: RootState) => state.location.location
+    );
 
+     const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
+    
 
     const [showTopActions, setShowTopActions] = useState(true);
 
@@ -50,13 +58,13 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: Us
             <div className="flex items-center justify-between px-4 py-3">
                 {/* Location */}
                 <button
-                    onClick={() => setLocationOpen(true)}
+            onClick={openLocationModal}
                     className="flex flex-col items-start"
                 >
                     <span className="text-xs text-gray-500">Delivery to</span>
                     <div className="flex items-center gap-1">
-                        <span className="text-sm font-semibold text-gray-900">
-                            Add delivery location
+                        <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
+                            {location ? location.address : "Add delivery location"}
                         </span>
                         <ChevronDown className="w-3 h-3 text-gray-600" />
                     </div>
@@ -64,7 +72,7 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: Us
 
 
                 {/* User */}
-             <UserMenu />
+                <UserMenu />
             </div>
 
             {/* Floating Search */}
@@ -97,13 +105,15 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total }: Us
             </div>
 
 
+
             <LocationModal
-                open={locationOpen}
-                onClose={() => setLocationOpen(false)}
-                onSelect={(loc) => setLocation(loc)}
+                open={isLocationModalOpen}
+                onClose={closeLocationModal}
+                onSelect={handleLocationSelect}
             />
-            <CartBottomBadge itemCount={itemCount || 0} totalPrice={total}  />
-            <Categoriesbar showTopActions={showTopActions}/>
+
+            <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
+            <Categoriesbar showTopActions={showTopActions} />
         </div>
     );
 };

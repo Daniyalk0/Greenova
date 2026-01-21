@@ -30,12 +30,10 @@ export const calcOrderSummary = (
 ) => {
   const { subtotal, discount } = products.reduce(
     (acc, item) => {
-      // Normalize product object
-      const product = isNextAuthUser ? item?.Product : item;
 
       const weight = item?.weight ?? 0;
-      const pricePerKg = product?.basePricePerKg ?? 0;
-      const discountPercent = product?.discount ?? 0; // e.g. 7 = 7%
+      const pricePerKg = item?.basePricePerKg ?? 0;
+      const discountPercent = item?.discount ?? 0; // e.g. 7 = 7%
 
       const itemTotal = pricePerKg * weight;
       const itemDiscount = itemTotal * (discountPercent / 100);

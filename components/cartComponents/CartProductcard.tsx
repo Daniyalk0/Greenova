@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 type CartProductCardProps = {
     item: any;
-    handleRemoveProduct: (productId: number, weight: number) => Promise<void>;
+    handleRemoveProduct: (productId: number, weight: number, product: any) => Promise<void>;
 
 };
 
@@ -15,11 +15,11 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
     //     price: (item.basePricePerKg || 0) * w,
     // })) || [];
 
-const basePrice = item.Product.basePricePerKg * item.weight;
-const discountedPrice =
-  item?.Product?.discount > 0
-    ? Math.round(basePrice - (basePrice * item?.Product?.discount) / 100)
-    : Math.round(basePrice);
+    const basePrice = item?.basePricePerKg * item?.weight;
+    const discountedPrice =
+        item?.discount > 0
+            ? Math.round(basePrice - (basePrice * item?.discount) / 100)
+            : Math.round(basePrice);
 
 
     return (
@@ -30,7 +30,7 @@ const discountedPrice =
             {/* Column 1: Image + Name + Price */}
             <div className="w-[50%] flex items-center gap-3">
                 <Image
-                    src={item?.Product?.imageUrl}
+                    src={item?.imageUrl}
                     alt="product image"
                     width={200}        // doesn't affect UI because Tailwind classes override
                     height={200}
@@ -39,33 +39,33 @@ const discountedPrice =
                 />
                 <div className="flex flex-col items-start">
                     <h1 className="font-monasans_semibold text-sm sm:text-lg md:text-sm">
-                        {item?.Product?.name}
+                        {item?.name}
                     </h1>
-                {item.Product.discount > 0 ? (
-    <div className="flex items-center gap-2">
-      {/* Original price with strike-through */}
-    
+                    {item?.discount > 0 ? (
+                        <div className="flex items-center gap-2">
+                            {/* Original price with strike-through */}
 
-      {/* Discounted price */}
-      <span className=" text-[0.7rem] sm:text-[0.8rem] font-dmsans_light">
-        ₹{discountedPrice}/kg
-      </span>
 
-        <span className="line-through font-dmsans_light text-gray-500 text-[0.6rem] sm:text-[0.7rem]">
-        ₹{item.Product.basePricePerKg * item.weight}/kg
-      </span>
+                            {/* Discounted price */}
+                            <span className=" text-[0.7rem] sm:text-[0.8rem] font-dmsans_light">
+                                ₹{discountedPrice}/kg
+                            </span>
 
-      {/* % off badge */}
-      <span className="bg-green-100 font-dmsans_light text-green-800 text-[0.6rem] sm:text-[0.7rem] px-1 rounded">
-        {item.Product.discount}% OFF
-      </span>
-    </div>
-  ) : (
-    // No discount, just show price
-    <span className="font-dmsans_light text-[0.7rem] sm:text-[0.9rem]">
-      ₹{discountedPrice}/kg
-    </span>
-  )}
+                            <span className="line-through font-dmsans_light text-gray-500 text-[0.6rem] sm:text-[0.7rem]">
+                                ₹{item?.basePricePerKg * item?.weight}/kg
+                            </span>
+
+                            {/* % off badge */}
+                            <span className="bg-green-100 font-dmsans_light text-green-800 text-[0.6rem] sm:text-[0.7rem] px-1 rounded">
+                                {item?.discount}% OFF
+                            </span>
+                        </div>
+                    ) : (
+                        // No discount, just show price
+                        <span className="font-dmsans_light text-[0.7rem] sm:text-[0.9rem]">
+                            ₹{discountedPrice}/kg
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -81,7 +81,7 @@ const discountedPrice =
 
             {/* Delete button */}
             <button
-                onClick={() => handleRemoveProduct(item.productId, item.weight)}
+                onClick={() => handleRemoveProduct(item?.productId, item?.weight, item)}
                 className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
             >
                 <X width={13} height={13} strokeWidth={3} />

@@ -1,79 +1,95 @@
+import { setCart } from "@/src/store/cartProductsSlice";
+import { syncLocalCartToSupabase } from "@/src/app/actions/cart";
+
 export const addToCartUtil = async ({
   product,
   weight,
   cart,
-  // localProducts,
   session,
   dispatch,
-  setLocalCart,
-  syncLocalCartToSupabase,
-  fetchCartProducts,
-  addToCart,
-  getCart,
   onOptimisticAdd,
 }: {
   product: any;
   weight: number;
   cart: any[];
-  // localProducts: any[];
   session: any;
   dispatch: any;
-  setLocalCart: (items: any[]) => void;
-  syncLocalCartToSupabase: (userId: number, items: any[]) => Promise<void>;
-  fetchCartProducts: (userId: number) => void;
-  addToCart: (productWithWeight: any, weight: number) => void;
-  getCart: () => any[];
   onOptimisticAdd?: (message: string) => void;
 }) => {
-  const totalPrice = (product.basePricePerKg || 0) * (weight || 0);
+  const totalPrice = (product.basePricePerKg || 0) * weight;
 
-  const productWithWeight = {
-    ...product,
-    weight: weight,
+  // 1️⃣ UI SNAPSHOT (Redux + localStorage)
+  const uiItem = {
+    productId: product.id,
+    discount: product.discount,
+    weight,
+    totalPrice,
+    name: product.name,
+    imageUrl: product.imageUrl,
+    basePricePerKg: product.basePricePerKg,
+    inStock: product.inStock ?? true,
+  };
+
+  // 2️⃣ DB CANONICAL
+  const dbItem = {
+    productId: product.id,
+    weight,
     totalPrice,
   };
 
-  const existingItem = Array.isArray(cart)
-    ? cart.find(
-        (item) => item.productId === product.id && item.weight === weight
-      )
-    : null;
+  // 🔍 Duplicate check (UI shape)
+  const exists = cart.some(
+    (item) =>
+      item.productId === uiItem.productId &&
+      item.weight === uiItem.weight
+  );
 
-  if (existingItem) {
+  if (exists) {
     return {
       type: "already-exists",
-      message: `This variant (${weight} kg) of ${product.name} is already in your cart.`,
+      message: `This variant (${weight} kg) is already in your cart.`,
     };
   }
 
-  const previous = [...cart];
+  const previousCart = [...cart];
+  const updatedCart = [...cart, uiItem];
 
-  // -------------- OPTIMISTIC UPDATE --------------
-  const updatedOptimistic = [...cart, productWithWeight];
-  dispatch(setLocalCart(updatedOptimistic));
-  // alert(`${weight} kg of ${product.name} added to your cart!`);
-  onOptimisticAdd?.(`${weight} kg of ${product.name} added to your cart!`);
+  // ⚡ INSTANT UI UPDATE (NO WAITING)
+  dispatch(
+    setCart({
+      items: updatedCart,
+      source: session?.user?.id ? "db" : "local",
+    })
+  );
 
-  if (session?.user?.id) {
-    try {
-      await syncLocalCartToSupabase(Number(session.user.id), [
-        productWithWeight,
-      ]);
-      setTimeout(() => {
-        dispatch(fetchCartProducts(Number(session.user.id)));
-      }, 150);
-    } catch (error) {
-      console.error("Failed syncing:", error);
-      dispatch(setLocalCart(previous)); // rollback
-      // alert("Failed to add item. Please try again.");
-      return {
-        type: "error",
-        message: "Failed to add item. Please try again.",
-      };
+  onOptimisticAdd?.(
+    `${weight} kg of ${product.name} added to your cart!`
+  );
+
+  // 💾 Persist in background
+  try {
+    if (!session?.user?.id) {
+      // Guest
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      return;
     }
-  } else {
-    // local cart only
-    addToCart(product, productWithWeight.weight);
-    dispatch(setLocalCart(getCart()));
+
+    // Logged-in → DB write ONLY canonical fields
+    await syncLocalCartToSupabase(session.user.id, [dbItem]);
+  } catch (error) {
+    console.error("❌ Cart sync failed:", error);
+
+    // 🔁 HARD ROLLBACK (only on failure)
+    dispatch(
+      setCart({
+        items: previousCart,
+        source: session?.user?.id ? "db" : "local",
+      })
+    );
+
+    return {
+      type: "error",
+      message: "Failed to add item. Please try again.",
+    };
   }
 };

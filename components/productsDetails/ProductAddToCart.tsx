@@ -7,11 +7,7 @@ import { addToCartUtil } from "@/lib/addToCartUtil";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/store/store";
 import { useSession } from "next-auth/react";
-import { fetchCartProducts, setLocalCart } from "@/src/store/cartProductsSlice";
-// import QuantitySelect from "./QuantitySelect";
-import { syncLocalCartToSupabase } from "@/src/app/actions/cart"
-import { addToCart, getCart } from "@/lib/cartUtils"
-import { any } from "zod";
+import { toast } from "react-toastify";
 
 type Props = {
   product: any;
@@ -44,26 +40,48 @@ export default function ProductAddToCart({
   const dispatch = useDispatch<AppDispatch>();
   const { data: session } = useSession()
 
-  const handleAddToCart = () =>
-    addToCartUtil({
+  const handleAddToCart = async () => {
+    
+    const result = await addToCartUtil({
       product,
       weight: selectedWeightPrice.weight,
-      cart : cartProducts,
+      cart: cartProducts,
       session,
       dispatch,
-      setLocalCart,
-      syncLocalCartToSupabase,
-      fetchCartProducts,
-      addToCart,
-      getCart,
+      onOptimisticAdd: (msg) => {
+        toast.dismiss();
+        toast.success(msg, { autoClose: 2000 });
+      },
     });
 
+    if (!result) return;
 
-    const isExactInCart = cartProducts.some(
-  (item) =>
-    item.productId === product.id &&
-    item.weight === selectedWeightPrice?.weight
-);
+    switch (result.type) {
+      case "already-exists":
+        toast.info(result.message);
+        break;
+
+      case "error":
+        toast.error(result.message);
+        break;
+
+      case "local-added":
+        toast.success(result.message);
+        break;
+
+      // "added" is optional here because optimistic toast already fired
+      default:
+        break;
+    }
+  };
+
+
+
+  const isExactInCart = cartProducts.some(
+    (item) =>
+      item.productId === product.id &&
+      item.weight === selectedWeightPrice?.weight
+  );
 
 
   return (
@@ -78,24 +96,24 @@ export default function ProductAddToCart({
 
 
       {/* Add to cart button */}
-<button
-  disabled={!selectedWeightPrice || isExactInCart}
-  onClick={handleAddToCart}
-  className={`
+      <button
+        disabled={!selectedWeightPrice || isExactInCart}
+        onClick={handleAddToCart}
+        className={`
     w-full font-dmsans_semibold py-3 rounded-xl transition
     ${!selectedWeightPrice || isExactInCart
-      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-      : "bg-green-600 hover:bg-green-700 text-white"
-    }
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700 text-white"
+          }
   `}
->
-  {!selectedWeightPrice
-    ? "Select quantity"
-    : isExactInCart
-      ? "Already in Cart"
-      : `Add to Cart • ₹${selectedWeightPrice.price}`
-  }
-</button>
+      >
+        {!selectedWeightPrice
+          ? "Select quantity"
+          : isExactInCart
+            ? "Already in Cart"
+            : `Add to Cart • ₹${selectedWeightPrice.price}`
+        }
+      </button>
 
 
     </div>

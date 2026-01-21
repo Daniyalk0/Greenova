@@ -1,74 +1,47 @@
 "use client";
-import { createClient } from "@supabase/supabase-js";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getCart } from "@/lib/cartUtils";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export const fetchCartProducts = createAsyncThunk(
-  "cart/fetchCartProducts",
-  async (userId: number | null) => {
-    if (userId) {
-      // Logged-in user
-      const { data, error } = await supabase
-        .from("Cart")
-        .select("*, Product(*)")
-        .eq("userId", userId);
+export type CartSource = "local" | "db" | null;
 
-      if (error) throw new Error(error.message);
-      // console.log('data in slice', data);
-      
-      return data || [];
-    } else {
-      // Guest user
-      const cartData = getCart();
-      return cartData;
-    }
-  }
-);
+
 
 interface CartState {
-  loading: boolean;
-  error: string | null;
-   items: any[];
+  items: any[];
+  source: CartSource;
 }
 
-// ✅ Step 2: Create a properly typed initial state
 const initialState: CartState = {
-  items: [] as any,
-  loading: false,
-  error: null,
+  items: [],
+  source: null,
 };
 
-// ✅ Step 3: Create the slice
-const cartProductsSlice = createSlice({
-  name: "cartProducts",
-  initialState, // ✅ just pass variable, don’t assign type here
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
   reducers: {
-    setLocalCart: (state, action: PayloadAction<any[]>) => {
+    setCart(
+      state,
+      action: PayloadAction<{
+        items: any[];
+        source: CartSource;
+      }>
+    ) {
+      state.items = action.payload.items;
+      state.source = action.payload.source;
+    },
+
+    clearCart(state) {
+      state.items = [];
+      state.source = null;
+    },
+
+    updateCartItems(state, action: PayloadAction<any[]>) {
+      // Used when user adds/removes items
       state.items = action.payload;
-      state.loading = false;
-      state.error = null;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchCartProducts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCartProducts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload as any[]; // ✅ type assertion if needed
-      })
-      .addCase(fetchCartProducts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || "Failed to fetch products";
-      });
-  },
 });
-export const { setLocalCart } = cartProductsSlice.actions;
-export default cartProductsSlice.reducer;
+
+export const { setCart, clearCart, updateCartItems } = cartSlice.actions;
+export default cartSlice.reducer;

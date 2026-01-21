@@ -5,9 +5,8 @@ import { Heart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/store/store";
 import { useSession } from "next-auth/react";
-import { fetchWishlistProducts, setLocalWishlist } from "@/src/store/wishListSlice";
-import { addToWishlist, removeWishlistItem } from "@/src/app/actions/like";
 import { toggleWishlistUtil } from "@/lib/wishlistUtils";
+import { toast } from "react-toastify";
 
 type Props = {
   product: any;
@@ -16,7 +15,7 @@ type Props = {
 
 export default function ProductWishlist({ product, onToggle }: Props) {
   const wishlist = useSelector(
-    (state: RootState) => state.wishlistProducts.items
+    (state: RootState) => state.wishlist.items
   );
 
   const isWishlisted = wishlist.some(
@@ -26,17 +25,28 @@ export default function ProductWishlist({ product, onToggle }: Props) {
     const dispatch = useDispatch<AppDispatch>();
     const { data: session } = useSession()
   
-   const handleToggleWishlist = () =>
-      toggleWishlistUtil({
-        product,
-        wishlist,
-        session,
-        dispatch,
-        setLocalWishlist,
-        fetchWishlistProducts,
-        addToWishlist,
-        removeWishlistItem,
-      });
+  const handleToggleWishlist = async () => {
+     const result = await toggleWishlistUtil({
+       product,
+       wishlist,
+       session,
+       dispatch,
+       onOptimisticAdd: (msg) => {
+         toast.dismiss();
+         toast.success(msg, { autoClose: 2000 });
+       },
+     });
+     if (!result) return;
+ 
+     switch (result.type) {
+       case "error":
+         toast.error(result.message);
+         break;
+       // "added" is optional here because optimistic toast already fired
+       default:
+         break;
+     }
+   }
 
   return (
 <button

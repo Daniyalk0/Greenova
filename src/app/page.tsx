@@ -6,11 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { fetchProducts } from '../store/productsSlice';
 import { AppDispatch, RootState } from '../store/store';
 import { useSession } from 'next-auth/react';
-import { handleCartSyncOnLogin } from '@/lib/syncCart';
 import { fetchProducts } from '../store/productsSlice';
-import { fetchCartProducts } from '../store/cartProductsSlice';
-import { getCartItemsFromSupabase } from './actions/cart';
-
 
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();

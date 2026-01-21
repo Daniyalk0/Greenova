@@ -1,48 +1,59 @@
 "use client";
 
-import { handleCartSyncOnLogin } from "@/lib/syncCart";
-import { getCartItemsFromSupabase } from "@/src/app/actions/cart";
-import { fetchCartProducts } from "@/src/store/cartProductsSlice";
-import { AppDispatch } from "@/src/store/store";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { fetchCartProducts } from "@/redux/features/cartSlice";
-// import { getCartItemsFromSupabase } from "@/actions/cartActions";
-// import { handleCartSyncOnLogin } from "@/lib/cartUtils";
+import { useDispatch } from "react-redux";
+import { useSession } from "next-auth/react";
+import { setCart } from "@/src/store/cartProductsSlice";
+import { clearCartLocalStorage, getCartFromLocalStorage} from "@/lib/cartUtils";
+import { getCartItemsFromSupabase, syncLocalCartToSupabase } from "../src/app/actions/cart";
 
 export default function CartSyncManager() {
-  const dispatch = useDispatch<AppDispatch>();
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
 
-  const userId = session?.user?.id;
-
-  // Sync local cart on login
   useEffect(() => {
-    if (userId) {
-      // Auth user: sync localStorage -> DB, then fetch cart
-      const syncLocalCart = async () => {
-        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
-        if (localCart.length > 0) {
-          console.log("🔁 Syncing local cart for user:", userId);
-          await handleCartSyncOnLogin(Number(userId)); // push local -> DB
-          localStorage.removeItem("cart");
-        }
-        dispatch(fetchCartProducts(Number(userId))); // fetch DB cart
-      };
-      syncLocalCart();
-    } else {
-      // Guest user: just fetch localStorage cart
-      const guestCart = JSON.parse(localStorage.getItem("cart") || "[]");
-      dispatch(fetchCartProducts(null)); // or dispatch guestCart directly if thunk allows
-    }
-  }, [userId, dispatch]);
+    if (status === "loading") return;
 
-  // 2️⃣ Always fetch cart when user logs in or reloads
-  // useEffect(() => {
-  //   if (!userId) return;
-  //   dispatch(fetchCartProducts(Number(userId))); 
-  // }, [userId, dispatch]);
+    // -------------------------
+    // 👥 GUEST USER
+    // -------------------------
+    if (!session?.user?.id) {
+      const localCart = getCartFromLocalStorage();
+
+      dispatch(
+        setCart({
+          items: localCart,
+          source: localCart.length ? "local" : null,
+        })
+      );
+
+      return;
+    }
+
+    // -------------------------
+    // 👤 AUTH USER
+    // -------------------------
+    const initCart = async () => {
+      const localCart = getCartFromLocalStorage();
+
+      // 🔁 Sync once: guest → auth
+      if (localCart.length > 0) {
+        await syncLocalCartToSupabase(session.user.id, localCart);
+        clearCartLocalStorage();
+      }
+
+      const dbCart = await getCartItemsFromSupabase(session.user.id);
+
+      dispatch(
+        setCart({
+          items: dbCart,
+          source: dbCart.length ? "db" : null,
+        })
+      );
+    };
+
+    initCart();
+  }, [status]);
 
   return null;
 }

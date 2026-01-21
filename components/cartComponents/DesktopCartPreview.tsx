@@ -16,10 +16,10 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const isOpen = useSelector(
     (state: RootState) => state.cartUI.isCartOpen
   );
-    const { isNextAuthUser } = useAuthSource();
+  const { isNextAuthUser } = useAuthSource();
 
   const { total, discountedPrice } = calcOrderSummary(products, isNextAuthUser);
-  console.log(total);
+  console.log(products);
 
   const router = useRouter();
 
@@ -81,25 +81,25 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto px-4 py-3 ">
           {products.map((cartItem: any) => {
-            const product = isNextAuthUser ? cartItem?.Product : cartItem;
+            // const product = isNextAuthUser ? cartItem?.product : cartItem;
 
             const basePrice =
-              (product?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
+              (cartItem?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
             const discountedPrice =
-              product?.discount > 0
+              cartItem?.discount > 0
                 ? Math.round(
-                  basePrice - (basePrice * product.discount) / 100
+                  basePrice - (basePrice * cartItem.discount) / 100
                 )
                 : Math.round(basePrice);
 
             return (
-              <div key={cartItem.id} className="flex gap-3 py-3 border-b relative">
+              <div key={cartItem?.id} className="flex gap-3 py-3 border-b relative">
                 {/* Image */}
                 <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                  {product?.imageUrl && (
+                  {cartItem?.imageUrl && (
                     <img
-                      src={product.imageUrl}
-                      alt={product.name}
+                      src={cartItem.imageUrl}
+                      alt={cartItem.name}
                       className="w-full h-full object-cover"
                     />
                   )}
@@ -122,7 +122,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                 <div className="flex-1">
                   {/* Product Name */}
                   <p className="text-sm font-dmsans_semibold">
-                    {product?.name}
+                    {cartItem?.name}
                   </p>
 
                   {/* Weight */}
@@ -137,13 +137,13 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                         ₹{discountedPrice}
                       </span>
 
-                      {product?.discount > 0 && (
+                      {cartItem?.discount > 0 && (
                         <>
                           <span className="text-xs text-gray-400 line-through">
                             ₹{basePrice}
                           </span>
                           <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                            {product.discount}% OFF
+                            {cartItem.discount}% OFF
                           </span>
                         </>
                       )}

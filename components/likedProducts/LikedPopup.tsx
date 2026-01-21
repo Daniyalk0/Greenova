@@ -6,7 +6,7 @@ import { RootState } from "@/src/store/store";
 // import { removeWishlistItem } from "@/src/store/wishListSlice";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { removeWishlistItem } from "@/src/app/actions/like";
+import { removeWishlistItemDB } from "@/src/app/actions/like";
 
 interface LikedPopupProps {
   isOpen: boolean;
@@ -15,11 +15,12 @@ interface LikedPopupProps {
 
 export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
   const dispatch = useDispatch();
-  const wishlist = useSelector((state: RootState) => state.wishlistProducts.items);
+  const wishlist = useSelector((state: RootState) => state.wishlist.items);
+
+  console.log(wishlist);
+  
 
   const [localWishlist, setLocalWishlistState] = useState<any[]>([]);
-  const { data: session } = useSession()
-  const userId = session?.user?.id
 
   useEffect(() => {
     setLocalWishlistState(wishlist);
@@ -30,13 +31,13 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
 
   const handleRemoveItem = async (product: any, productId: number) => {
     // Optimistic UI
-    const updated = localWishlist.filter(item => item.Product.id !== productId);
+    const updated = localWishlist.filter(item => item.product.id !== productId);
     setLocalWishlistState(updated);
     
-    const productName = product?.Product?.name || product?.name || "Item";
+    const productName = product?.product?.name || product?.name || "Item";
     toast.success(`${productName} removed!`);
     try {
-      await removeWishlistItem(productId);
+      await removeWishlistItemDB(productId);
 
     } catch (error) {
       console.log("Delete failed, rolling back...");
@@ -87,23 +88,23 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
             </div>
           ) : (
             localWishlist.map(item => {
-              const basePrice = item?.Product?.basePricePerKg * item?.Product?.availableWeights[0];
+              const basePrice = item?.product?.basePricePerKg * item?.product?.availableWeights[0];
               const discountedPrice =
-                item?.Product?.discount > 0
-                  ? Math.round(basePrice - (basePrice * item?.Product?.discount) / 100)
+                item?.product?.discount > 0
+                  ? Math.round(basePrice - (basePrice * item?.product?.discount) / 100)
                   : Math.round(basePrice);
               return (
                 <div key={item.id} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Image
-                      src={item?.Product?.imageUrl}
-                      alt={item?.Product?.name}
+                      src={item?.product?.imageUrl}
+                      alt={item?.product?.name}
                       width={60}
                       height={60}
                       className="rounded object-cover"
                     />
                     <div>
-                      <h3 className="text-sm font-dmsans_semibold">{item?.Product?.name}</h3>
+                      <h3 className="text-sm font-dmsans_semibold">{item?.product?.name}</h3>
                       <div className="flex justify-between mt-2 items-center">
                         {/* Price */}
                         <div className="flex items-center gap-2 font-dmsans_light">
@@ -113,13 +114,13 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                           </span>
 
                           {/* Original price with strike-through */}
-                          {item?.Product?.discount > 0 && (
+                          {item?.product?.discount > 0 && (
                             <>
                               <span className="text-xs text-gray-400 line-through">
                                 ₹{basePrice}
                               </span>
                               <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                                {item?.Product?.discount}% OFF
+                                {item?.product?.discount}% OFF
                               </span>
                             </>
                           )}
@@ -131,7 +132,7 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                     </div>
                   </div>
                   <button
-                    onClick={() => handleRemoveItem(item, item?.Product?.id)}
+                    onClick={() => handleRemoveItem(item, item?.product?.id)}
                     className="text-red-500 hover:text-red-700 text-lg font-bold"
                   >
                     ×

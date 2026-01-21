@@ -1,13 +1,15 @@
 "use client"
 import CartProductcard from '@/components/cartComponents/CartProductcard'
 import OrderSummary from '@/components/cartComponents/OrderSummary'
-import { removeFromCart} from '@/lib/cartUtils'
 import { useSession } from 'next-auth/react'
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import { removeCartItem } from '../actions/cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/src/store/store'
-import { fetchCartProducts, setLocalCart } from '@/src/store/cartProductsSlice'
+import { setCart } from '@/src/store/cartProductsSlice'
+import { toast } from 'react-toastify'
+import { addToCartUtil } from '@/lib/addToCartUtil'
+import { restoreCartItem } from '../actions/restoreCartItem'
 // import { setLocalCart } from "../../store/cartProductsSlice"
 
 const Page = () => {
@@ -18,59 +20,133 @@ const Page = () => {
   const { data: session } = useSession()
   const userId = session?.user?.id ? Number(session.user.id) : null;
 
-  // useEffect(() => {
-  //   let cartData: any[] = [];
-
-  //   if (userId) {
-  //     // ✅ logged-in user: use Redux cart
-  //     cartData = reduxCart;
-  //   } else {
-  //     // ✅ guest user: use local cart
-  //     cartData = getCart();
-  //   }
-
-  //   setCart(cartData);
-  //   setTotal(calculateCartTotal(cartData)); // pass the cartData here
-  // }, [userId, reduxCart]); // rerun if user logs in/out or redux cart changes
-
-//   useEffect(() => {
-//   dispatch(fetchCartProducts(userId));
-// }, [userId]);
-
-console.log('reduxxCartt', reduxCart);
-
-
- const handleRemoveProduct = async (
-  productId: number,
-  weight: number
-): Promise<void> => {
-
-  const previous = [...reduxCart];
-
-  // optimistic UI update
-  const updated = previous.filter(
-    (item) => !(item.productId === productId && item.weight === weight)
+  const location = useSelector(
+    (state: RootState) => state.location.location
   );
 
-  dispatch(setLocalCart(updated)); // instant update
 
-  if (userId) {
-    try {
-      await removeCartItem(userId, productId, weight);
+  const handleAddToCart = async (product: any, weight: any) => {
+    const result = await addToCartUtil({
+      product,
+      weight,
+      cart: reduxCart,
+      session,
+      dispatch,
+      onOptimisticAdd: (msg) => {
+        toast.dismiss();
+        toast.success(msg, { autoClose: 2000 });
+      },
+    });
 
-      // sync after slight delay
-      setTimeout(() => {
-        dispatch(fetchCartProducts(userId));
-      }, 200);
+    if (!result) return;
 
-    } catch (error) {
-      dispatch(setLocalCart(previous)); // rollback
+    switch (result.type) {
+      case "already-exists":
+        toast.info(result.message);
+        break;
+
+      case "error":
+        toast.error(result.message);
+        break;
+
+      case "local-added":
+        toast.success(result.message);
+        break;
+
+      // "added" is optional here because optimistic toast already fired
+      default:
+        break;
     }
-  } else {
-    // guest
-    removeFromCart(productId, weight);
-  }
-};
+  };
+
+  const handleRemoveProduct = async (
+    productId: number,
+    weight: number,
+    product: any
+  ): Promise<void> => {
+    const previous = [...reduxCart];
+
+    const removedItem = previous.find(
+      (item) => item.productId === productId && item.weight === weight
+    );
+
+    if (!removedItem) return;
+
+    // ------------------------
+    // ⚡ Optimistic UI update
+    // ------------------------
+    const updated = previous.filter(
+      (item) => !(item.productId === productId && item.weight === weight)
+    );
+    dispatch(
+      setCart({
+        items: updated,
+        source: session?.user?.id ? "db" : "local",
+      })
+    );
+
+    // ------------------------
+    // Toast with Undo
+    // ------------------------
+    const toastId = toast(
+      ({ closeToast }) => (
+        <div className="flex items-center gap-3">
+          <span>Item removed</span>
+          <button
+            onClick={async () => {
+              // Restore Redux immediately
+              dispatch(
+                setCart({
+                  items: previous,
+                  source: session?.user?.id ? "db" : "local",
+                })
+              );
+
+              // Restore persistence
+              if (session?.user?.id) {
+                await restoreCartItem(session.user.id, removedItem);
+              } else {
+                localStorage.setItem("cart", JSON.stringify(previous));
+              }
+
+              closeToast();
+            }}
+            className="text-green-600 underline"
+          >
+            Undo
+          </button>
+
+        </div>
+      ),
+      { autoClose: 4000 }
+    );
+
+    try {
+      if (session?.user?.id) {
+        // Auth user → remove from DB
+        await removeCartItem(session.user.id, productId, weight);
+        // ✅ No need to refetch; Redux already has updated snapshot
+      } else {
+        // Guest → remove from localStorage
+        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const newCart = localCart.filter(
+          (item: any) => !(item.productId === productId && item.weight === weight)
+        );
+        localStorage.setItem("cart", JSON.stringify(newCart));
+      }
+    } catch (error) {
+      console.error("❌ Failed to remove item:", error);
+
+      // 🔁 Rollback UI
+      dispatch(
+        setCart({
+          items: previous,
+          source: session?.user?.id ? "db" : "local",
+        })
+      );
+    }
+  };
+
 
   return (
     <div className='py-5 gap-6 md:p-12 lg:p-32 flex flex-col md:flex-row items-start justify-start relative '>
@@ -93,16 +169,23 @@ console.log('reduxxCartt', reduxCart);
             <span>Total</span>
           </div>
         </div>
-        {reduxCart?.map((c) => {
+        {reduxCart && reduxCart.length > 0 ? (
+          reduxCart.map((c) => (
+            <CartProductcard
+              key={`${c?.id}-${c?.weight}`}
+              item={c}
+              handleRemoveProduct={handleRemoveProduct}
+            />
+          ))
+        ) : (
+          <div className="text-center py-10 text-gray-500">
+            Your cart is empty 🛒
+          </div>
+        )}
 
-          return (
-            <CartProductcard item={c} key={`${c.id}-${c.weight}`}
-              handleRemoveProduct={handleRemoveProduct}/>
-          )
-        })}
       </div>
 
-      <OrderSummary products={reduxCart} />
+      <OrderSummary products={reduxCart} address={location} />
     </div>
   )
 }

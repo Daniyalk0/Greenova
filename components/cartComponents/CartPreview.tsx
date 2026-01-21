@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import DesktopCartPreview from "./DesktopCartPreview";
 import MobileCartPreview from "./MobileCartPreview";
 import { AppDispatch, RootState } from "@/src/store/store";
-import { fetchCartProducts, setLocalCart } from "@/src/store/cartProductsSlice";
+import { setCart } from "@/src/store/cartProductsSlice";
 import { useSession } from "next-auth/react";
 import { removeCartItem, syncLocalCartToSupabase } from "@/src/app/actions/cart";
-import { addToCart, removeFromCart, getCart } from "@/lib/cartUtils";
+import { addToCart } from "@/lib/cartUtils";
 import { toast } from "react-toastify";
 import { addToCartUtil } from "@/lib/addToCartUtil";
 
@@ -42,75 +42,108 @@ export default function CartPreview() {
   console.log( cartProducts);
   
 
-  const handleAddToCart = (product: any, weight: number) =>
-    addToCartUtil({
+  const handleAddToCart = async (product : any, weight : any) => {
+    const result = await addToCartUtil({
       product,
       weight,
       cart: cartProducts,
       session,
       dispatch,
-      setLocalCart,
-      syncLocalCartToSupabase,
-      fetchCartProducts,
-      addToCart,
-      getCart,
+      onOptimisticAdd: (msg) => {
+        toast.dismiss();
+        toast.success(msg, { autoClose: 2000 });
+      },
     });
 
+    if (!result) return;
 
-  const handleRemoveProduct = async (
-    productId: number,
-    weight: number,
-    product: any,
-  ): Promise<void> => {
+    switch (result.type) {
+      case "already-exists":
+        toast.info(result.message);
+        break;
 
-    const previous = [...cartProducts];
+      case "error":
+        toast.error(result.message);
+        break;
 
-    // optimistic UI update
-    const updated = previous.filter(
-      (item) => !(item.productId === productId && item.weight === weight)
-    );
+      case "local-added":
+        toast.success(result.message);
+        break;
 
-
-
-    dispatch(setLocalCart(updated)); // instant update
-
-    const toastId = toast(
-      ({ closeToast }) => (
-        <div className="flex items-center gap-3">
-          <span>Item removed</span>
-          <button
-            onClick={() => {
-
-              handleAddToCart(product, weight);
-              closeToast();
-            }}
-            className="text-green-600 underline"
-          >
-            Undo
-          </button>
-        </div>
-      ),
-      { autoClose: 4000 }
-    );
-
-
-    if (userId) {
-      try {
-        await removeCartItem(userId, productId, weight);
-
-        // sync after slight delay
-        setTimeout(() => {
-          dispatch(fetchCartProducts(userId));
-        }, 200);
-
-      } catch (error) {
-        dispatch(setLocalCart(previous)); // rollback
-      }
-    } else {
-      // guest
-      removeFromCart(productId, weight);
+      // "added" is optional here because optimistic toast already fired
+      default:
+        break;
     }
   };
+
+const handleRemoveProduct = async (
+  productId: number,
+  weight: number,
+  product: any
+): Promise<void> => {
+  const previous = [...cartProducts];
+
+  // ------------------------
+  // ⚡ Optimistic UI update
+  // ------------------------
+  const updated = previous.filter(
+    (item) => !(item.productId === productId && item.weight === weight)
+  );
+
+  dispatch(
+    setCart({
+      items: updated,
+      source: session?.user?.id ? "db" : "local",
+    })
+  );
+
+  // ------------------------
+  // Toast with Undo
+  // ------------------------
+  const toastId = toast(
+    ({ closeToast }) => (
+      <div className="flex items-center gap-3">
+        <span>Item removed</span>
+        <button
+          onClick={() => {
+            handleAddToCart(product, weight);
+            closeToast();
+          }}
+          className="text-green-600 underline"
+        >
+          Undo
+        </button>
+      </div>
+    ),
+    { autoClose: 4000 }
+  );
+
+  try {
+    if (session?.user?.id) {
+      // Auth user → remove from DB
+      await removeCartItem(session.user.id, productId, weight);
+      // ✅ No need to refetch; Redux already has updated snapshot
+    } else {
+      // Guest → remove from localStorage
+      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const newCart = localCart.filter(
+        (item: any) => !(item.productId === productId && item.weight === weight)
+      );
+      localStorage.setItem("cart", JSON.stringify(newCart));
+    }
+  } catch (error) {
+    console.error("❌ Failed to remove item:", error);
+
+    // 🔁 Rollback UI
+    dispatch(
+      setCart({
+        items: previous,
+        source: session?.user?.id ? "db" : "local",
+      })
+    );
+  }
+};
+
 
 
 

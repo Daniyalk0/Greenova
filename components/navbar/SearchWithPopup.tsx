@@ -6,10 +6,9 @@ import { AppDispatch, RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleWishlistUtil } from "@/lib/wishlistUtils";
 import { useSession } from "next-auth/react";
-import { fetchWishlistProducts, setLocalWishlist } from "@/src/store/wishListSlice"
-import { addToWishlist, removeWishlistItem } from "@/src/app/actions/like"
 
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 
 const placeholders = [
@@ -44,12 +43,9 @@ export default function SearchPopup() {
   const loading = useSelector((state: RootState) => state.products.loading)
 
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
-  const cartError = useSelector((state: RootState) => state.cartProducts.error);
-  const cartLoading = useSelector((state: RootState) => state.cartProducts.loading);
 
-  const wishlistItems = useSelector((state: RootState) => state.wishlistProducts.items);
-  const wishlistError = useSelector((state: RootState) => state.wishlistProducts.error);
-  const wishlistLoading = useSelector((state: RootState) => state.wishlistProducts.loading);
+  const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
+
 
   // Close on "Esc" key press
   useEffect(() => {
@@ -130,10 +126,7 @@ export default function SearchPopup() {
       wishlist: wishlistItems,
       session,
       dispatch,
-      setLocalWishlist,
-      fetchWishlistProducts,
-      addToWishlist,
-      removeWishlistItem,
+
     });
 
 
@@ -273,7 +266,8 @@ export default function SearchPopup() {
               );
 
               return (
-                <li
+                <Link
+                href={`/products/${item.slug}`}
                   key={item.id}
                   className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md
                        transition cursor-pointer flex items-center gap-3 border"
@@ -314,7 +308,7 @@ export default function SearchPopup() {
                   >
                     Add
                   </button>
-                </li>
+                </Link>
               );
             })}
           </ul>

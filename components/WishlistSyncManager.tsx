@@ -3,21 +3,30 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
-import { fetchWishlistProducts } from "@/src/store/wishListSlice";
-import { RootState } from "@/src/store/store";
+import { getWishlistDB } from "@/src/app/actions/like";
+import { setWishlist } from "@/src/store/wishListSlice";
 
 export default function WishlistSyncManager() {
   const { data: session } = useSession();
   const dispatch = useDispatch();
 
-  const loading = useSelector((state: RootState) => state.wishlistProducts.loading);
-  const error = useSelector((state: RootState) => state.wishlistProducts.error);
-
   useEffect(() => {
-    if (session?.user?.id) {
-      dispatch(fetchWishlistProducts(Number(session.user.id)) as any);
-    }
-  }, [session, dispatch]);
+    if (!session?.user?.id) return;
 
-  return null; 
+    const syncWishlist = async () => {
+      const data = await getWishlistDB(session?.user?.id);
+      if (data) {
+        dispatch(
+          setWishlist({
+            items: data,
+
+          }),
+        );
+      }
+    };
+
+    syncWishlist();
+  }, [session?.user?.id]);
+
+  return null;
 }

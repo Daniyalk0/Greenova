@@ -14,6 +14,8 @@ import ProductsSyncManager from "@/components/ProductsSyncManager";
 import CartPreview from "@/components/cartComponents/CartPreview";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LocationProvider from "@/components/LocationProvider";
+import { UIProvider } from "../context/ui-context";
 
 
 const geistSans = Geist({
@@ -107,31 +109,36 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playFairDisplay.variable} ${DMSans_semiBold.variable} ${DMSans_Light.variable} ${DMSans_regular.variable} ${monasans_semibold.variable}  ${DMSans_italic_light.variable} ${monasans_bold.variable} antialiased bg-[#ffffff]`}
       >
-
-
         <SessionAuthProvider>
+          <UIProvider>
 
-          <Navbar />
-          {/* <CategoriesBar /> */}
-          <CleanFacebookHash />
-          <CartSyncManager />
-          <WishlistSyncManager />
-          <ProductsSyncManager />
-          <CartPreview />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <ToastContainer
-            position="bottom-center"
-            autoClose={3000}
-            closeOnClick
-            pauseOnHover
-            draggable
-            toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
-            className="!w-[90vw] sm:!w-auto"
-          />
 
-          <Footer />
+            <Navbar />
+            {/* <CategoriesBar /> */}
+            <CleanFacebookHash />
+            <CartSyncManager />
+            <WishlistSyncManager />
+            <ProductsSyncManager />
+            {/* <LocationDisplay/> */}
+            {/* <LocationSyncManager/> */}
+            <LocationProvider />
+            <CartPreview />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            </UIProvider>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={3000}
+              closeOnClick
+              pauseOnHover
+              draggable
+              toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
+              className="!w-[90vw] sm:!w-auto"
+            />
+
+            <Footer />
+          
         </SessionAuthProvider>
 
 

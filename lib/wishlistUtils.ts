@@ -1,12 +1,11 @@
+import { addToWishlistDB, getWishlistDB, removeWishlistItemDB } from "@/src/app/actions/like";
+import { setWishlist } from "@/src/store/wishListSlice";
+
 export const toggleWishlistUtil = async ({
   product,
   wishlist,
   session,
   dispatch,
-  setLocalWishlist,
-  fetchWishlistProducts,
-  addToWishlist,
-  removeWishlistItem,
   onOptimisticAdd,
 }: {
   product: any;
@@ -14,10 +13,6 @@ export const toggleWishlistUtil = async ({
   session: any;
   dispatch: any;
   onOptimisticAdd?: (message: string) => void;
-  setLocalWishlist: (items: any[]) => void;
-  fetchWishlistProducts: (userId: number) => void;
-  addToWishlist: (userId: number, productId: number) => Promise<any>;
-  removeWishlistItem: (productId: number) => Promise<any>;
 }) => {
   if (!session?.user?.id) {
     return {
@@ -30,28 +25,35 @@ export const toggleWishlistUtil = async ({
   const previousWishlist = [...wishlist];
 
   const isInWishlist = wishlist?.some(
-    (item: any) => item.productId === product.id
+    (item: any) => item.productId === product.id,
   );
 
   if (isInWishlist) {
     // -------------------------------- REMOVE ITEM
     const updatedOptimistic = wishlist.filter(
-      (item: any) => item.productId !== product.id
+      (item: any) => item.productId !== product.id,
     );
 
-    dispatch(setLocalWishlist(updatedOptimistic));
+    dispatch(setWishlist({ items: updatedOptimistic }));
     // alert(`${product.name} removed from your wishlist.`);
     onOptimisticAdd?.(`${product.name} removed from your wishlist.`);
 
     try {
-      await removeWishlistItem(product.id);
-      setTimeout(() => dispatch(fetchWishlistProducts(userId)), 150);
+      await removeWishlistItemDB(product.id);
+      const items = await getWishlistDB(userId);
+      if (items) {
+        dispatch(
+          setWishlist({
+            items: items,
+          }),
+        );
+      }
     } catch (error) {
       console.error("Failed removing from wishlist:", error);
-      dispatch(setLocalWishlist(previousWishlist)); // rollback
+       dispatch(setWishlist({ items: previousWishlist }));
       return {
         type: "error",
-        message: `Failed to remove item. Please try again.`,
+        message: `Failed to remove item. Please try again`,
       };
     }
   } else {
@@ -61,16 +63,28 @@ export const toggleWishlistUtil = async ({
       { productId: product.id, ...product },
     ];
 
-    dispatch(setLocalWishlist(updatedOptimistic));
+       dispatch(setWishlist({ items: updatedOptimistic }));
     onOptimisticAdd?.(`${product.name} added to your wishlist.`);
 
     try {
-      await addToWishlist(userId, product.id);
-      setTimeout(() => dispatch(fetchWishlistProducts(userId)), 150);
+      await addToWishlistDB(userId, product.id);
+      const items = await getWishlistDB(userId);
+      if (items) {
+        dispatch(
+          setWishlist({
+            items: items,
+
+          }),
+        );
+      }
     } catch (error) {
       console.error("Failed adding to wishlist:", error);
-      dispatch(setLocalWishlist(previousWishlist)); // rollback
-       return {
+      dispatch(
+        setWishlist({
+          items: previousWishlist
+        }),
+      );
+      return {
         type: "error",
         message: `Failed to add item. Please try again.`,
       };

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../api/auth/[...nextauth]/auth.config";
 
-export async function addToWishlist(userId: number, productId: number) {
+export async function addToWishlistDB(userId: number, productId: number) {
   if (!userId) {
     console.warn("❌ User must be logged in to add to wishlist.");
     return;
@@ -32,7 +32,7 @@ export async function addToWishlist(userId: number, productId: number) {
 }
 
 
-export async function removeWishlistItem(productId: number) {
+export async function removeWishlistItemDB(productId: number) {
   const session = await getServerSession(authConfig);
 
   if (!session?.user?.id) {
@@ -65,3 +65,32 @@ export async function removeWishlistItem(productId: number) {
     throw new Error("Failed to remove wishlist item.");
   }
 }
+
+
+export async function getWishlistDB(userId: number) {
+  if (!userId) {
+    console.warn("❌ User must be logged in to fetch wishlist.");
+    return [];
+  }
+
+  try {
+    const wishlist = await prisma.wishlist.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        product: true, // remove this if you only want productId
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    console.log("✅ Wishlist fetched:", wishlist.length);
+    return wishlist;
+  } catch (error) {
+    console.error("❌ Error fetching wishlist:", error);
+    return [];
+  }
+}
+
