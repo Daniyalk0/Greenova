@@ -6,6 +6,7 @@ import { RootState } from "@/src/store/store";
 import ProductCard from "../ui/productCard";
 import RouteCategoryPills from "../ui/RouteCategoryPills";
 import SeasonSelect from "../ui/SeasonSelect";
+import { buildProductOptions } from "@/lib/productOptions";
 
 const CategoryCommonComponent = ({ type, isSeasonalPage } : {type: any, isSeasonalPage: any}) => {
 
@@ -63,7 +64,7 @@ useEffect(() => {
         item.subCategory &&
         item.subCategory.toLowerCase() === (type as any).toLowerCase()
     );
-    console.log("matched in else", matched);
+
   }
 
   setFilteredProducts(matched);
@@ -112,12 +113,7 @@ useEffect(() => {
             product={p}
              wishlist={wishlistItems && wishlistItems}
               cart={cartProducts && cartProducts}
-            options={
-              p.availableWeights?.map((w:number) => ({
-                weight: w,
-                price: (p.basePricePerKg || 0) * w,
-              })) || []
-            }
+          options={buildProductOptions(p)}
           />
         ))}
       </div>

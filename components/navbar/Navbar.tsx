@@ -23,6 +23,7 @@ const Navbar = () => {
 
     const { isNextAuthUser } = useAuthSource();
     const {total} = calcOrderSummary(cartProducts, isNextAuthUser);
+    
       const { data: session } = useSession();
 
 

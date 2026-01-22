@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin, Search, X } from "lucide-react";
+import { MapPin, Search, X, Loader2 } from "lucide-react";
 import { getCurrentLocation } from "@/lib/getCurrentLocation";
 // import { searchPlacesOSM } from "@/lib/searchPlacesOSM";
 import { reverseGeocodeOSM } from "@/lib/reverseGeocodeOSM";
@@ -11,6 +11,7 @@ import { AppLocation } from "@/src/types/next-auth";
 import { saveLocationToLocalStorage } from "@/lib/localStorageLocation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
+import { toast } from "react-toastify";
 // import { AppLocation } from "@/types/location";
 
 type LocationModalProps = {
@@ -22,6 +23,7 @@ const LocationModal = ({ open, onClose, onSelect }: LocationModalProps) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   // const [selectedLocation, setSelectedLocation] = useState<AppLocation | null>(null);
 
   const selectedLocation = useSelector(
@@ -31,10 +33,10 @@ const LocationModal = ({ open, onClose, onSelect }: LocationModalProps) => {
   console.log("selectedLocation", selectedLocation);
 
   const handleClose = () => {
-  setQuery("");
-  onClose();
-  setResults([]);
-};
+    setQuery("");
+    onClose();
+    setResults([]);
+  };
 
 
   const handleUseCurrentLocation = async () => {
@@ -43,16 +45,32 @@ const LocationModal = ({ open, onClose, onSelect }: LocationModalProps) => {
 
       const { lat, lng } = await getCurrentLocation();
       const location = await reverseGeocodeOSM(lat, lng);
-      
+
       onSelect?.(location);
 
       handleClose();
-    } catch (err) {
-      console.error("Location detection failed", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    } catch (err: any) {
+      switch (err.type) {
+        case "PERMISSION_DENIED":
+          toast.error(
+            "Location access was denied."
+          );
+          break;
+
+        case "POSITION_UNAVAILABLE":
+          toast.error("Unable to detect your location. Try again later.");
+          break;
+
+        case "TIMEOUT":
+          toast.error("Location request timed out. Please try again.");
+          break;
+
+        default:
+          toast.error("Something went wrong while fetching location.");
+      }
+    } setLoading(false);
+  }
+
 
   const handleSearch = async (value: string) => {
     setQuery(value);
@@ -123,18 +141,31 @@ const LocationModal = ({ open, onClose, onSelect }: LocationModalProps) => {
           {/* Detect location */}
           <button
             onClick={handleUseCurrentLocation}
-            className="flex items-center gap-3 w-full p-3 border rounded-xl hover:bg-gray-50 transition"
+            disabled={loading}
+            className={`flex items-center gap-3 w-full p-3 border rounded-xl transition
+    ${loading
+                ? "opacity-70 cursor-not-allowed"
+                : "hover:bg-gray-50"
+              }`}
           >
-            <MapPin className="w-5 h-5 text-green-600" />
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-green-600" />
+            ) : (
+              <MapPin className="w-5 h-5 text-green-600" />
+            )}
+
             <div className="text-left font-monasans_semibold">
               <p className="text-sm font-medium text-gray-900">
-                Use current location
+                {loading ? "Detecting your location…" : "Use current location"}
               </p>
               <p className="text-xs text-gray-500">
-                Automatically detect location
+                {loading
+                  ? "This may take a few seconds"
+                  : "Automatically detect location"}
               </p>
             </div>
           </button>
+
           {/* Current selected location */}
           {selectedLocation && (
             <div className="flex items-center gap-3 w-full p-3 border rounded-xl bg-gray-50">

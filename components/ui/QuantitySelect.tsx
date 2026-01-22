@@ -2,11 +2,7 @@
 import { useEffect, useState } from "react"
 import { ChevronDown, Check } from "lucide-react"
 
-// const options = [
-//   { id: 1, label: "1 kg - ₹120" },
-//   { id: 2, label: "2 kg - ₹230" },
-//   { id: 5, label: "5 kg - ₹550" },
-// ]
+
 type Option = {
   weight: number
   price: number
@@ -40,8 +36,7 @@ export default function QuantitySelect({ options, onSelect, className, headingCl
     }
   }, [isOpen]);
 
-
-
+  
   return (
     <div className={`mt-3 font-dmsans_light relative ${className}`}>
       {/* ✅ Mobile (< sm) → Trigger button */}
@@ -78,47 +73,47 @@ export default function QuantitySelect({ options, onSelect, className, headingCl
         {/* Dropdown list */}
         {desktopOpen && (
           <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-md">
-           {options.map((opt, index) => {
-  const isSelected = selected?.weight === opt.weight;
+            {options.map((opt, index) => {
+              const isSelected = selected?.weight === opt.weight;
 
-  return (
-    <button
-      key={index}
-      onClick={() => {
-        setDesktopOpen(false);
-        handleSelect(opt);
-      }}
-      className={`flex justify-between items-center w-full px-3 py-2 text-sm rounded-lg hover:bg-green-50
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setDesktopOpen(false);
+                    handleSelect(opt);
+                  }}
+                  className={`flex justify-between items-center w-full px-3 py-2 text-sm rounded-lg hover:bg-green-50
         ${isSelected
-          ? "text-green-700 font-medium bg-green-50"
-          : "text-gray-700"
-        }
+                      ? "text-green-700 font-medium bg-green-50"
+                      : "text-gray-700"
+                    }
       `}
-    >
-      {/* LEFT: Weight + Price */}
-      <div className="flex items-center gap-2">
-        <span>{opt.weight} kg</span>
+                >
+                  {/* LEFT: Weight + Price */}
+                  <div className="flex items-center gap-2">
+                    <span>{opt.weight} kg</span>
 
-        <div className="flex items-center gap-1">
-          <span className="font-semibold">
-            ₹{opt.price.toFixed(0)}
-          </span>
+                    <div className="flex items-center gap-1">
+                      <span className="font-semibold">
+                        ₹{opt.price.toFixed(0)}
+                      </span>
 
-          {opt.originalPrice && opt.originalPrice > opt.price && (
-            <span className="text-xs text-gray-400 line-through">
-              ₹{opt.originalPrice.toFixed(0)}
-            </span>
-          )}
-        </div>
-      </div>
+                      {opt.originalPrice && opt.originalPrice > opt.price && (
+                        <span className="text-xs text-gray-400 line-through">
+                          ₹{opt.originalPrice.toFixed(0)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-      {/* RIGHT: Check icon */}
-      {isSelected && (
-        <Check className="w-4 h-4 text-green-600 shrink-0" />
-      )}
-    </button>
-  );
-})}
+                  {/* RIGHT: Check icon */}
+                  {isSelected && (
+                    <Check className="w-4 h-4 text-green-600 shrink-0" />
+                  )}
+                </button>
+              );
+            })}
 
           </div>
         )}
@@ -148,38 +143,38 @@ export default function QuantitySelect({ options, onSelect, className, headingCl
             <h3 className="text-sm font-medium mb-3 text-gray-700">Choose Quantity</h3>
 
             <div className="flex flex-col gap-2 overflow-y-auto max-h-[28vh]">
-             {options.map((opt, index) => {
-  const isSelected = selected?.weight === opt.weight;
+              {options.map((opt, index) => {
+                const isSelected = selected?.weight === opt.weight;
 
-  return (
-    <button
-      key={index}
-      onClick={() => handleSelect(opt)}
-      className={`px-3 py-2 text-sm rounded-lg border text-left transition
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleSelect(opt)}
+                    className={`px-3 py-2 text-sm rounded-lg border text-left transition
         ${isSelected
-          ? "border-green-600 bg-green-50 text-green-700"
-          : "border-gray-200 hover:bg-gray-100 text-gray-700"
-        }
+                        ? "border-green-600 bg-green-50 text-green-700"
+                        : "border-gray-200 hover:bg-gray-100 text-gray-700"
+                      }
       `}
-    >
-      <div className="flex items-center gap-2">
-        <span>{opt.weight} kg</span>
+                  >
+                    <div className="flex items-center gap-2">
+                      <span>{opt.weight} kg</span>
 
-        <div className="flex items-center gap-1">
-          <span className="font-semibold">
-            ₹{opt.price.toFixed(0)}
-          </span>
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold">
+                          ₹{opt.price.toFixed(0)}
+                        </span>
 
-          {opt.originalPrice && opt.originalPrice > opt.price && (
-            <span className="text-xs text-gray-400 line-through">
-              ₹{opt.originalPrice.toFixed(0)}
-            </span>
-          )}
-        </div>
-      </div>
-    </button>
-  );
-})}
+                        {opt.originalPrice && opt.originalPrice > opt.price && (
+                          <span className="text-xs text-gray-400 line-through">
+                            ₹{opt.originalPrice.toFixed(0)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
 
             </div>
           </div>

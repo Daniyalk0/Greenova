@@ -49,14 +49,17 @@ export default async function ProductPage({ params }: PageProps) {
     <div className="flex flex-col gap-4 ">
 
       {/* Basic info */}
-      {/* <h1 className="text-lg sm:text-xl lg:text-3xl font-monasans_bold text-gray-900">
+      <div className="flex flex-col gap-2">
+
+      <h1 className="text-[1.7rem] sm:text-[3rem] font-dmsans_semibold text-center w-fit text-[#024418] ">
         {product.name}
-      </h1> */}
-     <Heading text={product.name} className="!font-dmsans_semibold text-3xl w-fit text-[#024418]" notationType={"box"} color="#035E22" />
+      </h1>
+     {/* <Heading text={product.name} className="!font-dmsans_semibold text-3xl w-fit text-[#024418]" notationType={"box"} color="#035E22" /> */}
 
       <p className="text-[#024418] text-sm leading-relaxed font-dmsans_light md:text-lg">
         {product.description}
       </p>
+      </div>
 
       {/* <p className="text-lg sm:text-xl font-bold text-gray-900 font-dmsans_semibold">
         ₹{product.price}

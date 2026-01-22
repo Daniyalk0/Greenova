@@ -7,7 +7,7 @@ import React from "react";
 
 const OrderSummary = ({ address, products }: { address?: AppLocation | null; products: any[] }) => {
  const { isNextAuthUser } = useAuthSource();
- const { subtotal, deliveryFee, discount, total } =
+ const { subtotal, discount, total } =
     calcOrderSummary(products, isNextAuthUser);
     
  const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
@@ -62,7 +62,7 @@ const OrderSummary = ({ address, products }: { address?: AppLocation | null; pro
         </div>
         <div className="flex justify-between">
           <span>Delivery Fee</span>
-          <span>₹{deliveryFee}</span>
+          <span>₹0</span>
         </div>
         <hr className="my-2" />
         <div className="flex justify-between font-semibold text-lg">

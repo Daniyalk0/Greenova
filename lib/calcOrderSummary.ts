@@ -55,17 +55,22 @@ export const calcOrderSummary = (
   const discountedPrice = Math.max(0, safeSubtotal - safeDiscount);
 
   const hasProducts = products.length > 0;
-  const deliveryFee = hasProducts ? 30 : 0;
+  // const deliveryFee = hasProducts ? 30 : 0;
 
-  const total = Math.max(0, discountedPrice + deliveryFee);
+  const total = Math.max(0, discountedPrice );
 
   return {
     subtotal: safeSubtotal,       // before discount
     discount: safeDiscount,       // total discount amount
     discountedPrice,              // after discount, before delivery
-    deliveryFee,
     total,                        // final payable amount
     hasProducts,
   };
 };
 
+
+export function getItemsTotal(items: any[] = []): number {
+  return items.reduce((sum, item) => {
+    return sum + (item.totalPrice ?? 0);
+  }, 0);
+}
