@@ -169,7 +169,7 @@ const UserMenu = () => {
               disabled={loggingOut}
               className={`px-5 py-2 sm:py-3 text-left text-sm font-dmsans_semibold transition ${loggingOut
                 ? "text-red-400 cursor-not-allowed"
-                : "text-red-600 hover:bg-red-50"}`}
+                : "text-red-600 "}`}
             >
               <span className="inline-flex items-center gap-2">
                 {loggingOut && (

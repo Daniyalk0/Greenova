@@ -50,8 +50,8 @@ const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
                 <span className="text-sm text-gray-900 font-monasans_semibold">
                   {itemCount} items
                 </span>
-                <span className="text-xs text-gray-600">
-                  ₹{totalPrice}
+                <span className="text-xs text-gray-600 font-dmsans_semibold">
+                   ₹{totalPrice.toLocaleString()}
                 </span>
               </div>
             </div>

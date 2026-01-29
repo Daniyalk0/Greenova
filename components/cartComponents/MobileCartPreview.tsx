@@ -104,14 +104,12 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                 {/* Scrollable Items */}
                 <div className="flex-1 overflow-y-auto px-4">
                     {products.map((cartItem: any) => {
-                        const product = isNextAuthUser ? cartItem?.Product : cartItem;
-
                         const basePrice =
-                            (product?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
+                            (cartItem?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
                         const discountedPrice =
-                            product?.discount > 0
+                            cartItem?.discount > 0
                                 ? Math.round(
-                                    basePrice - (basePrice * product.discount) / 100
+                                    basePrice - (basePrice * cartItem.discount) / 100
                                 )
                                 : Math.round(basePrice);
                         return (
@@ -122,8 +120,8 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                 {/* Image */}
                                 <div className="w-14 h-14 rounded-lg bg-gray-100 overflow-hidden shrink-0">
                                     <img
-                                        src={product?.imageUrl}
-                                        alt={product?.name}
+                                        src={cartItem?.imageUrl}
+                                        alt={cartItem?.name}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -138,7 +136,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                 {/* Info */}
                                 <div className="flex-1 font-dmsans_semibold">
                                     <p className="text-sm">
-                                        {product?.name}
+                                        {cartItem?.name}
                                     </p>
 
                                     <p className="text-xs text-gray-500 font-dmsans_light">
@@ -154,13 +152,13 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                             </span>
 
                                             {/* Original price with strike-through */}
-                                            {product?.discount > 0 && (
+                                            {cartItem?.discount > 0 && (
                                                 <>
                                                     <span className="text-xs text-gray-400 line-through">
                                                         ₹{basePrice}
                                                     </span>
                                                     <span className="bg-green-100 text-green-800 text-[0.6rem] px-1 rounded">
-                                                        {product?.discount}% OFF
+                                                        {cartItem?.discount}% OFF
                                                     </span>
                                                 </>
                                             )}

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { forgotPasswordSchema } from "@/lib/validation";
+import AuthButton from "./ui/AuthButton";
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
@@ -43,40 +44,64 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 border rounded">
-      <h1 className="text-2xl font-bold mb-4">Forgot Password</h1>
+ <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-white to-green-100 flex items-center justify-center px-4">
+  <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    {/* Header */}
+    <div className="mb-8 text-center">
+      <h1 className="text-2xl font-semibold text-gray-800 font-monasans_semibold">
+        Forgot Password
+      </h1>
+      <p className="mt-1 text-sm text-gray-500 font-dmsans_light">
+        We’ll send you a password reset link
+      </p>
+    </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Email */}
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700 font-dmsans_semibold">
+          Email address
+        </label>
         <input
           type="email"
-          placeholder="Enter your email"
+          placeholder="you@example.com"
           {...register("email")}
-          className="border p-2 w-full mb-1"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 font-dmsans_light"
         />
         {errors.email && (
-          <p className="text-red-500 text-sm mb-2">{errors.email.message}</p>
+          <p className="mt-1 text-xs text-red-500 font-dmsans_light">
+            {errors.email.message}
+          </p>
         )}
+      </div>
 
-        {/* Submit button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
-        >
-          {loading ? (
-          <>
-              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-              Loading
-            </>
-          ) : (
-            "Forgot Password"
-          )}
-        </button>
-      </form>
+      {/* Submit */}
+      {/* <button
+        type="submit"
+        disabled={loading}
+        className="flex h-11 w-full items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-sm font-medium text-white transition hover:from-emerald-600 hover:to-green-700 disabled:opacity-60"
+      >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            Sending
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          </span>
+        ) : (
+          "Send Reset Link"
+        )}
+      </button> */}
+      <AuthButton
+       type="submit" loading={loading} loadingText="Sending...">Send Reset Link</AuthButton>
+    </form>
 
-      {serverMessage && (
-        <p className="mt-4 text-sm text-gray-700">{serverMessage}</p>
-      )}
-    </div>
+    {/* Server feedback */}
+    {serverMessage && (
+      <p className="mt-4 text-center text-sm text-emerald-600 font-monasans_semibold">
+        {serverMessage}
+      </p>
+    )}
+  </div>
+</div>
+
   );
 }

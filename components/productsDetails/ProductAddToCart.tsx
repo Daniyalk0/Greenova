@@ -110,8 +110,8 @@ export default function ProductAddToCart({
         {!selectedWeightPrice
           ? "Select quantity"
           : isExactInCart
-            ? "Already in Cart"
-            : `Add to Cart • ₹${selectedWeightPrice.price}`
+            ? "Added to Cart"
+            : `Add to Cart • ₹${selectedWeightPrice.price.toLocaleString()}`
         }
       </button>
 

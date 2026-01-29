@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import FacebookProvider from "next-auth/providers/facebook";
 import bcrypt from "bcryptjs";
 import type { NextAuthOptions, Profile } from "next-auth";
+import { User as PrismaUser } from "@prisma/client";
 
 interface FacebookProfile extends Profile {
   picture?: {
@@ -67,17 +68,21 @@ export const authConfig: NextAuthOptions = {
             console.log("user.email", user.email);
 
             throw new Error(
-              `OAUTH_NO_PASSWORD::${providerName}::${user.email}`
+              `OAUTH_NO_PASSWORD::${providerName}::${user.email}`,
             );
           } else {
             throw new Error(`OAUTH_NO_PASSWORD::unknown::${user.email}`);
           }
         }
 
+        if (!user.emailVerified) {
+          throw new Error("PLEASE_VERIFY_EMAIL");
+        }
+
         // Verify password with bcrypt
         const isValid = await bcrypt.compare(
           credentials.password,
-          user.password
+          user.password,
         );
         if (!isValid) return null;
 
@@ -117,17 +122,22 @@ export const authConfig: NextAuthOptions = {
       // Account linking on OAuth sign-in
       if (account && account.provider !== "credentials") {
         if (!user.email) throw new Error("Email is required");
-        
+
         // Find existing user by email (if any)
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
           include: { accounts: true },
         });
 
+        const imageUrl =
+          account.provider === "facebook"
+            ? ((profile as any)?.picture?.data?.url ?? "")
+            : ((profile as any)?.picture ?? profile?.image ?? "");
+
         if (existingUser) {
           // Check if provider is already linked
           const isLinked = existingUser.accounts.some(
-            (acc: any) => acc.provider === account.provider
+            (acc: any) => acc.provider === account.provider,
           );
 
           if (!isLinked) {
@@ -151,17 +161,20 @@ export const authConfig: NextAuthOptions = {
           await prisma.user.update({
             where: { id: existingUser.id },
             data: {
-              name: profile?.name ?? "",
-              image:
-                account.provider === "facebook"
-                  ? (profile as any)?.picture?.data?.url ?? ""
-                  : (profile as any)?.picture ?? profile?.image ?? "",
+              name: profile?.name ?? user.name ?? "",
+              image: imageUrl,
+              emailVerified: existingUser.emailVerified ?? new Date(),
             },
           });
           // Override user.id to unify session as existing user
           user.id = existingUser.id;
-        }
+          (user as PrismaUser).emailVerified =
+            existingUser.emailVerified ?? new Date();
+        }else {
+        // For new OAuth users, set the image too
+        user.image = imageUrl;
       }
+      } 
       return true;
     },
   },

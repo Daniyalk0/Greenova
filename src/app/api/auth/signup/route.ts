@@ -1,6 +1,6 @@
 // app/api/auth/signup/route.ts
 
-import { registerUser } from "@/src/app/signup/actions";
+import { registerUser } from "@/src/app/(auth)/signup/actions";
 import { NextResponse } from "next/server";
 // import { registerUser } from '@/app/actions/auth/registerUser';
 

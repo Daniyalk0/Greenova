@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { setPasswordSchema } from "@/lib/validation";
 import { Eye, EyeClosed } from "lucide-react";
 import generatePassword from "@/lib/passwordGenerator";
+import AuthButton from "./ui/AuthButton";
 
 type FormData = z.infer<typeof setPasswordSchema>;
 
@@ -69,64 +70,104 @@ export default function SetPasswordForm({ email, provider }: SetPasswordFormProp
     const EyeIcon = showPassword ? EyeClosed : Eye;
 
   return (
-    <main className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 mt-10">
-      <h1 className="mb-10 text-xl">Set Password</h1>
+   <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-white to-green-100 flex items-center justify-center px-4">
+  <main className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    {/* Header */}
+    <div className="mb-8 text-center">
+      <h1 className="text-2xl font-semibold text-gray-800 font-monasans_semibold">
+        Set Password
+      </h1>
+      <p className="mt-1 text-sm text-gray-500 font-dmsans_light">
+        Create a password to secure your account
+      </p>
+    </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column" }}>
-        <label htmlFor="email">Email</label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Email */}
+      <div>
+        <label
+          htmlFor="email"
+          className="mb-1 block text-sm font-medium text-gray-700 font-dmsans_semibold"
+        >
+          Email
+        </label>
         <input
           id="email"
           type="email"
-          placeholder="example@gmail.com"
           value={email}
           readOnly
-          style={{ marginBottom: 12, padding: 8, background: "#f5f5f5" }}
+          className="w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-sm text-gray-500"
         />
+      </div>
 
-        <label htmlFor="newPassword">New Password</label>
-         <div className="flex w-full relative">
-
+      {/* New Password */}
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700 font-dmsans_semibold">
+          New Password
+        </label>
+        <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder="Create a strong password"
             {...register("newPassword")}
-            className="w-full mb-1 p-2 border rounded"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
           />
           <EyeIcon
-            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
-            onClick={() => setShowPassword((prev) => !prev)}
+            onClick={() => setShowPassword((p) => !p)}
+            className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
           />
         </div>
-        <div className="flex items-center justify-between mb-3">
-          <p className={`text-red-500 text-xs  ${errors.newPassword ? 'opacity-1' : 'opacity-0'}`}>{errors?.newPassword?.message}</p>
 
-          <button
-            type="button"
-            onClick={handleGeneratePassword}
-            className="bg-blue-500 text-white px-3 rounded"
+        <div className="mt-2 flex items-center justify-between">
+          <p
+            className={`text-xs text-red-500 ${
+              errors.newPassword ? "opacity-100" : "opacity-0"
+            }`}
           >
-            Generate
-          </button>
-        </div>
+            {errors?.newPassword?.message}
+          </p>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
+         <button
+          type="button"
+          onClick={handleGeneratePassword}
+          className="text-xs sm:text-sm px-3 py-1.5 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200 font-dmsans_light transition-all duration-300"
         >
-          {loading ? (
-           <>
-              Changing
-              <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-            </>
-          ) : (
-            "Change Password"
-          )}
+          Generate
         </button>
-      </form>
+        </div>
+      </div>
 
-      {serverMessage && <p style={{ color: "green", marginTop: 12 }}>{serverMessage}</p>}
-      {serverError && <p style={{ color: "red", marginTop: 12 }}>{serverError}</p>}
-    </main>
+      {/* Submit */}
+      {/* <button
+        type="submit"
+        disabled={loading}
+        className="flex h-11 w-full items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-sm font-medium text-white transition hover:from-emerald-600 hover:to-green-700 disabled:opacity-60"
+      >
+        {loading ? (
+          <span className="flex items-center gap-2">
+            Setting
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          </span>
+        ) : (
+          "Set Password"
+        )}
+      </button> */}
+      <AuthButton type="submit" loading={loading} loadingText="Setting...">Set Password</AuthButton>
+    </form>
+
+    {/* Server feedback */}
+    {serverMessage && (
+      <p className="mt-4 text-center text-sm text-emerald-600">
+        {serverMessage}
+      </p>
+    )}
+    {serverError && (
+      <p className="mt-4 text-center text-sm text-red-500">
+        {serverError}
+      </p>
+    )}
+  </main>
+</div>
+
   );
 }

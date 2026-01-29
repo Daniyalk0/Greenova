@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import Home from './(homePage)/Home';
+// import Home from './(homePage)/Home';
 import { useDispatch, useSelector } from 'react-redux';
 // import { fetchProducts } from '../store/productsSlice';
-import { AppDispatch, RootState } from '../store/store';
+// import { AppDispatch, RootState } from '../store/store';
 import { useSession } from 'next-auth/react';
-import { fetchProducts } from '../store/productsSlice';
+import { fetchProducts } from '@/src/store/productsSlice';
+import { AppDispatch } from '@/src/store/store';
+import Home from './(homePage)/Home';
+// import { fetchProducts } from '../store/productsSlice';
 
 const Page = () => {
   const dispatch = useDispatch<AppDispatch>();

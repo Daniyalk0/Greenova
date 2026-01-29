@@ -8,7 +8,7 @@ import { toggleWishlistUtil } from "@/lib/wishlistUtils";
 import { useSession } from "next-auth/react";
 
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 
 const placeholders = [
@@ -131,12 +131,18 @@ export default function SearchPopup() {
 
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  const handleProductRoute = (slug: string) => {
+    setIsOpen(false);
+    router.push(`/products/${slug}`);
+  }
 
 
   return (
@@ -266,8 +272,9 @@ export default function SearchPopup() {
               );
 
               return (
-                <Link
-                href={`/products/${item.slug}`}
+                <div
+                // href={`/products/${item.slug}`}
+                onClick={() => handleProductRoute(item?.slug)}
                   key={item.id}
                   className="p-2 rounded-lg bg-white shadow-sm hover:shadow-md
                        transition cursor-pointer flex items-center gap-3 border"
@@ -308,7 +315,7 @@ export default function SearchPopup() {
                   >
                     Add
                   </button>
-                </Link>
+                </div>
               );
             })}
           </ul>

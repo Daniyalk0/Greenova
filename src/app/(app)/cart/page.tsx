@@ -3,13 +3,13 @@ import CartProductcard from '@/components/cartComponents/CartProductcard'
 import OrderSummary from '@/components/cartComponents/OrderSummary'
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
-import { removeCartItem } from '../actions/cart'
+import { removeCartItem } from '../../actions/cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/src/store/store'
 import { setCart } from '@/src/store/cartProductsSlice'
 import { toast } from 'react-toastify'
 import { addToCartUtil } from '@/lib/addToCartUtil'
-import { restoreCartItem } from '../actions/restoreCartItem'
+import { restoreCartItem } from '../../actions/restoreCartItem'
 // import { setLocalCart } from "../../store/cartProductsSlice"
 
 const Page = () => {

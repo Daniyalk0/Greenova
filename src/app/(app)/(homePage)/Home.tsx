@@ -24,11 +24,8 @@ const Home = () => {
     <Hero/>
     <Banner/>
     <SeasonalHighlights/>
-    {/* <Categories/> */}
-    {/* <Banner/> */}
     <WhyChooseUs/>
     <Reviews/>
-    {/* <Footer/> */}
     </div>
   );
 };

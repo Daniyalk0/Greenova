@@ -7,6 +7,7 @@ import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import AuthButton from "./ui/AuthButton";
 
 type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
 
@@ -16,7 +17,7 @@ const ChangePasswordForm = () => {
     const [showOld, setShowOld] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    
+
     const {
         register,
         handleSubmit,
@@ -61,93 +62,124 @@ const ChangePasswordForm = () => {
     const ConfirmEyeIcon = showConfirm ? EyeClosed : Eye;
 
     return (
-        <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 mt-10">
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            <form onSubmit={handleSubmit(submit)} className="space-y-4">
-                {/* Old password */}
-                <div className="flex w-full relative">
-
-                    <input
-                        type={showOld ? "text" : "password"}
-                        placeholder="Password"
-                        {...register("oldPassword")}
-                        className="w-full mb-1 p-2 border rounded"
-                    />
-                    <OldEyeIcon
-                        className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
-                        onClick={() => setShowOld((prev) => !prev)}
-                    />
-                </div>
-                {errors.oldPassword && (
-                    <p className="text-red-500 text-xs mb-3">{errors.oldPassword.message}</p>
-                )}
-
-                {/* New password */}
-                <div>
-                    <label className="block text-sm font-medium mb-1">New Password</label>
-                    <div className="flex w-full relative">
-
-                        <input
-                            type={showNew ? "text" : "password"}
-                            placeholder="Password"
-                            {...register("newPassword")}
-                            className="w-full mb-1 p-2 border rounded"
-                        />
-                        <NewEyeIcon
-                            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
-                            onClick={() => setShowNew((prev) => !prev)}
-                        />
-                    </div>
-                    {errors.newPassword && (
-                        <p className="text-red-500 text-xs mb-3">{errors.newPassword.message}</p>
-                    )}
-                </div>
-
-                {/* Confirm new password */}
-                <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Confirm New Password
-                    </label>
-                    <div className="flex w-full relative">
-
-                        <input
-                            type={showConfirm ? "text" : "password"}
-                            placeholder="Password"
-                            {...register("confirmPassword")}
-                            className="w-full mb-1 p-2 border rounded"
-                        />
-                        <ConfirmEyeIcon
-                            className="absolute top-[25%] right-[0%] w-[10%] h-[35%] cursor-pointer text-zinc-400"
-                            onClick={() => setShowConfirm((prev) => !prev)}
-                        />
-                    </div>
-                    {errors.confirmPassword && (
-                        <p className="text-red-500 text-xs mb-3">{errors.confirmPassword.message}</p>
-                    )}
-                </div>
-
-                {/* Submit button */}
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-cyan-500 h-10 text-white py-2 rounded hover:bg-cyan-600 flex items-center justify-center"
-                >
-                    {loading ? (
-                        <>
-                            Changing
-                            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-                        </>
-                    ) : (
-                        "Change Password"
-                    )}
-                </button>
-                {message && (
-                    <p className={`text-sm ${message.includes("incorrect") ? "text-red-500" : "text-green-600"}`}>
-                        {message}
+        <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-white to-green-100 flex items-center justify-center px-4">
+            <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                {/* Header */}
+                <div className="mb-6 text-center">
+                    <h2 className="text-2xl text-gray-800 font-monasans_semibold">
+                        Change Password
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-500 font-dmsans_light">
+                        Make sure your new password is strong and secure
                     </p>
-                )}
-            </form>
+                </div>
+
+                <form onSubmit={handleSubmit(submit)} className="space-y-7">
+                    {/* Old password */}
+                    <div className="relative">
+                        <label className="mb-1 block text-sm font-dmsans_semibold text-gray-700">
+                            Current Password
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={showOld ? "text" : "password"}
+                                placeholder="Enter current password"
+                                {...register("oldPassword")}
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 font-dmsans_light"
+                            />
+                            <OldEyeIcon
+                                onClick={() => setShowOld((p) => !p)}
+                                className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+                            />
+                        </div>
+                        {errors.oldPassword && (
+                            <p className="mt-1 text-xs text-red-500 font-dmsans_light absolute ">
+                                {errors.oldPassword.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* New password */}
+                    <div>
+                        <label className="mb-1 block text-sm font-dmsans_semibold text-gray-700">
+                            New Password
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={showNew ? "text" : "password"}
+                                placeholder="Create a new password"
+                                {...register("newPassword")}
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 font-dmsans_light"
+                            />
+                            <NewEyeIcon
+                                onClick={() => setShowNew((p) => !p)}
+                                className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+                            />
+                        </div>
+                        {errors.newPassword && (
+                            <p className="mt-1 absolute text-xs text-red-500 font-dmsans_light">
+                                {errors.newPassword.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Confirm password */}
+                    <div className="relative">
+                        <label className="mb-1 block text-sm font-dmsans_semibold text-gray-700">
+                            Confirm New Password
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={showConfirm ? "text" : "password"}
+                                placeholder="Re-enter new password"
+                                {...register("confirmPassword")}
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 font-dmsans_light"
+                            />
+                            <ConfirmEyeIcon
+                                onClick={() => setShowConfirm((p) => !p)}
+                                className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"
+                            />
+                        </div>
+                        {errors.confirmPassword && (
+                            <p className="mt-1 absolute text-xs text-red-500 font-dmsans_light">
+                                {errors.confirmPassword.message}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Submit */}
+                    {/* <button
+      type="submit"
+      disabled={loading}
+      className="flex h-11 w-full items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-sm font-medium text-white transition hover:from-emerald-600 hover:to-green-700 disabled:opacity-60"
+    >
+      {loading ? (
+        <span className="flex items-center gap-2">
+          Updating
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+        </span>
+      ) : (
+        "Update Password"
+      )}
+    </button> */}
+
+                    <AuthButton type="submit" loading={loading} loadingText="Updating...">Update Password</AuthButton>
+
+                    {/* Feedback */}
+                    {message && (
+                        <p
+                            className={`text-center text-sm ${message.includes("incorrect")
+                                    ? "text-red-500"
+                                    : "text-emerald-600"
+                                }`}
+                        >
+                            {message}
+                        </p>
+                    )}
+                </form>
+            </div>
         </div>
+
     );
 };
 
