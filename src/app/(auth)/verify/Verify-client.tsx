@@ -25,15 +25,15 @@ export default function VerifyClient({ status }: { status: Status }) {
   }, [status, router]);
 
   if (status === "invalid") {
-    return <p className="font-semibold text-center">❌ Invalid verification link.</p>;
+    return <p className="font-dmsans_semibold text-center">❌ Invalid verification link.</p>;
   }
 
   if (status === "expired") {
-    return <p className="font-semibold text-center">⏰ Verification link has expired.</p>;
+    return <p className="font-dmsans_semibold text-center">⏰ Verification link has expired.</p>;
   }
 
   return (
-    <div className="space-y-2 font-semibold text-center">
+    <div className="space-y-2 font-dmsans_semibold text-center">
       {step >= 1 && <p>🔍 Verifying your email…</p>}
       {step >= 2 && <p>✅ Email verified</p>}
       {step >= 3 && <p>➡️ Redirecting to login…</p>}

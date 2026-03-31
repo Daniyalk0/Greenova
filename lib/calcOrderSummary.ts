@@ -1,71 +1,44 @@
-// export const calcOrderSummary = (products: any[]) => {
-//   const subtotal = Math.max(
-//     0,
-//     products.reduce((sum, item) => {
-//       const weight = item?.weight ?? 0;
-//       const price = item?.Product?.basePricePerKg ?? 0;
-//       return sum + price * weight;
-//     }, 0)
-//   );
-
-//   const hasProducts = products.length > 0;
-
-//   const deliveryFee = hasProducts ? 30 : 0;
-//   const discount = hasProducts ? 50 : 0;
-
-//   const total = Math.max(0, subtotal + deliveryFee - discount);
-
-//   return {
-//     subtotal,
-//     deliveryFee,
-//     discount,
-//     total,
-//     hasProducts,
-//   };
-// };
 
 export const calcOrderSummary = (
   products: any[],
-  isNextAuthUser: boolean // pass this flag from your component
 ) => {
-  const { subtotal, discount } = products.reduce(
-    (acc, item) => {
 
-      const weight = item?.weight ?? 0;
-      const pricePerKg = item?.basePricePerKg ?? 0;
-      const discountPercent = item?.discount ?? 0; // e.g. 7 = 7%
+  
+ const { subtotal, discountAmount, discountPercent } = products.reduce(
+  (acc, item) => {
+    const weight = item?.weight ?? 0;
+    const pricePerKg = item?.basePricePerKg ?? 0;
+    const productDiscount = item?.discount ?? 0; // % from product
 
-      const itemTotal = pricePerKg * weight;
-      const itemDiscount = itemTotal * (discountPercent / 100);
+    const itemTotal = pricePerKg * weight;
+    const itemDiscount = itemTotal * (productDiscount / 100);
 
-      acc.subtotal += itemTotal;
-      acc.discount += itemDiscount;
+    acc.subtotal += itemTotal;
+    acc.discountAmount += itemDiscount;
 
-      return acc;
-    },
-    { subtotal: 0, discount: 0 }
-  );
+    // just store the product discount %
+    acc.discountPercent = productDiscount;
 
-  const safeSubtotal = Math.max(0, Math.round(subtotal));
-  const safeDiscount = Math.min(
-    safeSubtotal,
-    Math.max(0, Math.round(discount))
-  );
+    return acc;
+  },
+  { subtotal: 0, discountAmount: 0, discountPercent: 0 }
+);
 
-  const discountedPrice = Math.max(0, safeSubtotal - safeDiscount);
+const safeSubtotal = Math.max(0, Math.round(subtotal));
+const safeDiscountAmount = Math.min(
+  safeSubtotal,
+  Math.max(0, Math.round(discountAmount))
+);
 
-  const hasProducts = products.length > 0;
-  // const deliveryFee = hasProducts ? 30 : 0;
+const discountedPrice = Math.max(0, safeSubtotal - safeDiscountAmount);
 
-  const total = Math.max(0, discountedPrice );
-
-  return {
-    subtotal: safeSubtotal,       // before discount
-    discount: safeDiscount,       // total discount amount
-    discountedPrice,              // after discount, before delivery
-    total,                        // final payable amount
-    hasProducts,
-  };
+return {
+  subtotal: safeSubtotal,
+  discountAmount: safeDiscountAmount, // money
+  discountPercent,                    // product %
+  discountedPrice,
+  total: discountedPrice
+};
 };
 
 

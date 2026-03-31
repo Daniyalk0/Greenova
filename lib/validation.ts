@@ -48,3 +48,27 @@ export const changePasswordSchema = z
     path: ["newPassword"],
     message: "New password cannot be the same as old password",
   });
+
+
+
+export const addressSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+
+  phone: z
+    .string()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10 digit phone"),
+
+  street: z.string().min(5, "Street address is required"),
+
+  city: z.string().min(2, "City is required"),
+
+  state: z.string().min(2, "State is required"),
+
+  pincode: z
+    .string()
+    .regex(/^\d{6}$/, "Pincode must be 6 digits"),
+
+  landmark: z.string().optional()
+})
+
+export type AddressFormValues = z.infer<typeof addressSchema>

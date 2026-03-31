@@ -2,33 +2,38 @@
 
 import { useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
+import { Season } from "@prisma/client";
 
 type SeasonOption = {
     id: number;
     label: string;
+    value: Season
 };
 
 type SeasonSelectProps = {
-    seasons: SeasonOption[];
-    onSelect: (season: SeasonOption) => void;
-    className?: string;
-    headingClass?: string;
+  seasons: SeasonOption[];
+  value: SeasonOption; // 👈 ADD THIS
+  onSelect: (season: SeasonOption) => void;
+  className?: string;
+  headingClass?: string;
 };
 
 export default function SeasonSelect({
     seasons,
+    value,
     onSelect,
     className,
     headingClass
 }: SeasonSelectProps) {
-    const defaultSeason = seasons[0];
-    const [selected, setSelected] = useState(defaultSeason);
+   
 
     const [isOpen, setIsOpen] = useState(false); // mobile
     const [desktopOpen, setDesktopOpen] = useState(false); // desktop
 
+const selected = value; // 👈 controlled
+
     const handleSelect = (season: SeasonOption) => {
-        setSelected(season);
+
         onSelect(season);
         setIsOpen(false);
         setDesktopOpen(false);

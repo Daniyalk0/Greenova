@@ -1,10 +1,41 @@
-// src/lib/products.ts
-// import { prisma } from "@/src/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { Category, Season } from "@prisma/client";
 
-import { prisma } from "./prisma";
+export async function getProducts({
+  category,
+  subCategory,
+  season,
+  limit = 20,
+}: {
+  category: Category;
+  subCategory?: string;
+  season?: Season;
+  limit?: number;
+}) {
 
-export async function getProductBySlug(slug: string) {
-  return prisma.product.findUnique({
-    where: { slug },
-  });
+
+ return prisma.product.findMany({
+  where: {
+    category,
+    isActive: true,
+    inStock: true,
+
+    ...(subCategory && { subCategory }),
+
+    ...(season && {
+      OR: [
+        { season },
+        { season: Season.ALL },
+      ],
+    }),
+  },
+  take: limit,
+ orderBy: [
+  { rating: "desc" },
+  { updatedAt: "desc" },
+],
+
+});
+
 }
+

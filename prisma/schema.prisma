@@ -15,6 +15,8 @@ model User {
   image         String?
   password      String?
   role          String        @default("customer")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   carts         Cart[]
   orders        Order[]
@@ -22,13 +24,13 @@ model User {
   sessions      Session[]
   locations     UserLocation?
   wishlist      Wishlist[]
+  addresses     Address[]
 }
 
 model Product {
   id               Int        @id @default(autoincrement())
   name             String
   slug             String     @unique
-  category         String
   subCategory      String?
   imageUrl         String
   calories         Float?
@@ -36,15 +38,21 @@ model Product {
   sugar            Float?
   carbohydrates    Float?
   protein          Float?
-  basePricePerKg   Float?
+  basePricePerKg   Float
   availableWeights Float[]
-  price            Float?
   rating           Float?
   discount         Float?
   description      String?
   inStock          Boolean    @default(true)
+  isActive         Boolean    @default(true)
+  isFeatured       Boolean    @default(false)
+  category         Category
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @default(now()) @updatedAt
+  season           Season     @default(ALL)
   carts            Cart[]
   wishlist         Wishlist[]
+  orderItems       OrderItem[]
 }
 
 model Cart {
@@ -55,8 +63,8 @@ model Cart {
   totalPrice Float
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  product    Product  @relation(fields: [productId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId, weight])
 }
@@ -66,20 +74,107 @@ model Wishlist {
   userId    Int
   productId Int
   createdAt DateTime @default(now())
-  product   Product  @relation(fields: [productId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
 
+
+
+enum PaymentMethod {
+  COD
+  RAZORPAY
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PLACED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  FAILED
+}
+
 model Order {
-  id        Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  createdAt   DateTime @default(now())
+
+  status      OrderStatus @default(PENDING)
+  paymentType PaymentMethod
+
+  total       Int
+
+  razorpayOrderId   String? @unique
+  razorpayPaymentId String?
+
+  addressId Int?
+
+  name    String
+  phone   String
+  street  String
+  city    String
+  state   String
+  pincode String
+
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address Address? @relation(fields: [addressId], references: [id])
+
+  items   OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+
+
+model OrderItem {
+  id              Int   @id @default(autoincrement())
+
+  orderId         Int
+  productId       Int
+
+  weight          Float
+
+  originalPrice   Int
+  discountPercent Int
+  discountedPrice Int
+  lineTotal       Int
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}
+
+model Address {
+  id        Int   @id @default(autoincrement())
+
   userId    Int
-  items     Json
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String
+  phone     String
+
+  street    String
+  city      String
+  state     String
+  pincode   String
+  country   String   @default("India")
+
+  landmark  String?
+
+  isDefault Boolean  @default(false)
+
   createdAt DateTime @default(now())
-  status    String   @default("pending")
-  total     Int
-  user      User     @relation(fields: [userId], references: [id])
+  updatedAt DateTime @updatedAt
+
+  orders    Order[]
+
+  @@index([userId])
 }
 
 model Account {
@@ -95,7 +190,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id])
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -105,7 +200,7 @@ model Session {
   sessionToken String   @unique
   userId       Int
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -125,7 +220,7 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userImage String?
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserLocation {
@@ -139,5 +234,17 @@ model UserLocation {
   state     String?
   pincode   String?
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Category {
+  FRUITS
+  VEGETABLES
+}
+
+enum Season {
+  WINTER
+  SUMMER
+  MONSOON
+  ALL
 }

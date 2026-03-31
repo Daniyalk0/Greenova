@@ -27,7 +27,7 @@ const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
           transition={{ duration: 0.25, ease: "easeOut" }}
           className="
           fixed bottom-3 left-3 right-3 z-[999]
-          sm:left-auto sm:right-4 sm:w-auto cursor-pointer
+          sm:left-4 sm:right-auto sm:w-auto cursor-pointer
         "
         >
           {/* Badge container */}
@@ -51,7 +51,7 @@ const CartBottomBadge = ({ itemCount, totalPrice }: Props) => {
                   {itemCount} items
                 </span>
                 <span className="text-xs text-gray-600 font-dmsans_semibold">
-                   ₹{totalPrice.toLocaleString()}
+                  ₹{totalPrice.toLocaleString()}
                 </span>
               </div>
             </div>

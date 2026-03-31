@@ -7,22 +7,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import LikedDrawer from "../likedProducts/LikedPopup";
 import { calcOrderSummary } from "@/lib/calcOrderSummary";
-import { useAuthSource } from "@/lib/useAuthSource";
-import { useUI } from "@/src/context/ui-context";
 import { setLocationToLocalStorage } from "@/lib/localStorageLocation";
 import { syncUserLocation } from "@/src/app/actions/syncLocation";
 import { setLocation } from "@/src/store/locationSlice";
 import { AppLocation } from "@/src/types/next-auth";
 
+
 const Navbar = () => {
-  const [itemCount, setItemCount] = useState<number | null>(10);
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
   const [isMobileView, setIsMobileView] = useState(false);
     const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-    const { isNextAuthUser } = useAuthSource();
-    const {total} = calcOrderSummary(cartProducts, isNextAuthUser);
+
+
+    const {total} = calcOrderSummary(cartProducts);
     
       const { data: session } = useSession();
 
@@ -32,7 +31,7 @@ const Navbar = () => {
       const location = useSelector(
         (state: RootState) => state.location.location
       );
-      const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
+ 
 
     
   useEffect(() => {
@@ -85,17 +84,39 @@ const Navbar = () => {
     await syncUserLocation(sessionUserId, newLocation);
   };
 
-return (
-  <>
-    {isMobileView ? (
-      <MobileNav itemCount={cartProducts.length} likedItemCount={wishlistItems.length} data={session}  setDrawerOpen={setDrawerOpen} total={total} handleLocationSelect={handleLocationSelect}/>
-    ) : (
-      <DesktopNav likedItemCount={wishlistItems.length}  itemCount={cartProducts.length} data={session} setDrawerOpen={setDrawerOpen} total={total} handleLocationSelect={handleLocationSelect}/>
-    )}
+  // const { selectedAddress } = useAddress();
 
-    {/* Always render LikedDrawer */}
-    <LikedDrawer isOpen={isDrawerOpen}  onClose={() => setDrawerOpen(false)} />
-  </>
+return (
+ <>
+  <div className="sm:hidden">
+    <MobileNav
+      itemCount={cartProducts.length}
+      likedItemCount={wishlistItems.length}
+      data={session}
+      setDrawerOpen={setDrawerOpen}
+      total={total}
+      handleLocationSelect={handleLocationSelect}
+    />
+  </div>
+
+  <div className="hidden sm:block">
+    <DesktopNav
+      likedItemCount={wishlistItems.length}
+      itemCount={cartProducts.length}
+      data={session}
+      setDrawerOpen={setDrawerOpen}
+      total={total}
+      handleLocationSelect={handleLocationSelect}
+     
+
+    />
+  </div>
+
+  <LikedDrawer
+    isOpen={isDrawerOpen}
+    onClose={() => setDrawerOpen(false)}
+  />
+</>
 );
 
 };

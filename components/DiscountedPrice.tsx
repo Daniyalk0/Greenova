@@ -6,7 +6,7 @@ const DiscountedPrice = ({ product, className }: { product: any, className?: str
   const discountPercent = product.discount ?? 0;
 
   const discountedPrice = Math.round(
-    product.price - (product.price * discountPercent) / 100
+    product.basePricePerKg - (product.basePricePerKg * discountPercent) / 100
   );
 
   const hasDiscount = discountPercent > 0;
@@ -31,7 +31,7 @@ const DiscountedPrice = ({ product, className }: { product: any, className?: str
       {hasDiscount && (
         <>
           <span className="text-sm text-gray-400 line-through">
-            ₹{product.price}
+            ₹{product.basePricePerKg}
           </span>
           {/* <span className="text-xs font-semibold text-green-600">
             {discountPercent}% OFF

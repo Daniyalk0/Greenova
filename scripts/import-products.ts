@@ -7,13 +7,16 @@ import fs from "fs";
 const prisma = new PrismaClient();
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 const products = JSON.parse(fs.readFileSync("products.json", "utf-8"));
 
 // 🧠 Helper: retry download
-async function downloadImageWithRetry(url: string, retries = 3): Promise<Buffer> {
+async function downloadImageWithRetry(
+  url: string,
+  retries = 3,
+): Promise<Buffer> {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await axios.get(url, { responseType: "arraybuffer" });
@@ -57,35 +60,41 @@ async function uploadImageToSupabase(imageUrl: string, fileName: string) {
 
 async function seed() {
   try {
-      await prisma.product.deleteMany({
-     where: { slug: { in: products.map((p: { slug: string }) => p.slug) } }
-
+    await prisma.product.deleteMany({
+      where: { slug: { in: products.map((p: { slug: string }) => p.slug) } },
     });
     console.log("🗑️ Existing products deleted");
     for (const product of products) {
       const fileName = `${product.slug}.jpg`;
 
-      const newImageUrl = await uploadImageToSupabase(product.image, fileName);
+      const newImageUrl = await uploadImageToSupabase(
+        product.imageUrl,
+        fileName,
+      );
 
       await prisma.product.create({
         data: {
           name: product.name,
           slug: product.slug,
-          category: product.category,
+          category: product.category.toUpperCase(), // Prisma enum: FRUIT / VEGETABLE
           subCategory: product.subCategory ?? null,
-          imageUrl: newImageUrl, // ✅ use Supabase URL
-          calories: product.nutritions?.calories ?? null,
-          fat: product.nutritions?.fat ?? null,
-          sugar: product.nutritions?.sugar ?? null,
-          carbohydrates: product.nutritions?.carbohydrates ?? null,
-          protein: product.nutritions?.protein ?? null,
+          imageUrl: newImageUrl, // Supabase URL
+
+          calories: product.calories ?? null,
+          fat: product?.fat ?? null,
+          sugar: product?.sugar ?? null,
+          carbohydrates: product?.carbohydrates ?? null,
+          protein: product?.protein ?? null,
+
           basePricePerKg: product.basePricePerKg ?? null,
           availableWeights: product.availableWeights ?? [],
-          price: product.basePricePerKg ?? null,
           rating: product.rating ?? null,
           discount: product.discount ?? null,
           description: product.description ?? null,
           inStock: product.inStock ?? true,
+
+          isFeatured: false, // default seeded products are not featured
+          isActive: true, // default active
         },
       });
 

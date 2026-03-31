@@ -30,7 +30,7 @@ const getPastelColor = (seed: string) => {
 /* ---------- component ---------- */
 
 const UserMenu = () => {
-  const { data: session } = useSession();
+ const { data: session, status } = useSession();
   const [open, setOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -58,20 +58,24 @@ const UserMenu = () => {
     }
   };
 
+if (status === "loading") {
+  return (
+    <div className="w-[90px] h-[38px] rounded-lg bg-gray-200 animate-pulse mr-2" />
+  );
+}
 
-  if (!session?.user) {
-    return (
-      <Link
-        href="/login"
-        className="px-4 mr-2 py-3 rounded-lg text-sm font-dmsans_semibold
-             bg-lime-500 text-white hover:bg-lime-600
-             transition inline-flex items-center"
-      >
-        Sign in
-      </Link>
-    );
-  }
-
+if (!session?.user) {
+  return (
+    <Link
+      href="/login"
+      className="px-4 mr-2 py-3 rounded-lg text-sm font-dmsans_semibold
+      bg-lime-500 text-white hover:bg-lime-600
+      transition inline-flex items-center"
+    >
+      Sign in
+    </Link>
+  );
+}
   const { email, name, image } = session.user;
   const initials = getInitials(name, email);
   const pastelBg = getPastelColor(email ?? name ?? "user");
@@ -153,6 +157,18 @@ const UserMenu = () => {
 
           {/* Actions */}
           <div className="flex flex-col">
+             {session?.user.role === "admin" && (
+            <button
+              onClick={() => {
+                setOpen(false);
+                window.location.href = "/admin";
+              }}
+              className="px-5 py-2 sm:py-3 text-left text-sm font-dmsans_semibold text-gray-700
+                         hover:bg-gray-100 transition"
+            >
+             Admin
+            </button>
+             )}
             <button
               onClick={() => {
                 setOpen(false);

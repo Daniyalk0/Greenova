@@ -15,7 +15,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
         (state: RootState) => state.cartUI.isCartOpen
     );
     const { isNextAuthUser } = useAuthSource();
-    const { total } = calcOrderSummary(products, isNextAuthUser);
+    const { total } = calcOrderSummary(products);
 
     const CLOSE_THRESHOLD = 120;
     const [dragY, setDragY] = React.useState(0);
@@ -164,8 +164,6 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                             )}
                                         </div>
 
-                                        {/* Quantity / Add control */}
-                                        <div className="h-7 w-20 bg-green-100 rounded" />
                                     </div>
                                 </div>
                             </div>

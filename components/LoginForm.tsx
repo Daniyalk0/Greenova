@@ -126,7 +126,7 @@ const LoginForm = () => {
   return (
     <div className="flex items-center justify-center w-full flex-col">
       {showVerified && (
-        <div className="mb-4 text-green-600 text-sm">
+        <div className="mb-4 text-green-600 text-sm font-dmsans_semibold">
           ✅ Email verified successfully. You can now log in.
         </div>
       )}
@@ -164,7 +164,7 @@ const LoginForm = () => {
               type="email"
               placeholder="Email address"
               {...register("email")}
-              className="w-full rounded-lg font-dmsans_semibold border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
             {errors.email && (
               <p className="text-xs text-red-500">{errors.email.message}</p>
@@ -178,7 +178,7 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 {...register("password")}
-                className="w-full rounded-lg font-dmsans_semibold border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
               <EyeIcon
                 onClick={() => setShowPassword((prev) => !prev)}

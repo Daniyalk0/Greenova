@@ -1,37 +1,27 @@
 "use client";
 
-import Link from "next/link";
 import SearchWithPopup from "./SearchWithPopup";
-import { ChevronDown, UserIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import WishlistIndicator from "../ui/WishlistIndicator";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import LocationModel from "../ui/LocationModel";
-import LocationModal from "../ui/LocationModel";
-import CartTagIndicator from "../ui/CartIndicator";
 import CartBottomBadge from "../ui/CartIndicator";
 import { UserMenuProps } from "./DesktopNav";
 import UserMenu from "./UserProfilePopUp";
 import Categoriesbar from "../categoriesBar/Categoriesbar";
-import { RootState } from "@/src/store/store";
-import { useSelector } from "react-redux";
 import { useUI } from "@/src/context/ui-context";
+import { useAddress } from "@/src/context/address-context";
 // import CartBottomBadge from "../ui/WishlistIndicator";
 
 const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, handleLocationSelect }: UserMenuProps) => {
     const { data: session } = useSession();
     const router = useRouter();
-    const [locationOpen, setLocationOpen] = useState(false)
-    // const [location, setLocation] = useState('')
-    const location = useSelector(
-        (state: RootState) => state.location.location
-    );
-
-     const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
-    
+    const { openAddressListModal, openAddressFormModal } = useUI();
+    const { addresses, selectedAddress } = useAddress();
 
     const [showTopActions, setShowTopActions] = useState(true);
+    
 
     useEffect(() => {
         const handleScroll = () => {
@@ -51,6 +41,22 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, hand
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+      const pathname = usePathname();
+    
+    const hideOnRoutes = [
+      "/cart",
+      "/checkout",
+      "/order-success",
+      "/orders",
+      "/login",
+      "/signup",
+      "/profile",
+    ];
+    
+    const shouldShowCategories = !hideOnRoutes.some((route) =>
+      pathname.startsWith(route)
+    );
+
 
     return (
         <div className="sticky top-0 z-[2000] bg-white sm:hidden border-2 ">
@@ -58,13 +64,21 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, hand
             <div className="flex items-center justify-between px-4 py-3">
                 {/* Location */}
                 <button
-            onClick={openLocationModal}
+                    onClick={() => {
+                        if (!addresses || addresses.length === 0) {
+                            openAddressFormModal();
+                        } else {
+                            openAddressListModal();
+                        }
+                    }}
                     className="flex flex-col items-start"
                 >
                     <span className="text-xs text-gray-500">Delivery to</span>
                     <div className="flex items-center gap-1">
                         <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-                            {location ? location.address : "Add delivery location"}
+                            {selectedAddress
+                                ? `${selectedAddress.city}, ${selectedAddress.state}`
+                                : "Add delivery location"}
                         </span>
                         <ChevronDown className="w-3 h-3 text-gray-600" />
                     </div>
@@ -106,14 +120,8 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, hand
 
 
 
-            <LocationModal
-                open={isLocationModalOpen}
-                onClose={closeLocationModal}
-                onSelect={handleLocationSelect}
-            />
-
             <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-            <Categoriesbar showTopActions={showTopActions} />
+            {shouldShowCategories && <Categoriesbar showTopActions={showTopActions} />}
         </div>
     );
 };

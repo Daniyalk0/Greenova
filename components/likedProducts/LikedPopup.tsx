@@ -22,6 +22,9 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
 
   const [localWishlist, setLocalWishlistState] = useState<any[]>([]);
 
+  console.log(localWishlist);
+  
+
   useEffect(() => {
     setLocalWishlistState(wishlist);
   }, [wishlist]);

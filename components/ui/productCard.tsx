@@ -11,6 +11,7 @@ import { addToCartUtil } from "@/lib/addToCartUtil"
 import Link from "next/link"
 import DiscountedPrice from "../DiscountedPrice"
 import { toast } from "react-toastify";
+import { cn } from "@/lib/utils"
 
 type Option = {
   weight: number
@@ -20,9 +21,12 @@ type Option = {
 type ProductCardProps = {
   options?: Option[]   // 👈 fix here
   // product: Product
-  cart: any[]
+  cart?: any[]
   product: any
-  wishlist: any[]
+  wishlist?: any[]
+  highlight?: boolean
+  enableSeasonHighlight?: boolean;
+
 }
 
 type SelectedWeightPrice = {
@@ -35,13 +39,13 @@ const ProductCard = ({
   // price = 120,
   options = [],
   product,
-  // img = "/apple.png"
-  // cart,
-  wishlist
+  highlight = false,
+  enableSeasonHighlight
 
 }: ProductCardProps) => {
 
   const cart = useSelector((state: RootState) => state.cartProducts.items);
+  const wishlist = useSelector((state: RootState) => state.wishlist.items);
   const [localProducts, setLocalProducts] = useState(cart || []);
   // const [wishList, setwishList] = useState(wishlist || [])
   const { data: session } = useSession()
@@ -125,16 +129,28 @@ const ProductCard = ({
     }
   }
 
+
   return (
 
     <div
-      className="
-    relative w-full bg-white rounded-xl
-    shadow-sm hover:shadow-md transition
-    px-3 pt-3 pb-4 cursor-pointer
-  "
+      className={cn(
+        "relative w-full bg-white rounded-xl shadow-sm hover:shadow-md transition px-3 pt-3 pb-4 cursor-pointer",
+        enableSeasonHighlight &&
+        (highlight
+          ? "opacity-100"
+          : "opacity-60 hover:opacity-90")
+      )}
     >
       {/* Wishlist Icon */}
+
+      {enableSeasonHighlight && highlight && (
+        <span className="absolute top-4 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded font-dmsans_light">
+          {product?.season && (
+            product.season.charAt(0).toUpperCase() + product.season.slice(1).toLowerCase()
+          )}
+        </span>
+      )}
+
       <button
         onClick={handleToggleWishlist}
         className="group relative w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300"
@@ -149,8 +165,8 @@ const ProductCard = ({
         <Heart
           size={20}
           className={`relative z-10 transition-colors duration-300 ${isInWishlist
-              ? "fill-green-700 text-green-700"
-              : "text-gray-500 group-hover:text-green-600"
+            ? "fill-green-700 text-green-700"
+            : "text-gray-500 group-hover:text-green-600"
             }`}
         />
       </button>

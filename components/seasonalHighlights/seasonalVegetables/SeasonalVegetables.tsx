@@ -4,8 +4,9 @@ import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
 import ProductCard from '../../ui/productCard'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/src/store/store';
+import { buildProductOptions } from '@/lib/productOptions';
 
-const SeasonalVegetables = () => {
+const SeasonalVegetables = ({vegetables}:any) => {
   // const options = [
   //   { id: 1, label: "1 kg - ₹120" },
   //   { id: 2, label: "2 kg - ₹230" },
@@ -65,31 +66,25 @@ const SeasonalVegetables = () => {
       <div
         className="
       flex gap-4 overflow-x-auto scrollbar-hide
-      md:grid md:grid-cols-4 md:overflow-visible
-      lg:grid-cols-5
+      lg:grid lg:grid-cols-5 sm:gap-6 lg:overflow-visible
     "
       >
-        {limitedProducts.map((p: any) => {
+        {vegetables?.map((p: any) => {
           if (!p) return null;
 
           return (
             <div
               key={p.id || p.name}
               className="
-            min-w-[160px]
-            md:min-w-0
+            min-w-[160px] md:min-w-[180px]
+            lg:min-w-0
           "
             >
               <ProductCard
                 product={p}
                 wishlist={wishlistItems}
                 cart={cartProducts}
-                options={
-                  p.availableWeights?.map((w: number) => ({
-                    weight: w,
-                    price: (p.basePricePerKg || 0) * w,
-                  })) || []
-                }
+                options={buildProductOptions(p)}
               />
             </div>
           );

@@ -8,21 +8,13 @@ import SearchWithPopup from "./SearchWithPopup";
 import NavHeart from "./NavHeart";
 import { MapPin, ChevronDown } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import LocationModal from "../ui/LocationModel";
+import { usePathname, useRouter } from "next/navigation";
 import WishlistIndicator from "../ui/WishlistIndicator";
 import CartBottomBadge from "../ui/CartIndicator";
-import UserProfilePopUp from "./UserProfilePopUp";
 import UserMenu from "./UserProfilePopUp";
 import Categoriesbar from "../categoriesBar/Categoriesbar";
-import { AppLocation } from "@/src/types/next-auth";
-import { useDispatch, useSelector } from "react-redux";
-import { persistLocation } from "@/lib/persistLocation";
-import { setLocation } from "@/src/store/locationSlice";
-import { RootState } from "@/src/store/store";
-import { setLocationToLocalStorage } from "@/lib/localStorageLocation";
-import { syncUserLocation } from "@/src/app/actions/syncLocation";
 import { useUI } from "@/src/context/ui-context";
+import { useAddress } from "@/src/context/address-context";
 
 export type UserMenuProps = {
   data: any;
@@ -39,52 +31,31 @@ const DesktopNav = ({
   data,
   setDrawerOpen,
   total,
-  handleLocationSelect
+
+
 }: UserMenuProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const [locationOpen, setLocationOpen] = useState(false);
-  // const [locationn, setLocationn] = useState<AppLocation | null>(null);
-  const dispatch = useDispatch();
 
-  const location = useSelector(
-    (state: RootState) => state.location.location
+
+ const { openAddressListModal, openAddressFormModal } = useUI();
+const { addresses, selectedAddress } = useAddress();
+
+  const pathname = usePathname();
+
+  const hideOnRoutes = [
+    "/cart",
+    "/checkout",
+    "/order-success",
+    "/orders",
+    "/login",
+    "/signup",
+    "/profile",
+  ];
+
+  const shouldShowCategories = !hideOnRoutes.some((route) =>
+    pathname.startsWith(route)
   );
-  const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
-
-// const handleLocationSelect = async (newLocation: AppLocation) => {
-//   // Get current location from Redux
-//   const sessionUserId = session?.user?.id;
-
-//   // 1️⃣ Check if the new location is identical to the current one
-//   const isSame =
-//     location &&
-//     location.lat === newLocation.lat &&
-//     location.lng === newLocation.lng;
-
-//   if (isSame) {
-//     // Optional: show toast or ignore
-//     return; // nothing to do
-//   }
-
-//   // 2️⃣ Update Redux immediately for UI responsiveness
-//   dispatch(
-//     setLocation({
-//       location: newLocation,
-//       source: sessionUserId ? "db" : "local",
-//     })
-//   );
-
-//   // 3️⃣ Persist the change
-//   if (!sessionUserId) {
-//     // Guest: save to localStorage only
-//     setLocationToLocalStorage(newLocation);
-//     return;
-//   }
-
-//   // Logged-in user: update DB via server action
-//   await syncUserLocation(sessionUserId, newLocation);
-// };
 
 
   return (
@@ -106,13 +77,24 @@ const DesktopNav = ({
 
             {/* Location Button */}
             <button
-              onClick={openLocationModal}
-              className="flex flex-col items-start f"
+              onClick={() => {
+                if (!addresses || addresses.length === 0) {
+                  openAddressFormModal(); // no address → directly open form
+                } else {
+                  openAddressListModal(); // has address → show list
+                }
+              }}
+              className="flex flex-col items-start"
             >
-              <span className="text-xs text-gray-500 font-dmsans_light">Delivery to</span>
+              <span className="text-xs text-gray-500 font-dmsans_light">
+                Delivery to
+              </span>
+
               <div className="flex items-center gap-1">
                 <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-                  {location ? location.address : "Add delivery location"}
+                  {selectedAddress
+                    ? `${selectedAddress.city}, ${selectedAddress.state}`
+                    : "Add delivery location"}
                 </span>
 
                 <ChevronDown className="w-3 h-3 text-gray-600" />
@@ -146,14 +128,14 @@ const DesktopNav = ({
           </div>
         </div>
       </div>
-      <LocationModal
+      {/* <LocationModal
         open={isLocationModalOpen}
         onClose={closeLocationModal}
         onSelect={handleLocationSelect}
-      />
+      /> */}
 
       <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-      <Categoriesbar />
+      {shouldShowCategories && <Categoriesbar />}
     </nav>
   );
 };

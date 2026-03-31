@@ -16,6 +16,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LocationProvider from "@/components/LocationProvider";
 import { UIProvider } from "../context/ui-context";
+import { AddressProvider } from "../context/address-context";
+import AddressListModal from "@/components/user-address/AddressListModal";
+import AddressModal from "@/components/user-address/AddressModal";
 
 
 const geistSans = Geist({
@@ -116,21 +119,26 @@ export default function RootLayout({
         antialiased bg-white`}
       >
         <SessionAuthProvider>
+          <AddressProvider>
+
           <UIProvider>
             {children}
+            <AddressListModal />
+            <AddressModal />
           </UIProvider>
+          </AddressProvider>
 
-         <div className="hidden sm:block">
-  <ToastContainer
-    position="bottom-left"
-    autoClose={3000}
-    closeOnClick
-    pauseOnHover
-    draggable
-    toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
-    className="!w-[90vw] sm:!w-auto"
-  />
-</div>
+          <div className="hidden sm:block">
+            <ToastContainer
+              position="bottom-left"
+              autoClose={3000}
+              closeOnClick
+              pauseOnHover
+              draggable
+              toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
+              className="!w-[90vw] sm:!w-auto"
+            />
+          </div>
 
         </SessionAuthProvider>
       </body>

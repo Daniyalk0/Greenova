@@ -2,7 +2,6 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { Autoplay, Pagination } from "swiper/modules";
 import BannerSlide from "./BannerSlide";
 
 export const BANNERS = [
@@ -54,7 +53,7 @@ export const BANNERS = [
 
 const Banner = () => {
   return (
-    <div className="px-4 sm:px-6 lg:px-9 my-0 ">
+    <div className="px-4 sm:px-6 lg:px-9 mb-7 ">
       <div
         className="
           w-full max-w-[1400px] mx-auto

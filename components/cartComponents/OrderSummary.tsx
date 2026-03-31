@@ -1,80 +1,102 @@
 "use client";
-import { calcOrderSummary } from "@/lib/calcOrderSummary";
-import { useAuthSource } from "@/lib/useAuthSource";
-import { useUI } from "@/src/context/ui-context";
-import { AppLocation } from "@/src/types/next-auth";
 import React from "react";
 
-const OrderSummary = ({ address, products }: { address?: AppLocation | null; products: any[] }) => {
- const { isNextAuthUser } = useAuthSource();
- const { subtotal, discount, total } =
-    calcOrderSummary(products, isNextAuthUser);
-    
- const { isLocationModalOpen, closeLocationModal, openLocationModal } = useUI();
-
+const OrderSummary = ({
+  products,
+  pricing,
+  mode = "cart",
+}: {
+  products?: any[];
+  pricing?: any;
+  mode?: "cart" | "checkout";
+}) => {
   return (
-    <div className="w-full p-5 md:w-[40%] mx-auto px-6 bg-white shadow-lg rounded-lg">
-      {/* Address */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2 font-dmsans_semibold border-b   border-gray-300">Delivery Address</h2>
-        {address ? (
-          <p className="text-zinc-700 text-sm font-dmsans_light font-semibold ">{address.address}</p>
-        ) : (
-          <p className="text-gray-500 text-xs font-dmsans_light">No address selected</p>
-        )}
-        <button className="mt-2 font-dmsans_light text-blue-600 underline  text-sm" onClick={openLocationModal}>
-          Change Address
-        </button>
-      </div>
+    <div className="w-full bg-white">
+      {/* Header - Only show if not in a container that already has a header */}
+      <h2 className="text-xl font-bold text-gray-800 mb-6">
+        Order Summary
+      </h2>
 
-      {/* Products List */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2 font-monasans_semibold">Order Summary</h2>
-        <div className="space-y-3  md:max-h-[200px] overflow-y-auto">
-          {products.map((p) => (
-            <div
-              key={p?.productId}
-              className="flex justify-between items-center border-b pb-2"
-            >
-              <div className="flex flex-col">
-                <span className="font-semibold font-dmsans_semibold">{p?.name}</span>
-                <span className="text-xs text-gray-500 font-dmsans_light">
-                  {p?.weight} kg
-                </span>
+      {/* Product list - Specific to Checkout Mode */}
+      {mode === "checkout" && products && products.length > 0 && (
+        <div className="mb-6">
+          <div className="max-h-[300px] overflow-y-auto pr-2 space-y-4 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+            {products.map((p) => (
+              <div
+                key={p.productId}
+                className="flex items-center gap-4 group"
+              >
+                {/* Image Container */}
+                <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                  <img
+                    src={p.imageUrl}
+                    alt={p.name}
+                    className="h-full w-full object-cover object-center transition-transform group-hover:scale-105"
+                  />
+                </div>
+
+                {/* Product Info */}
+                <div className="flex flex-1 flex-col min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">
+                    {p.name}
+                  </p>
+                  <p className="text-xs text-gray-500 italic">
+                    Qty: {p.weight} kg
+                  </p>
+                </div>
+
+                {/* Price */}
+                <div className="text-right">
+                  <p className="text-sm font-bold text-gray-900">
+                    ₹{(p.basePricePerKg * p.weight).toLocaleString()}
+                  </p>
+                </div>
               </div>
-              <span className="font-dmsans_semibold ">
-                ₹{p?.basePricePerKg * p?.weight}
+            ))}
+          </div>
+          <div className="h-px bg-gray-100 mt-6" />
+        </div>
+      )}
+
+      {/* Price Calculation Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <span>Subtotal</span>
+          <span className="font-medium text-gray-900">₹{pricing?.subtotal?.toLocaleString()}</span>
+        </div>
+
+        {pricing?.discountAmount > 0 && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Discount</span>
+            <div className="text-right">
+              <span className="font-medium text-green-600">
+                - ₹{pricing?.discountAmount?.toLocaleString()}
+              </span>
+              <span className="block text-[10px] bg-green-50 text-green-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider mt-1">
+                {pricing.discountPercent}% OFF SAVED
               </span>
             </div>
-          ))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <span>Delivery Charge</span>
+          <span className="font-medium text-green-600 uppercase text-xs tracking-wide">Free</span>
+        </div>
+
+        {/* Total Divider */}
+        <div className="pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between">
+            <span className="text-base font-bold text-gray-900">Total Amount</span>
+            <div className="text-right">
+              <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                ₹{pricing?.total?.toLocaleString()}
+              </span>
+              <p className="text-[10px] text-gray-400 mt-1">Inclusive of all taxes</p>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Price Summary */}
-      <div className="mb-6 space-y-2 text-right font-dmsans_semibold">
-        <div className="flex justify-between">
-          <span>Subtotal</span>
-          <span>₹{subtotal}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Discount</span>
-          <span>- ₹{discount}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Delivery Fee</span>
-          <span>₹0</span>
-        </div>
-        <hr className="my-2" />
-        <div className="flex justify-between font-semibold text-lg">
-          <span>Total</span>
-          <span>₹{total}</span>
-        </div>
-      </div>
-
-      {/* Place Order Button */}
-      <button className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition font-dmsans_semibold">
-        Place Order
-      </button>
     </div>
   );
 };

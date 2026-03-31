@@ -20,7 +20,17 @@ const nextConfig = {
         hostname: 'upload.wikimedia.org',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+        pathname: '/**',
+      },
     ],
+  },
+   experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb", // or "20mb"
+    },
   },
 };
 

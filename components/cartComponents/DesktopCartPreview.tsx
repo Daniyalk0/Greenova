@@ -16,10 +16,9 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const isOpen = useSelector(
     (state: RootState) => state.cartUI.isCartOpen
   );
-  const { isNextAuthUser } = useAuthSource();
 
-  const { total, discountedPrice } = calcOrderSummary(products, isNextAuthUser);
-  console.log(products);
+  const { total } = calcOrderSummary(products);
+ 
 
   const router = useRouter();
 

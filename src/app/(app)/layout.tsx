@@ -6,6 +6,8 @@ import ProductsSyncManager from "@/components/ProductsSyncManager"
 import CartSyncManager from "@/components/CartSyncManager"
 import CleanFacebookHash from "@/components/CleanFacebookHash"
 import Navbar from "@/components/navbar/Navbar"
+import AddressModal from "@/components/user-address/AddressModal"
+import AddressListModal from "@/components/user-address/AddressListModal"
 
 export default function AppLayout({
   children,
@@ -17,16 +19,18 @@ export default function AppLayout({
       <Navbar />
       {/* <CategoriesBar /> */}
       <CleanFacebookHash />
-
+    
       <CartSyncManager />
       <WishlistSyncManager />
-      <ProductsSyncManager />
+      {/* <ProductsSyncManager /> */}
       <LocationProvider />
 
       <CartPreview />
 
       <main className="min-h-screen">
         {children}
+          {/* <AddressModal />
+      <AddressListModal /> */}
       </main>
 
       <Footer />

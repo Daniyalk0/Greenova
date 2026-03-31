@@ -22,11 +22,23 @@ export default function ProductAddToCart({
   product,
 
 }: Props) {
+  
+const discountPercent = product.discount ?? 0;
 
-  const weightOptions = product.availableWeights?.map((w: number) => ({
-    weight: w,
-    price: (product.basePricePerKg ?? 0) * w,
-  })) ?? [];
+const applyDiscount = (price: number) =>
+  Math.round(price - (price * discountPercent) / 100);
+
+
+ const weightOptions =
+  product.availableWeights?.map((w: number) => {
+    const basePrice = (product.basePricePerKg ?? 0) * w;
+
+    return {
+      weight: w,
+      price: applyDiscount(basePrice), // 👈 discounted
+    };
+  }) ?? [];
+
 
   const defaultOption = weightOptions.find((opt: SelectedWeightPrice) => opt.weight === 1) || weightOptions[0]
 
