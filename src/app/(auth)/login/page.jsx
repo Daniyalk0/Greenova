@@ -4,7 +4,9 @@ import LoginForm from '../../../../components/LoginForm'
 const page = () => {
   return (
     // <div>page</div>
-    <LoginForm/>
+      <Suspense fallback={<p>Loading...</p>}>
+      <LoginPage />
+    </Suspense>
   )
 }
 
