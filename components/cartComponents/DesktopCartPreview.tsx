@@ -13,23 +13,19 @@ import { useAuthSource } from "@/lib/useAuthSource";
 const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
   const dispatch = useDispatch();
 
-  const isOpen = useSelector(
-    (state: RootState) => state.cartUI.isCartOpen
-  );
+  const isOpen = useSelector((state: RootState) => state.cartUI.isCartOpen);
 
   const { total } = calcOrderSummary(products);
- 
 
   const router = useRouter();
 
   const handleCartRoute = () => {
     dispatch(closeCart());
-    router.push('/cart');
-  }
+    router.push("/cart");
+  };
 
-
-
-
+  console.log(products);
+  
 
   return (
     <div className="hidden md:block">
@@ -53,18 +49,14 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
     pointer-events-auto
   `}
       >
-
         {/* Header */}
         <div className="px-4 py-4 border-b flex items-center justify-between font-monasans_semibold">
           {/* Left: Title */}
           <div className="flex flex-col justify-start">
-
             <h2 className="text-lg font-semibold">My Cart</h2>
 
             {/* Center: Item count */}
-            <p className=" text-xs text-gray-500">
-              {products?.length} items
-            </p>
+            <p className=" text-xs text-gray-500">{products?.length} items</p>
           </div>
 
           {/* Right: Close Icon */}
@@ -76,23 +68,23 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
           </button>
         </div>
 
-
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto px-4 py-3 ">
           {products.map((cartItem: any) => {
             // const product = isNextAuthUser ? cartItem?.product : cartItem;
 
-            const basePrice =
-              (cartItem?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
-            const discountedPrice =
-              cartItem?.discount > 0
-                ? Math.round(
-                  basePrice - (basePrice * cartItem.discount) / 100
-                )
-                : Math.round(basePrice);
+            const basePricePerKg = cartItem?.basePricePerKg ?? 0;
+            const basePrice = basePricePerKg * (cartItem?.weight ?? 0);
+            const discountedPricePerKg = cartItem?.discount > 0
+              ? Math.round(basePricePerKg - (basePricePerKg * cartItem.discount) / 100)
+              : Math.round(basePricePerKg);
+            const discountedTotal = Math.round(discountedPricePerKg * (cartItem?.weight ?? 0));
 
             return (
-              <div key={cartItem?.id} className="flex gap-3 py-3 border-b relative">
+              <div
+                key={cartItem?.id}
+                className="flex gap-3 py-3 border-b relative"
+              >
                 {/* Image */}
                 <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
                   {cartItem?.imageUrl && (
@@ -109,7 +101,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                     handleRemoveProduct(
                       cartItem?.productId,
                       cartItem?.weight,
-                      cartItem
+                      cartItem,
                     )
                   }
                   className="absolute right-0 top-1 border border-red-500 rounded-full text-red-500 cursor-pointer hover:scale-110 transition-all duration-200"
@@ -133,7 +125,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                   <div className="flex justify-between mt-2 items-center">
                     <div className="flex items-center gap-2 font-dmsans_light">
                       <span className="text-sm font-semibold text-black">
-                        ₹{discountedPrice}
+                        ₹{discountedTotal}
                       </span>
 
                       {cartItem?.discount > 0 && (
@@ -148,14 +140,14 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
                       )}
                     </div>
 
-                    <div className="h-7 w-20 bg-green-100 rounded" />
+                  <div className="h-7 px-2 font-dmsans_light bg-green-100 rounded flex items-center justify-center text-xs font-semibold text-green-700">
+                    ₹{discountedPricePerKg} / kg
+                  </div>
                   </div>
                 </div>
               </div>
-
             );
           })}
-
         </div>
 
         {/* Footer */}
@@ -164,7 +156,10 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
             <span>Total</span>
             <span className="font-semibold">₹{total}</span>
           </div>
-          <div onClick={handleCartRoute} className="cursor-pointer block text-center w-full bg-green-600 text-white py-3 rounded-xl font-dmsans_semibold">
+          <div
+            onClick={handleCartRoute}
+            className="cursor-pointer block text-center w-full bg-green-600 text-white py-3 rounded-xl font-dmsans_semibold"
+          >
             Proceed to Cart
           </div>
         </div>

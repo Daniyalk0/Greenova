@@ -1,19 +1,17 @@
-"use server"
+"use server";
 
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 // import { auth } from "@/auth"
-import { revalidatePath } from "next/cache"
-import { authConfig } from "../api/auth/[...nextauth]/auth.config"
-import { getServerSession } from "next-auth"
-import { ZodNumber } from "zod"
+import { revalidatePath } from "next/cache";
+import { authConfig } from "../api/auth/[...nextauth]/auth.config";
+import { getServerSession } from "next-auth";
+import { ZodNumber } from "zod";
 
 export async function createAddress(data: any) {
+  const session = await getServerSession(authConfig);
+  if (!session?.user?.id) throw new Error("Unauthorized");
 
-
-  const session = await getServerSession(authConfig)
-  if (!session?.user?.id) throw new Error("Unauthorized")
-
-  await prisma.address.create({
+  const address = await prisma.address.create({
     data: {
       userId: session.user.id,
       name: data.name,
@@ -22,38 +20,37 @@ export async function createAddress(data: any) {
       city: data.city,
       state: data.state,
       pincode: data.pincode,
-      landmark: data.landmark
-    }
-  })
-revalidatePath("/")
+      landmark: data.landmark,
+    },
+  });
 
-  revalidatePath("/checkout")
+  revalidatePath("/");
+
+  revalidatePath("/checkout");
+  return address;
 }
 
-export async function updateAddress(id: string, data: any) {
+export async function updateAddress(id: number, data: any) {
+  const session = await getServerSession(authConfig);
+  if (!session?.user?.id) throw new Error("Unauthorized");
 
- const session = await getServerSession(authConfig)
-  if (!session?.user?.id) throw new Error("Unauthorized")
-
-  await prisma.address.update({
-    where: { id: parseInt(id) },
-    data
-  })
-revalidatePath("/")
-  revalidatePath("/checkout")
+  const updatedAddress = await prisma.address.update({
+    where: { id },
+    data,
+  });
+  revalidatePath("/");
+  revalidatePath("/checkout");
+  return updatedAddress
 }
 
 export async function deleteAddress(id: number) {
-
   await prisma?.address?.delete({
-    where: { id }
-  })
+    where: { id },
+  });
 
-  revalidatePath("/")
-  revalidatePath("/checkout")
+  revalidatePath("/");
+  revalidatePath("/checkout");
 }
-
-
 
 export async function getUserAddresses() {
   const session = await getServerSession(authConfig);
@@ -68,7 +65,6 @@ export async function getUserAddresses() {
       createdAt: "desc",
     },
   });
-
 
   return addresses;
 }

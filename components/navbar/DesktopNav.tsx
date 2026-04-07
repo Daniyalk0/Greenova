@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavCart from "./NavCart";
 import SearchWithPopup from "./SearchWithPopup";
 import NavHeart from "./NavHeart";
@@ -14,7 +14,8 @@ import CartBottomBadge from "../ui/CartIndicator";
 import UserMenu from "./UserProfilePopUp";
 import Categoriesbar from "../categoriesBar/Categoriesbar";
 import { useUI } from "@/src/context/ui-context";
-import { useAddress } from "@/src/context/address-context";
+import { Address, useAddress } from "@/src/context/address-context";
+import { getGuestAddress } from "@/lib/clientAddress";
 
 export type UserMenuProps = {
   data: any;
@@ -38,8 +39,39 @@ const DesktopNav = ({
   const router = useRouter();
 
 
- const { openAddressListModal, openAddressFormModal } = useUI();
-const { addresses, selectedAddress } = useAddress();
+  
+
+  const { openAddressListModal, openAddressFormModal } = useUI();
+  const { addresses, selectedAddress, guestAddress } = useAddress();
+   console.log(selectedAddress)
+
+// const [guestAddress, setGuestAddress] = useState(() =>
+//   !session?.user?.id ? getGuestAddress() : null
+// );
+
+  const isLoggedIn = !!session?.user?.id;
+
+  // ✅ keep guest address in sync
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     setGuestAddress(getGuestAddress());
+  //   } else {
+  //     setGuestAddress(null);
+  //   }
+  // }, [isLoggedIn]);
+
+  // ✅ final address source
+  const finalAddress = isLoggedIn ? selectedAddress : guestAddress;
+
+  console.log("finalAddress", finalAddress);
+  
+
+  // ✅ normalize for button logic
+  const addressList = isLoggedIn
+    ? addresses
+    : guestAddress
+    ? [{ ...guestAddress, id: -1 }]
+    : [];
 
   const pathname = usePathname();
 
@@ -56,7 +88,6 @@ const { addresses, selectedAddress } = useAddress();
   const shouldShowCategories = !hideOnRoutes.some((route) =>
     pathname.startsWith(route)
   );
-
 
   return (
     <nav className="sticky top-0 z-[2000] bg-white border-b p-2">
@@ -78,10 +109,10 @@ const { addresses, selectedAddress } = useAddress();
             {/* Location Button */}
             <button
               onClick={() => {
-                if (!addresses || addresses.length === 0) {
-                  openAddressFormModal(); // no address → directly open form
+                if (addressList.length === 0) {
+                  openAddressFormModal(); // no address
                 } else {
-                  openAddressListModal(); // has address → show list
+                  openAddressListModal(); // has address
                 }
               }}
               className="flex flex-col items-start"
@@ -92,8 +123,8 @@ const { addresses, selectedAddress } = useAddress();
 
               <div className="flex items-center gap-1">
                 <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-                  {selectedAddress
-                    ? `${selectedAddress.city}, ${selectedAddress.state}`
+                  {finalAddress
+                    ? `${finalAddress.city}, ${finalAddress.state}`
                     : "Add delivery location"}
                 </span>
 

@@ -18,6 +18,9 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
   const { openAddressFormModal } = useUI();
   const [loading, setLoading] = useState(false);
 
+  console.log('paymentmethod', paymentMethod);
+  
+
   const handleOrder = async () => {
     if (loading) return;
 
@@ -38,13 +41,14 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
         },
         body: JSON.stringify({
           items: cartItems,
-          addressId: selectedAddress,
+          addressId: selectedAddress?.id,
           paymentType: paymentMethod,
         }),
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
+          console.log('addressID', selectedAddress);
         throw new Error(errData?.error || "Failed to create order");
       }
 
@@ -79,6 +83,10 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
         isLoading: false,
         autoClose: 1500,
       });
+
+      if (paymentMethod !== "cod" && !(window as any).Razorpay) {
+  throw new Error("Payment system still loading. Please try again in a moment.");
+}
 
       await handlePayment(router, data);
 

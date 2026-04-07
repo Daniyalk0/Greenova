@@ -8,9 +8,18 @@ import {
   ReactNode,
   useMemo,
 } from "react";
-import { getUserAddresses } from "../app/actions/address-actions";
+import {
+  createAddress,
+  getUserAddresses,
+} from "../app/actions/address-actions";
+import { useSession } from "next-auth/react";
+import {
+  clearGuestAddress,
+  getGuestAddress,
+  saveGuestAddress,
+} from "@/lib/clientAddress";
 
-type Address = {
+export type Address = {
   id: number;
 
   // Person details
@@ -18,13 +27,13 @@ type Address = {
   phone: string;
 
   // Address details
-  street: string;        // house no, building, street
+  street: string; // house no, building, street
   landmark?: string | null;
-  area?: string;         // locality / colony
+  area?: string; // locality / colony
 
   city: string;
   state: string;
-  country: string;
+  country?: string;
   pincode: string;
 
   // Address type
@@ -34,8 +43,8 @@ type Address = {
   isDefault?: boolean;
 
   // Metadata
-  createdAt: Date; 
-  updatedAt: Date;   
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type AddressContextType = {
@@ -43,22 +52,55 @@ type AddressContextType = {
   selectedAddress: Address | null;
   selectedAddressId: number | null;
   loading: boolean;
-
+  setAddresses: React.Dispatch<React.SetStateAction<Address[]>>;
+  setSelectedAddressId: any;
   selectAddress: (id: number) => void;
   refreshAddresses: () => Promise<void>;
+  pendingGuestAddress: Address | null;
+  setPendingGuestAddress: any;
+  mergeGuestAddress: any;
+  guestAddress: Address | null;
+  saveGuest: any;
+  clearGuest: any;
 };
 
 const AddressContext = createContext<AddressContextType | null>(null);
 
 export function AddressProvider({ children }: { children: ReactNode }) {
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
+  const [pendingGuestAddress, setPendingGuestAddress] =
+    useState<Address | null>(null);
+  const { data: session } = useSession();
+  const [guestAddress, setGuestAddress] = useState<Address | null>(null);
+
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setGuestAddress(getGuestAddress());
+    } else {
+      setGuestAddress(null);
+    }
+  }, [session?.user?.id]);
+
+  const saveGuest = (data: Address) => {
+    saveGuestAddress(data);
+    setGuestAddress(data);
+  };
+
+  const clearGuest = () => {
+    clearGuestAddress();
+    setGuestAddress(null);
+  };
 
   // derive selected address
   const selectedAddress = useMemo(() => {
     return addresses.find((a) => a.id === selectedAddressId) || null;
   }, [addresses, selectedAddressId]);
+
+ 
 
   const fetchAddresses = async () => {
     setLoading(true);
@@ -87,15 +129,44 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     setSelectedAddressId(id);
   };
 
+  useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const guest = getGuestAddress();
+    if (guest) {
+      setPendingGuestAddress(guest);
+    }
+  }, [session?.user?.id]);
+
+  const mergeGuestAddress = async () => {
+    if (!pendingGuestAddress) return;
+
+    const saved = await createAddress(pendingGuestAddress);
+
+    await fetchAddresses();
+    setSelectedAddressId(saved.id);
+
+    clearGuestAddress();
+    setPendingGuestAddress(null);
+  };
+
   return (
     <AddressContext.Provider
       value={{
         addresses,
         selectedAddress,
+        setAddresses,
         selectedAddressId,
+        setSelectedAddressId,
         loading,
         selectAddress,
         refreshAddresses: fetchAddresses,
+        pendingGuestAddress,
+        setPendingGuestAddress,
+        mergeGuestAddress,
+        guestAddress,
+        saveGuest,
+        clearGuest,
       }}
     >
       {children}

@@ -10,11 +10,12 @@ type CartProductCardProps = {
 
 const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) => {
 
-    const basePrice = item?.basePricePerKg * item?.weight;
-    const discountedPrice =
-        item?.discount > 0
-            ? Math.round(basePrice - (basePrice * item?.discount) / 100)
-            : Math.round(basePrice);
+    const basePricePerKg = item?.basePricePerKg ?? 0;
+    const baseTotalPrice = basePricePerKg * (item?.weight ?? 0);
+    const discountedPricePerKg = item?.discount > 0
+        ? Math.round(basePricePerKg - (basePricePerKg * item?.discount) / 100)
+        : Math.round(basePricePerKg);
+    const discountedTotalPrice = Math.round(discountedPricePerKg * (item?.weight ?? 0));
 
     return (
         <div className="flex items-center w-full relative group bg-transparent">
@@ -49,10 +50,10 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
                         {item?.discount > 0 ? (
                             <>
                                 <span className="font-dmsans_semibold text-[#0c831f] text-[13px] sm:text-[14px]">
-                                    ₹{discountedPrice}/kg
+                                    ₹{discountedPricePerKg}/kg
                                 </span>
                                 <span className="font-dmsans_light line-through text-gray-400 text-[10px] sm:text-[11px]">
-                                    ₹{item?.basePricePerKg * item?.weight}/kg
+                                    ₹{basePricePerKg}/kg
                                 </span>
                                 <span className="bg-[#0c831f]/10 text-[#0c831f] font-dmsans_semibold text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wide">
                                     {item?.discount}% OFF
@@ -60,7 +61,7 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
                             </>
                         ) : (
                             <span className="font-dmsans_semibold text-[#0c831f] text-[13px] sm:text-[14px]">
-                                ₹{discountedPrice}/kg
+                                ₹{discountedPricePerKg}/kg
                             </span>
                         )}
                     </div>
@@ -79,7 +80,7 @@ const CartProductcard = ({ item, handleRemoveProduct }: CartProductCardProps) =>
                     Total
                 </span>
                 <p className="font-monasans_semibold text-gray-900 text-[15px] sm:text-[17px]">
-                    ₹{discountedPrice}
+                    ₹{discountedTotalPrice}
                 </p>
             </div>
 

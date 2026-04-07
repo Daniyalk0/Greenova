@@ -1,22 +1,35 @@
-"use client"
+"use client";
 
-import { useTransition } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAddress } from "@/src/context/address-context"
-import { AddressFormValues, addressSchema } from "@/lib/validation"
-import { createAddress, updateAddress } from "@/src/app/actions/address-actions"
+import { Address, useAddress } from "@/src/context/address-context";
+import { AddressFormValues, addressSchema } from "@/lib/validation";
+import {
+  createAddress,
+  updateAddress,
+} from "@/src/app/actions/address-actions";
+import { saveGuestAddress } from "@/lib/clientAddress";
+import { useSession } from "next-auth/react";
 
-export default function AddressForm({ address, onClose } : { address: any; onClose: () => void }) {
-  const { refreshAddresses } = useAddress()
+export default function AddressForm({
+  address,
+  onClose,
+}: {
+  address: any;
+  onClose: () => void;
+}) {
+  const { refreshAddresses, setAddresses, setSelectedAddressId, selectedAddressId, addresses, saveGuest} = useAddress();
+  const { data: session } = useSession();
+  const user = session?.user?.id;
 
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -26,28 +39,111 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
       city: address?.city || "",
       state: address?.state || "",
       pincode: address?.pincode || "",
-      landmark: address?.landmark || ""
-    }
-  })
+      landmark: address?.landmark || "",
+    },
+  });
 
-  const onSubmit = (data: AddressFormValues) => {
-    startTransition(async () => {
-      if (address) {
-        await updateAddress(address.id, data)
-      } else {
-        await createAddress(data)
-      }
-
-      await refreshAddresses()
-      onClose()
-    })
+ const handleCreate = async (data: AddressFormValues) => {
+  if (!user) {
+    saveGuest(data);
+    onClose()
+    return;
   }
 
+  const tempId = Date.now();
+
+  const tempAddress: Address = {
+    id: tempId,
+    name: data.name,
+    phone: data.phone,
+    street: data.street,
+    city: data.city,
+    state: data.state,
+    pincode: data.pincode,
+    // country: data.country ?? null,
+    landmark: data.landmark ?? null,
+    // area: data.area,
+    // label: data.label,
+    isDefault: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const prevSelected = selectedAddressId;
+
+  try {
+    // optimistic
+// optimistic add
+setAddresses((prev) => [tempAddress, ...prev]);
+
+// ✅ ADD THIS
+setSelectedAddressId(tempId);
+
+    const saved = await createAddress(data);
+
+    // replace with real
+    setAddresses((prev) =>
+      prev.map((a) => (a.id === tempId ? saved : a))
+    );
+
+    setSelectedAddressId(saved.id);
+
+    onClose();
+  } catch (error) {
+    // rollback
+    setAddresses((prev) => prev.filter((a) => a.id !== tempId));
+    setSelectedAddressId(prevSelected);
+  }
+};
+
+
+const handleUpdate = async (id: number, data: AddressFormValues) => {
+  if (!user) {
+    saveGuest(data); // guest overwrite
+    onClose();
+    return;
+  }
+
+  const prevAddresses = addresses;
+
+  try {
+    // ✅ optimistic update
+    setAddresses((prev) =>
+      prev.map((a) =>
+        a.id === id
+          ? {
+              ...a,
+              ...data,
+              updatedAt: new Date(), // keep UI fresh
+            }
+          : a
+      )
+    );
+
+    await updateAddress(id, data);
+
+    onClose();
+  } catch (error) {
+    // ❌ rollback
+    setAddresses(prevAddresses);
+  }
+};
+
+const condtionalHandle = async (data: AddressFormValues) => {
+  if (address) {
+    await handleUpdate(address.id, data);
+  } else {
+    await handleCreate(data);
+  }
+};
+
+const onSubmit = (data: AddressFormValues) => {
+  startTransition(() => condtionalHandle(data));
+};
+
+
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Name */}
         <div>
@@ -55,13 +151,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
             Full Name
           </label>
           <input
-          disabled={isPending}
+            disabled={isPending}
             {...register("name")}
             placeholder="John Doe"
-            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.name
+            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+              errors.name
                 ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-              }`}
+            }`}
           />
           {errors.name && (
             <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -76,13 +173,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
             Phone Number
           </label>
           <input
-          disabled={isPending}
+            disabled={isPending}
             {...register("phone")}
             placeholder="+91 9876543210"
-            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.phone
+            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+              errors.phone
                 ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-              }`}
+            }`}
           />
           {errors.phone && (
             <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -98,13 +196,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
           Street Address
         </label>
         <input
-        disabled={isPending}
+          disabled={isPending}
           {...register("street")}
           placeholder="House/Flat No., Building Name, Area"
-          className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.street
+          className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+            errors.street
               ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
               : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-            }`}
+          }`}
         />
         {errors.street && (
           <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -120,13 +219,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
             City
           </label>
           <input
-          disabled={isPending}
+            disabled={isPending}
             {...register("city")}
             placeholder="e.g. Mumbai"
-            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.city
+            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+              errors.city
                 ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-              }`}
+            }`}
           />
           {errors.city && (
             <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -141,13 +241,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
             State
           </label>
           <input
-          disabled={isPending}
+            disabled={isPending}
             {...register("state")}
             placeholder="e.g. Maharashtra"
-            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.state
+            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+              errors.state
                 ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-              }`}
+            }`}
           />
           {errors.state && (
             <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -164,13 +265,14 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
             Pincode
           </label>
           <input
-          disabled={isPending}
+            disabled={isPending}
             {...register("pincode")}
             placeholder="6-digit pincode"
-            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${errors.pincode
+            className={`w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:ring-4 focus:bg-white transition-all placeholder-gray-400 ${
+              errors.pincode
                 ? "border-red-300 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200 focus:border-[#0c831f] focus:ring-[#0c831f]/10"
-              }`}
+            }`}
           />
           {errors.pincode && (
             <p className="text-red-500 text-[11px] font-dmsans_semibold mt-1 ml-1">
@@ -182,10 +284,13 @@ export default function AddressForm({ address, onClose } : { address: any; onClo
         {/* Landmark */}
         <div>
           <label className="block text-[11px] sm:text-xs font-dmsans_semibold text-gray-500 mb-1 sm:mb-1.5 ml-1 uppercase tracking-wider">
-            Landmark <span className="text-gray-400 font-dmsans_light normal-case tracking-normal ml-1">(Optional)</span>
+            Landmark{" "}
+            <span className="text-gray-400 font-dmsans_light normal-case tracking-normal ml-1">
+              (Optional)
+            </span>
           </label>
           <input
-disabled={isPending}
+            disabled={isPending}
             {...register("landmark")}
             placeholder="e.g. Near Apollo Hospital"
             className="w-full px-3.5 py-2.5 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 font-dmsans_light text-sm focus:outline-none focus:border-[#0c831f] focus:ring-4 focus:ring-[#0c831f]/10 focus:bg-white transition-all placeholder-gray-400"
@@ -204,11 +309,13 @@ disabled={isPending}
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               <span>Saving Address...</span>
             </>
+          ) : address ? (
+            "Update Address"
           ) : (
-            address ? "Update Address" : "Save Address"
+            "Save Address"
           )}
         </button>
       </div>
     </form>
-  )
+  );
 }

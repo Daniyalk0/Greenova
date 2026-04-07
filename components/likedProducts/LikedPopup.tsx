@@ -17,12 +17,12 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
   const dispatch = useDispatch();
   const wishlist = useSelector((state: RootState) => state.wishlist.items);
 
-  console.log(wishlist);
+  // console.log(wishlist);
   
 
   const [localWishlist, setLocalWishlistState] = useState<any[]>([]);
 
-  console.log(localWishlist);
+  // console.log(localWishlist);
   
 
   useEffect(() => {

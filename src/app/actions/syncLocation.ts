@@ -48,7 +48,7 @@ export async function syncUserLocation(userId: number, location: AppLocation) {
 export async function fetchUserLocationFromDB(
   userId: number,
 ): Promise<AppLocation | null> {
-  const location = await prisma.userLocation.findUnique({
+  const location = await prisma?.userLocation?.findUnique({
     where: { userId },
   });
 

@@ -18,7 +18,17 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, hand
     const { data: session } = useSession();
     const router = useRouter();
     const { openAddressListModal, openAddressFormModal } = useUI();
-    const { addresses, selectedAddress } = useAddress();
+const { addresses, selectedAddress, guestAddress } = useAddress();
+
+const isLoggedIn = !!session?.user?.id;
+
+const finalAddress = isLoggedIn ? selectedAddress : guestAddress;
+
+const addressList = isLoggedIn
+  ? addresses
+  : guestAddress
+  ? [{ ...guestAddress, id: -1 }]
+  : [];
 
     const [showTopActions, setShowTopActions] = useState(true);
     
@@ -65,25 +75,25 @@ const MobileNav = ({ likedItemCount, itemCount, data, setDrawerOpen, total, hand
                 {/* Location */}
                 <button
                     onClick={() => {
-                        if (!addresses || addresses.length === 0) {
-                            openAddressFormModal();
-                        } else {
-                            openAddressListModal();
-                        }
+                      if (addressList.length === 0) {
+  openAddressFormModal();
+} else {
+  openAddressListModal();
+}
                     }}
                     className="flex flex-col items-start"
                 >
                     <span className="text-xs text-gray-500">Delivery to</span>
                     <div className="flex items-center gap-1">
                         <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-                            {selectedAddress
-                                ? `${selectedAddress.city}, ${selectedAddress.state}`
-                                : "Add delivery location"}
+                         {finalAddress
+  ? `${finalAddress.city}, ${finalAddress.state}`
+  : "Add delivery location"}
                         </span>
                         <ChevronDown className="w-3 h-3 text-gray-600" />
                     </div>
                 </button>
-
+{/* git commit -m "add address option for guest users"    */}
 
                 {/* User */}
                 <UserMenu />

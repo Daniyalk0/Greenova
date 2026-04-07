@@ -5,6 +5,15 @@ export const handlePayment = (
   orderData: any
 ) => {
   return new Promise<void>((resolve, reject) => {
+    if (!(window as any).Razorpay) {
+      const error = new Error(
+        "Razorpay payment SDK failed to load. Please refresh the page."
+      )
+      toast.error(error.message)
+      reject(error)
+      return
+    }
+
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: orderData.amount,
@@ -41,6 +50,7 @@ export const handlePayment = (
         } catch (err: any) {
           console.error(err);
           toast.error(err.message || "Payment failed");
+          console.log(err.message || "Payment failed");
           reject(err);
         }
       },
@@ -48,7 +58,6 @@ export const handlePayment = (
 
     const razorpay = new (window as any).Razorpay(options);
 
-    // ❌ handle payment failure
     razorpay.on("payment.failed", function () {
       toast.error("Payment failed or cancelled");
       reject(new Error("Payment failed"));

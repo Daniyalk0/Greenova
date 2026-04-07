@@ -1,28 +1,27 @@
-"use client"
-import CartProductcard from '@/components/cartComponents/CartProductcard'
-import { useSession } from 'next-auth/react'
-import React, { useState } from 'react'
-import { removeCartItem } from '../../actions/cart'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/src/store/store'
-import { setCart } from '@/src/store/cartProductsSlice'
-import { toast } from 'react-toastify'
-import { addToCartUtil } from '@/lib/addToCartUtil'
-import { restoreCartItem } from '../../actions/restoreCartItem'
+"use client";
+import CartProductcard from "@/components/cartComponents/CartProductcard";
+import { useSession } from "next-auth/react";
+import React, { useState } from "react";
+import { removeCartItem } from "../../actions/cart";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/store/store";
+import { setCart } from "@/src/store/cartProductsSlice";
+import { toast } from "react-toastify";
+import { addToCartUtil } from "@/lib/addToCartUtil";
+import { restoreCartItem } from "../../actions/restoreCartItem";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 // import { setLocalCart } from "../../store/cartProductsSlice"
 
 const Page = () => {
-
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const reduxCart = useSelector((state: RootState) => state.cartProducts.items);
 
-
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   const userId = session?.user?.id ? Number(session.user.id) : null;
 
-  const location = useSelector(
-    (state: RootState) => state.location.location
-  );
+  const location = useSelector((state: RootState) => state.location.location);
 
   const handleAddToCart = async (product: any, weight: any) => {
     const result = await addToCartUtil({
@@ -61,12 +60,12 @@ const Page = () => {
   const handleRemoveProduct = async (
     productId: number,
     weight: number,
-    product: any
+    product: any,
   ): Promise<void> => {
     const previous = [...reduxCart];
 
     const removedItem = previous.find(
-      (item) => item.productId === productId && item.weight === weight
+      (item) => item.productId === productId && item.weight === weight,
     );
 
     if (!removedItem) return;
@@ -75,13 +74,13 @@ const Page = () => {
     // ⚡ Optimistic UI update
     // ------------------------
     const updated = previous.filter(
-      (item) => !(item.productId === productId && item.weight === weight)
+      (item) => !(item.productId === productId && item.weight === weight),
     );
     dispatch(
       setCart({
         items: updated,
         source: session?.user?.id ? "db" : "local",
-      })
+      }),
     );
 
     // ------------------------
@@ -98,7 +97,7 @@ const Page = () => {
                 setCart({
                   items: previous,
                   source: session?.user?.id ? "db" : "local",
-                })
+                }),
               );
 
               // Restore persistence
@@ -114,10 +113,9 @@ const Page = () => {
           >
             Undo
           </button>
-
         </div>
       ),
-      { autoClose: 4000 }
+      { autoClose: 4000 },
     );
 
     try {
@@ -129,7 +127,8 @@ const Page = () => {
         // Guest → remove from localStorage
         const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
         const newCart = localCart.filter(
-          (item: any) => !(item.productId === productId && item.weight === weight)
+          (item: any) =>
+            !(item.productId === productId && item.weight === weight),
         );
         localStorage.setItem("cart", JSON.stringify(newCart));
       }
@@ -141,18 +140,16 @@ const Page = () => {
         setCart({
           items: previous,
           source: session?.user?.id ? "db" : "local",
-        })
+        }),
       );
     }
   };
 
+  console.log("reduxXatr", reduxCart);
 
   return (
-   <div className="min-h-screen bg-[#f4f8f5] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-dmsans_light">
+    <div className="min-h-screen bg-[#f4f8f5] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-dmsans_light">
       <div className="max-w-5xl mx-auto">
-        
-   
-
         {/* Page Title */}
         <div className="flex items-end gap-3 mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-monasans_semibold text-gray-900 tracking-tight">
@@ -160,20 +157,17 @@ const Page = () => {
           </h1>
           {reduxCart && reduxCart.length > 0 && (
             <span className="text-base sm:text-lg text-gray-500 font-dmsans_light mb-1 sm:mb-1.5">
-              ({reduxCart.length} {reduxCart.length === 1 ? 'item' : 'items'})
+              ({reduxCart.length} {reduxCart.length === 1 ? "item" : "items"})
             </span>
           )}
         </div>
 
         {/* Main Cart Container */}
         <div className="w-full flex flex-col bg-white shadow-sm border border-green-100 rounded-2xl overflow-hidden transition-all">
-          
           {/* Header Row - Hidden on mobile, shown on tablet/desktop */}
           {reduxCart && reduxCart.length > 0 && (
             <div className="hidden sm:flex items-center w-full bg-[#f9fbf9] border-b border-green-100 px-6 py-4 font-dmsans_semibold text-[13px] text-gray-500 uppercase tracking-widest">
-              <div className="w-[50%] flex items-center">
-                Item Details
-              </div>
+              <div className="w-[50%] flex items-center">Item Details</div>
               <div className="w-[25%] flex items-center justify-center">
                 Weight / Qty
               </div>
@@ -188,8 +182,8 @@ const Page = () => {
             {reduxCart && reduxCart.length > 0 ? (
               <div className="divide-y divide-gray-100">
                 {reduxCart.map((c) => (
-                  <div 
-                    key={`${c?.id}-${c?.weight}`} 
+                  <div
+                    key={`${c?.id}-${c?.weight}`}
                     className="px-4 sm:px-6 py-5 hover:bg-[#fafdfa] transition-colors"
                   >
                     <CartProductcard
@@ -209,7 +203,8 @@ const Page = () => {
                   Your cart is empty
                 </h3>
                 <p className="text-[15px] font-dmsans_light text-gray-500 text-center max-w-md leading-relaxed">
-                  Looks like you haven&apos;t added anything to your cart yet. Explore our fresh products and start filling it up!
+                  Looks like you haven&apos;t added anything to your cart yet.
+                  Explore our fresh products and start filling it up!
                 </p>
               </div>
             )}
@@ -220,10 +215,45 @@ const Page = () => {
             <div className="h-1.5 w-full bg-gradient-to-r from-[#0c831f]/10 via-[#0c831f]/40 to-[#0c831f]/10" />
           )}
         </div>
+       {reduxCart && reduxCart.length > 0 && (
+  <div className="mt-6 sm:mt-8">
+    
+    <div className="flex items-center justify-between bg-white border border-green-100 rounded-2xl px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+      
+      {/* Total */}
+      <div className="flex flex-col">
+        <span className="text-xs sm:text-sm text-gray-500 font-dmsans_light">
+          Total Amount
+        </span>
+        <span className="text-lg sm:text-2xl font-monasans_semibold text-gray-900">
+          ₹{reduxCart.reduce((acc, item) => {
+            const basePrice = item?.basePricePerKg * item?.weight;
 
+            const discountedPrice =
+              item?.discount > 0
+                ? Math.round(basePrice - (basePrice * item?.discount) / 100)
+                : Math.round(basePrice);
+
+            return acc + discountedPrice;
+          }, 0)}
+        </span>
+      </div>
+
+      {/* Checkout Button */}
+      <Link
+        // onClick={() => router.push("/Checkout")}
+        href={"/checkout"}
+        className="bg-[#0c831f] hover:bg-[#0a6e1a] text-white px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-dmsans_semibold text-xs sm:text-base transition-all duration-200 shadow-sm hover:shadow-md"
+      >
+        Proceed to Checkout
+      </Link>
+    </div>
+
+  </div>
+)}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

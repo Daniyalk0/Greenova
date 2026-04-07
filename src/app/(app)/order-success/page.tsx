@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 // import { authConfig } from "../api/auth/[...nextauth]/auth.config";
 import Link from "next/link";
 import { authConfig } from "../../api/auth/[...nextauth]/auth.config";
+import { ArrowRight, Calendar, CheckCircle, MapPin, ShoppingBag } from "lucide-react";
 
 export default async function OrderSuccess({
   searchParams,
@@ -69,95 +70,129 @@ export default async function OrderSuccess({
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-16 px-4">
-      <h1 className="text-3xl font-bold">Order Confirmed</h1>
-
-      <p className="mt-4 text-gray-600">{statusText}</p>
-
-      <p className="mt-2 text-gray-500">
-        Order ID: <span className="font-medium">{order.id}</span>
-      </p>
-   
-
-      {/* Address */}
-      <div className="mt-6 border p-4 rounded-lg">
-        <h2 className="font-semibold mb-2">Delivery Address</h2>
-        <p>
-          {order.name}, {order.phone}
+    <div className="max-w-2xl mx-auto py-12 sm:py-20 px-4 min-h-screen bg-gray-50/50">
+      
+      {/* Header / Hero Section */}
+      <div className="flex flex-col items-center text-center mb-10">
+        <div className="w-16 h-16 bg-[#0c831f]/10 rounded-full flex items-center justify-center mb-5 border border-[#0c831f]/20 shadow-[0_4px_20px_-4px_rgba(12,131,31,0.15)]">
+          <CheckCircle className="w-8 h-8 text-[#0c831f]" strokeWidth={2} />
+        </div>
+        
+        <h1 className="text-2xl sm:text-3xl font-dmsans_semibold text-gray-900 mb-2">
+          Order Confirmed!
+        </h1>
+        
+        <p className="font-dmsans_light text-gray-500 text-[15px] max-w-sm mb-4">
+          {statusText}
         </p>
-        <p>
-          {order.street}, {order.city}, {order.state} - {order.pincode}
-        </p>
+
+        <div className="inline-flex items-center gap-2 bg-white border border-gray-200 px-4 py-1.5 rounded-full shadow-sm">
+          <span className="font-dmsans_light text-gray-500 text-[13px]">Order ID:</span>
+          <span className="font-dmsans_semibold text-gray-900 text-[14px]">{order.id}</span>
+        </div>
       </div>
 
-      {/* Items */}
-      <div className="mt-6 border p-4 rounded-lg">
-        <h2 className="font-semibold mb-2">Items</h2>
+      <div className="space-y-6">
+        {/* Delivery Address Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-5 h-5 text-[#0c831f]" strokeWidth={2} />
+            <h2 className="font-dmsans_semibold text-lg text-gray-900">Delivery Details</h2>
+          </div>
+          
+          <div className="pl-7">
+            <p className="font-dmsans_semibold text-[15px] text-gray-900 mb-1">
+              {order.name} <span className="text-gray-300 mx-1">|</span> {order.phone}
+            </p>
+            <p className="font-dmsans_light text-gray-500 text-[14px] leading-relaxed">
+              {order.street},<br />
+              {order.city}, {order.state} - {order.pincode}
+            </p>
+          </div>
+        </div>
 
-        {order.items.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between py-3 border-b"
-          >
-            <div className="flex items-center gap-3">
+        {/* Order Summary / Items Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-5">
+            <ShoppingBag className="w-5 h-5 text-[#0c831f]" strokeWidth={2} />
+            <h2 className="font-dmsans_semibold text-lg text-gray-900">Order Summary</h2>
+          </div>
 
-              {/* Product Image */}
-              <img
-                src={item.product.imageUrl}
-                alt={item.product.name}
-                className="w-14 h-14 object-cover rounded"
-              />
+          <div className="space-y-4">
+            {order.items.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0"
+              >
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  {/* Product Image */}
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 border border-gray-100 rounded-xl overflow-hidden">
+                    <img
+                      src={item.product.imageUrl}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-              {/* Product Info */}
-              <div>
-                <p className="font-medium text-sm">
-                  {item.product.name}
-                </p>
+                  {/* Product Info */}
+                  <div className="flex flex-col min-w-0 pr-4">
+                    <p className="font-dmsans_semibold text-[14px] sm:text-[15px] text-gray-900 truncate">
+                      {item.product.name}
+                    </p>
+                    <p className="font-dmsans_light text-[13px] text-gray-500 mt-0.5">
+                      {item.weight} kg <span className="mx-1 text-gray-300">×</span> ₹{item.discountedPrice}
+                    </p>
+                  </div>
+                </div>
 
-                <p className="text-xs text-gray-500">
-                  {item.weight} kg × ₹{item.discountedPrice}
-                </p>
+                {/* Line Total */}
+                <div className="font-dmsans_semibold text-[15px] text-gray-900 flex-shrink-0">
+                  ₹{item.lineTotal}
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* Totals Section */}
+          <div className="mt-6 pt-5 border-t border-gray-200 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-gray-600">
+                <Calendar className="w-4 h-4" />
+                <span className="font-dmsans_light text-[14px]">Estimated Delivery</span>
+              </div>
+              <span className="font-dmsans_semibold text-[14px] text-gray-900">
+                {estimatedDate.toDateString()}
+              </span>
             </div>
 
-            {/* Line Total */}
-            <div className="text-sm font-medium">
-              ₹{item.lineTotal}
+            <div className="flex justify-between items-center bg-[#f4f8f5]/50 p-4 rounded-xl mt-4 border border-[#0c831f]/10">
+              <span className="font-dmsans_semibold text-[16px] sm:text-lg text-gray-900">Total Amount</span>
+              <span className="font-dmsans_semibold text-[18px] sm:text-xl text-[#0c831f]">
+                ₹{order.total}
+              </span>
             </div>
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* Total */}
-      <div className="mt-6 flex justify-between font-semibold text-lg">
-        <span>Total</span>
-        <span>₹{order.total}</span>
-      </div>
-
-      {/* Delivery */}
-      <p className="mt-4 text-gray-600 text-sm">
-        Estimated Delivery:{" "}
-        <span className="font-medium">
-          {estimatedDate.toDateString()}
-        </span>
-      </p>
-
-      {/* Actions */}
-      <div className="mt-8 flex gap-4">
+      {/* Action Buttons */}
+      <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <Link
           href="/"
-          className="px-5 py-3 bg-black text-white rounded-lg"
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0c831f] text-white rounded-xl font-dmsans_semibold text-[15px] hover:bg-[#0a6c19] hover:shadow-[0_4px_12px_rgba(12,131,31,0.2)] transition-all duration-200"
         >
           Continue Shopping
+          <ArrowRight className="w-4 h-4" />
         </Link>
 
         <Link
           href="/orders"
-          className="px-5 py-3 border rounded-lg"
+          className="flex-1 flex items-center justify-center px-6 py-3.5 bg-white border border-gray-200 text-gray-700 rounded-xl font-dmsans_semibold text-[15px] hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
         >
           View My Orders
         </Link>
       </div>
+      
     </div>
   );
 }
