@@ -479,7 +479,7 @@ return (
                   No products found
                 </p>
                 <p className="font-dmsans_light text-[13px] text-gray-500 mt-1">
-                  We couldn&apos;t find anything matching "{debouncedTerm}".
+                  We couldn&apos;t find anything matching &quot;{debouncedTerm}&quot;.
                 </p>
               </div>
             )}
