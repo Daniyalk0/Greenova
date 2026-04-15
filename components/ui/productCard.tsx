@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Image from "next/image"
-import { Heart, ShoppingCart } from "lucide-react"
+import { CalendarOff, Heart, ShoppingCart } from "lucide-react"
 import QuantitySelect from "./QuantitySelect"
 import { useSession } from "next-auth/react"
 import { useDispatch, useSelector } from "react-redux"
@@ -129,117 +129,118 @@ const ProductCard = ({
     }
   }
 
+  console.log("enableSeasonHighlight:", enableSeasonHighlight);
+  console.log("highlight:", highlight);
+
+    const isOffSeason = enableSeasonHighlight && !highlight;
 
   return (
 
-    <div
+       <div
       className={cn(
-        "relative w-full bg-white rounded-xl shadow-sm hover:shadow-md transition px-3 pt-3 pb-4 cursor-pointer",
-        enableSeasonHighlight &&
-        (highlight
-          ? "opacity-100"
-          : "opacity-60 hover:opacity-90")
+        "relative w-full bg-white rounded-2xl border border-gray-100 px-4 pt-4 pb-5 transition-all duration-300",
+        isOffSeason 
+          ? "opacity-60 grayscale-[20%] pointer-events-none" // Dims the card and disables ALL clicks inside it
+          : "hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0c831f]/20 cursor-pointer shadow-sm"
       )}
     >
-      {/* Wishlist Icon */}
-
-      {enableSeasonHighlight && highlight && (
-        <span className="absolute top-4 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded font-dmsans_light">
-          {product?.season && (
-            product.season.charAt(0).toUpperCase() + product.season.slice(1).toLowerCase()
-          )}
+      {/* Seasonal Badge (Only shows if item is ON season) */}
+      {enableSeasonHighlight && highlight && product?.season && product.season.toLowerCase() !== "all" && (
+        <span className="absolute top-3 left-3 bg-[#0c831f]/10 text-[#0c831f] border border-[#0c831f]/20 text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-dmsans_semibold z-10">
+          {product.season}
         </span>
       )}
 
+      {/* Wishlist Button */}
       <button
         onClick={handleToggleWishlist}
-        className="group relative w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300"
+        disabled={isOffSeason}
+        className="absolute top-2 right-2 group w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 z-10"
         aria-label="Add to wishlist"
       >
-        {/* The Bubble Layer */}
-        <div className="absolute inset-0 rounded-full transition-all duration-300 
-    group-hover:bg-green-200 group-active:bg-green-300 group-active:scale-90"
-        />
-
-        {/* The Heart Icon */}
+        <div className="absolute inset-0 rounded-full transition-all duration-300 group-hover:bg-red-50 group-active:scale-90" />
         <Heart
-          size={20}
-          className={`relative z-10 transition-colors duration-300 ${isInWishlist
-            ? "fill-green-700 text-green-700"
-            : "text-gray-500 group-hover:text-green-600"
-            }`}
+          size={18}
+          className={`relative z-10 transition-colors duration-300 ${
+            isInWishlist
+              ? "fill-red-500 text-red-500"
+              : "text-gray-400 group-hover:text-red-500"
+          }`}
         />
       </button>
 
-      {/* Product Image */}
-      <Link href={`/products/${product.slug}`}>
-        <div className="flex justify-center items-center h-[90px]">
+      {/* Product Image Wrapper with specific Image Overlay */}
+      <Link 
+        href={`/products/${product?.slug || "#"}`}
+        tabIndex={isOffSeason ? -1 : 0} // Prevents tabbing to the link if off-season
+      >
+        <div className="relative flex justify-center items-center h-[110px] mt-4 mb-3 rounded-xl overflow-hidden">
           <Image
             src={product?.imageUrl || "/100.png"}
             alt={product?.name || "product"}
-            width={90}
-            height={90}
-            className="object-contain"
+            width={100}
+            height={100}
+            className={cn(
+              "object-contain transition-transform duration-300",
+              !isOffSeason && "hover:scale-105 drop-shadow-sm"
+            )}
           />
+
+          {/* Frosted Glass Overlay - ONLY over the image! */}
+          {isOffSeason && (
+            <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center z-10">
+              <div className="bg-gray-900/80 text-white text-[11px] font-dmsans_semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                <CalendarOff className="w-3.5 h-3.5" />
+                Out of Season
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Product Info */}
-        <div className="mt-2">
-          <h3 className="text-sm font-monasans_semibold text-gray-800 truncate">
-            {product?.name}
+        <div className="mt-2 text-center sm:text-left">
+          <h3 className="text-[14px] sm:text-[15px] font-dmsans_semibold text-gray-900 truncate">
+            {product?.name || "Unknown Product"}
           </h3>
-          <p className="text-[11px] text-gray-500 font-dmsans_light">
-            Seasonal Special
+          <p className="text-[12px] text-gray-500 font-dmsans_light mt-0.5 truncate">
+            {isOffSeason ? "Currently unavailable" : "Seasonal Special"}
           </p>
         </div>
       </Link>
-      {/* Quantity Selector */}
-      <div className="mt-2">
+
+      {/* Quantity Selector - Now perfectly visible but unclickable! */}
+      <div className="mt-4">
         <QuantitySelect
           options={options}
-          onSelect={(opt) => setSelectedWeightPrice(opt)}
+          onSelect={(opt: any) => setSelectedWeightPrice(opt)}
         />
       </div>
 
       {/* Price + CTA */}
-      <div className="mt-3 flex items-center justify-between gap-2">
-        {/* Price */}
-        <DiscountedPrice product={product} />
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <div className="flex-1">
+          <DiscountedPrice product={product} />
+        </div>
 
         {/* Cart CTA */}
         {isInCart ? (
-          <Link
-            href="/cart"
-            className="
-          flex items-center justify-center gap-1
-          px-3 py-1.5
-          text-[11px] rounded-md
-          bg-blue-600 text-white
-          hover:bg-blue-700
-          active:scale-[0.96]
-        "
-          >
+          <div className="flex items-center justify-center gap-1.5 px-4 py-2 text-[12px] rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
             <ShoppingCart className="w-4 h-4" />
-            <span className="hidden sm:inline font-dmsans_light">Go to Cart</span>
-          </Link>
+            <span className="hidden sm:inline font-dmsans_semibold">In Cart</span>
+          </div>
         ) : (
           <button
             onClick={handleAddToCart}
-            className="
-          flex items-center justify-center gap-1
-          px-3 py-1.5
-          text-[11px] rounded-md
-          bg-green-600 text-white
-          hover:bg-green-700
-          active:scale-[0.96]
-        "
+            disabled={isOffSeason}
+            className="flex items-center justify-center gap-1.5 px-4 py-2 text-[12px] rounded-xl bg-[#0c831f] text-white transition-all active:scale-95 disabled:bg-gray-300 disabled:text-gray-500 disabled:active:scale-100"
           >
             <ShoppingCart className="w-4 h-4" />
-            <span className="hidden sm:inline font-dmsans_light">Add</span>
+            <span className="hidden sm:inline font-dmsans_semibold">Add</span>
           </button>
         )}
       </div>
-    </div >
+
+    </div>
 
   )
 }

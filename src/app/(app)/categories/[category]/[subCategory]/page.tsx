@@ -3,7 +3,9 @@ import SeasonalRowSkeleton from "@/components/ui/loadingSkeletons/SeasonalRowSke
 import SeasonalSkeleton from "@/components/ui/loadingSkeletons/SeasonalSkeleton";
 import { getProducts } from "@/lib/products";
 import { Category, Season } from "@prisma/client";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import ProductsWrapper from "./ProductsWrapper";
 
 
 // type Props = {
@@ -34,8 +36,12 @@ export default async function SubCategoryPage({ params, searchParams }: {
   const isSeasonalPage =
     category === "fruits" && subCategory === "seasonal";
 
+    if (isSeasonalPage && !season) {
+  redirect(`?season=${Season.ALL}`);
+}
+
   const selectedSeason = isSeasonalPage
-    ? season ?? Season.WINTER
+    ? season ?? Season.ALL
     : undefined;
 
   const products = await getProducts({
@@ -45,17 +51,14 @@ export default async function SubCategoryPage({ params, searchParams }: {
   });
 
 
-  return (
-
-
-    <Suspense fallback={<SeasonalRowSkeleton count={8} className="m-8"/>}>
-      <CategoryCommonComponent
-        products={products}
-        isSeasonalPage={isSeasonalPage}
-        selectedSeason={selectedSeason}
-        enableSeasonHighlight={isSeasonalPage ? true : false}
-        />
-    </Suspense>
-     
-  );
+ return (
+  <Suspense fallback={<SeasonalRowSkeleton count={8} className="m-8" />}>
+    <ProductsWrapper
+      category={category}
+      subCategory={subCategory}
+      isSeasonalPage={isSeasonalPage}
+      selectedSeason={selectedSeason}
+    />
+  </Suspense>
+);
 }

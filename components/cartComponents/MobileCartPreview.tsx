@@ -114,7 +114,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                 : Math.round(basePrice);
                         return (
                             <div
-                                key={cartItem.id}
+                                key={cartItem?.productId}
                                 className="flex gap-3 py-4 border-b relative"
                             >
                                 {/* Image */}

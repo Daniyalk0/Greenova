@@ -2,8 +2,12 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { deleteProduct } from "./actions";
 import ConfirmDelete from "./components/ConfirmDelete";
-import DeleteProductButton from "./components/DeleteProductButton";
+// import DeleteProductButton from "./components/DeleteProductButton";
 import { Pencil, Trash2 } from "lucide-react";
+// import DeleteButton from "./components/DeleteProductButton";
+// import DeleteProductAction from "./components/DeleteProductAction";
+// import DeleteEntityAction from "./components/DeleteProductAction";
+// import { useRouter } from "next/navigation";
 
 export default async function AdminProductsPage() {
   const products = await prisma.product.findMany({
@@ -12,10 +16,11 @@ export default async function AdminProductsPage() {
 
   return (
     <div className="space-y-6">
-
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <h1 className="text-2xl sm:text-3xl text-center md:text-left font-semibold mb-6 font-monasans_semibold">Products</h1>
+        <h1 className="text-2xl sm:text-3xl text-center md:text-left font-semibold mb-6 font-monasans_semibold">
+          Products
+        </h1>
 
         <Link
           href="/admin/products/new"
@@ -56,15 +61,13 @@ export default async function AdminProductsPage() {
             Add Product
           </span>
         </Link>
-
       </div>
 
       {/* Desktop Table */}
 
-
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs sm:text-sm">
+        <div className="overflow-x-auto px-3">
+          <table className="w-full text-xs sm:text-sm ">
             <thead>
               <tr className="text-zinc-700 border-b border-zinc-300 font-dmsans_semibold">
                 <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold uppercase">
@@ -80,7 +83,7 @@ export default async function AdminProductsPage() {
                   Stock
                 </th>
 
-                <th className="px-0 sm:px-6 py-3 sm:py-4 text-right font-semibold uppercase">
+                <th className="pr-3 md:pr-auto sm:px-6 py-3 sm:py-4 text-right font-semibold uppercase">
                   Actions
                 </th>
               </tr>
@@ -90,7 +93,10 @@ export default async function AdminProductsPage() {
               {products
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((p) => (
-                  <tr key={p.id} className="hover:bg-green-100 font-monasans_semibold">
+                  <tr
+                    key={p.id}
+                    className="hover:bg-green-100 font-monasans_semibold"
+                  >
                     {/* Name */}
                     <td className="px-3 sm:px-6 py-3 sm:py-4 font-medium">
                       {p.name}
@@ -104,10 +110,11 @@ export default async function AdminProductsPage() {
                     {/* Stock */}
                     <td className="px-0 sm:px-4 py-3 sm:py-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium ${p.inStock
+                        className={`px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium ${
+                          p.inStock
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
-                          }`}
+                        }`}
                       >
                         {p.inStock ? "In Stock" : "Out of Stock"}
                       </span>
@@ -116,22 +123,36 @@ export default async function AdminProductsPage() {
                     {/* Actions */}
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-right">
                       <div className="flex items-center justify-end gap-2 sm:gap-3">
-
                         {/* Mobile Icon */}
                         <Link
-                          href={`/admin/products/${p.id}/edit`}
-                          className=" text-blue-600"
-                        >
-                          <Pencil size={16} />
-                        </Link>
+    href={`/admin/products/${p.id}/edit`}
+    className="text-blue-600 flex items-center"
+  >
+    {/* Icon (mobile) */}
+    <span className="sm:hidden">
+      <Pencil size={16} />
+    </span>
 
+    {/* Text (desktop) */}
+    <span className="hidden sm:inline text-sm">
+      Edit
+    </span>
+  </Link>
 
+  {/* Delete */}
+  <ConfirmDelete id={p.id} type="product">
+    <button className="text-red-600 flex items-center">
+      {/* Icon (mobile) */}
+      <span className="sm:hidden">
+        <Trash2 size={16} />
+      </span>
 
-                        {/* Delete icon (always icon for cleaner UI) */}
-                        <DeleteProductButton
-                          productId={p.id}
-                        // iconOnly
-                        />
+      {/* Text (desktop) */}
+      <span className="hidden sm:inline text-sm">
+        Delete
+      </span>
+    </button>
+  </ConfirmDelete>
                       </div>
                     </td>
                   </tr>
@@ -141,9 +162,8 @@ export default async function AdminProductsPage() {
         </div>
       </div>
 
-
       {/* Mobile Cards */}
-      <div className="hidden space-y-4">
+      {/* <div className="hidden space-y-4">
         {products.map((p) => (
           <div
             key={p.id}
@@ -152,18 +172,17 @@ export default async function AdminProductsPage() {
             <div className="flex justify-between items-start">
               <h3 className="text-sm font-semibold">{p.name}</h3>
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${p.inStock
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-                  }`}
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  p.inStock
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
               >
                 {p.inStock ? "In Stock" : "Out of Stock"}
               </span>
             </div>
 
-            <p className="text-sm text-gray-600">
-              Price: ₹{p.basePricePerKg}
-            </p>
+            <p className="text-sm text-gray-600">Price: ₹{p.basePricePerKg}</p>
 
             <div className="flex justify-end gap-4 pt-2 border-t">
               <Link
@@ -172,11 +191,13 @@ export default async function AdminProductsPage() {
               >
                 Edit
               </Link>
-              <DeleteProductButton productId={p.id} />
+              <ConfirmDelete id={p.id} type="product">
+                <button className="text-red-600">Delete</button>
+              </ConfirmDelete>
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Empty State */}
       {products.length === 0 && (
@@ -189,6 +210,4 @@ export default async function AdminProductsPage() {
       )}
     </div>
   );
-
-
 }

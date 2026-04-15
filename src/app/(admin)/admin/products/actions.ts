@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabaseClient";
 // import { supabase } from "@/lib/supabaseClient";
 import { authConfig } from "@/src/app/api/auth/[...nextauth]/auth.config";
+import { OrderStatus } from "@prisma/client";
 // import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -99,3 +100,19 @@ export async function deleteUser(id: number) {
 
 // order server actions
 
+export async function updateOrderStatus(
+  orderId: number,
+  status: OrderStatus
+) {
+  try {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update order status:", error);
+    return { success: false };
+  }
+}

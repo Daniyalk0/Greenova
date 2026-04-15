@@ -20,7 +20,14 @@ export default function AddressForm({
   address: any;
   onClose: () => void;
 }) {
-  const { refreshAddresses, setAddresses, setSelectedAddressId, selectedAddressId, addresses, saveGuest} = useAddress();
+  const {
+    refreshAddresses,
+    setAddresses,
+    setSelectedAddressId,
+    selectedAddressId,
+    addresses,
+    saveGuest,
+  } = useAddress();
   const { data: session } = useSession();
   const user = session?.user?.id;
 
@@ -43,104 +50,100 @@ export default function AddressForm({
     },
   });
 
- const handleCreate = async (data: AddressFormValues) => {
-  if (!user) {
-    saveGuest(data);
-    onClose()
-    return;
-  }
+  const handleCreate = async (data: AddressFormValues) => {
+    if (!user) {
+      saveGuest(data);
+      onClose();
+      return;
+    }
 
-  const tempId = Date.now();
+    const tempId = Date.now();
 
-  const tempAddress: Address = {
-    id: tempId,
-    name: data.name,
-    phone: data.phone,
-    street: data.street,
-    city: data.city,
-    state: data.state,
-    pincode: data.pincode,
-    // country: data.country ?? null,
-    landmark: data.landmark ?? null,
-    // area: data.area,
-    // label: data.label,
-    isDefault: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    const tempAddress: Address = {
+      id: tempId,
+      name: data.name,
+      phone: data.phone,
+      street: data.street,
+      city: data.city,
+      state: data.state,
+      pincode: data.pincode,
+      // country: data.country ?? null,
+      landmark: data.landmark ?? null,
+      // area: data.area,
+      // label: data.label,
+      isDefault: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const prevSelected = selectedAddressId;
+
+    try {
+      // optimistic
+      // optimistic add
+      setAddresses((prev) => [tempAddress, ...prev]);
+
+      // ✅ ADD THIS
+      setSelectedAddressId(tempId);
+
+      const saved = await createAddress(data);
+
+      // replace with real
+      setAddresses((prev) => prev.map((a) => (a.id === tempId ? saved : a)));
+
+      setSelectedAddressId(saved.id);
+
+      onClose();
+    } catch (error) {
+      // rollback
+      setAddresses((prev) => prev.filter((a) => a.id !== tempId));
+      setSelectedAddressId(prevSelected);
+    }
   };
 
-  const prevSelected = selectedAddressId;
+  const handleUpdate = async (id: number, data: AddressFormValues) => {
+    if (!user) {
+      saveGuest(data); // guest overwrite
+      onClose();
+      return;
+    }
 
-  try {
-    // optimistic
-// optimistic add
-setAddresses((prev) => [tempAddress, ...prev]);
+    const prevAddresses = addresses;
 
-// ✅ ADD THIS
-setSelectedAddressId(tempId);
+    try {
+      // ✅ optimistic update
+      setAddresses((prev) =>
+        prev.map((a) =>
+          a.id === id
+            ? {
+                ...a,
+                ...data,
+                updatedAt: new Date(), // keep UI fresh
+              }
+            : a,
+        ),
+      );
 
-    const saved = await createAddress(data);
+      await updateAddress(id, data);
 
-    // replace with real
-    setAddresses((prev) =>
-      prev.map((a) => (a.id === tempId ? saved : a))
-    );
+      onClose();
+    } catch (error) {
+      // ❌ rollback
+      setAddresses(prevAddresses);
+    }
+  };
 
-    setSelectedAddressId(saved.id);
+  const condtionalHandle = async (data: AddressFormValues) => {
+    if (address) {
+      await handleUpdate(address.id, data);
+    } else {
+      await handleCreate(data);
+    }
+  };
 
-    onClose();
-  } catch (error) {
-    // rollback
-    setAddresses((prev) => prev.filter((a) => a.id !== tempId));
-    setSelectedAddressId(prevSelected);
-  }
-};
-
-
-const handleUpdate = async (id: number, data: AddressFormValues) => {
-  if (!user) {
-    saveGuest(data); // guest overwrite
-    onClose();
-    return;
-  }
-
-  const prevAddresses = addresses;
-
-  try {
-    // ✅ optimistic update
-    setAddresses((prev) =>
-      prev.map((a) =>
-        a.id === id
-          ? {
-              ...a,
-              ...data,
-              updatedAt: new Date(), // keep UI fresh
-            }
-          : a
-      )
-    );
-
-    await updateAddress(id, data);
-
-    onClose();
-  } catch (error) {
-    // ❌ rollback
-    setAddresses(prevAddresses);
-  }
-};
-
-const condtionalHandle = async (data: AddressFormValues) => {
-  if (address) {
-    await handleUpdate(address.id, data);
-  } else {
-    await handleCreate(data);
-  }
-};
-
-const onSubmit = (data: AddressFormValues) => {
-  startTransition(() => condtionalHandle(data));
-};
-
+  const onSubmit = (data: AddressFormValues) => {
+    startTransition(() => condtionalHandle(data));
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">

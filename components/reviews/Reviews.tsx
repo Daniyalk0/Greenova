@@ -15,7 +15,6 @@ const Reviews = () => {
   const [reviews, setReviews] = useState<any[]>([]);;
   const [isUserHasReview, setIsUserHasReview] = useState(false)
 
-  console.log("Review parent rendered ✅");
   const { data: session } = useSession()
 
   useEffect(() => {

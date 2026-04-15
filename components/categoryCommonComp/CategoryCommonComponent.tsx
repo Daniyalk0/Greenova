@@ -1,6 +1,6 @@
 "use client";
 
-import {useMemo } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 // import ProductCard from "../ui/productCard";
 import SeasonSelect from "../ui/SeasonSelect";
 import { buildProductOptions } from "@/lib/productOptions";
@@ -26,23 +26,27 @@ export default function CategoryCommonComponent({
   products,
   isSeasonalPage = false,
   selectedSeason = Season.SUMMER,
-  enableSeasonHighlight = false
+  enableSeasonHighlight = false,
 }: Props) {
-
+  const [localSeason, setLocalSeason] = useState(selectedSeason);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
+  useEffect(() => {
+    setLocalSeason(selectedSeason);
+  }, [selectedSeason]);
+
   const orderedProducts = useMemo(() => {
-    if (!enableSeasonHighlight || !isSeasonalPage || !selectedSeason) {
+    if (!enableSeasonHighlight || !isSeasonalPage || !localSeason) {
       return products;
     }
 
     return [...products].sort((a, b) => {
-      const aPriority = a.season === selectedSeason ? 1 : 0;
-      const bPriority = b.season === selectedSeason ? 1 : 0;
+      const aPriority = a.season === localSeason ? 1 : 0;
+      const bPriority = b.season === localSeason ? 1 : 0;
       return bPriority - aPriority;
     });
-  }, [products, selectedSeason, isSeasonalPage, enableSeasonHighlight]);
-
+  }, [products, localSeason, isSeasonalPage, enableSeasonHighlight]);
 
   return (
     <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-6">
@@ -52,13 +56,22 @@ export default function CategoryCommonComponent({
           <SeasonSelect
             seasons={seasonsOptions}
             value={
-              seasonsOptions.find((s) => s.value === selectedSeason) || seasonsOptions[0]
+              seasonsOptions.find((s) => s.value === localSeason) ||
+              seasonsOptions[0]
             }
             onSelect={(opt) => {
-              router.push(`?season=${opt.value}`);
+              const newUrl = `?season=${opt.value}`;
+
+              // 1. instant UI
+              setLocalSeason(opt.value);
+
+              // 2. instant URL update (no waiting)
+              window.history.replaceState(null, "", newUrl);
+
+              // 3. trigger Next.js navigation (data fetch)
+              router.push(newUrl);
             }}
           />
-
         </div>
       )}
 
@@ -72,23 +85,20 @@ export default function CategoryCommonComponent({
           w-full
         "
       >
-   {orderedProducts.map((p) => {
-  const isHighlighted =
-    enableSeasonHighlight &&
-    isSeasonalPage &&
-    p.season === selectedSeason;
+        {orderedProducts.map((p) => {
+          const isHighlighted =
+            enableSeasonHighlight && isSeasonalPage && p.season === localSeason;
 
-  return (
-    <ProductCard
-      key={p.id}
-      product={p}
-      options={buildProductOptions(p)}
-      highlight={isHighlighted}
-      enableSeasonHighlight={enableSeasonHighlight}
-    />
-  );
-})}
-
+          return (
+            <ProductCard
+              key={p.id}
+              product={p}
+              options={buildProductOptions(p)}
+              highlight={isHighlighted}
+              enableSeasonHighlight={enableSeasonHighlight}
+            />
+          );
+        })}
       </div>
     </div>
   );

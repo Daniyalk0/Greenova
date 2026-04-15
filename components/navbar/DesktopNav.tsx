@@ -63,7 +63,7 @@ const DesktopNav = ({
   // ✅ final address source
   const finalAddress = isLoggedIn ? selectedAddress : guestAddress;
 
-  console.log("finalAddress", finalAddress);
+  // console.log("finalAddress", finalAddress);
   
 
   // ✅ normalize for button logic

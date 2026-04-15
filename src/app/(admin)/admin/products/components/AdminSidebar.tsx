@@ -72,7 +72,7 @@ export default function AdminSidebar() {
       {/* Sidebar Container */}
       <aside
         className={`
-          fixed md:sticky top-0 left-0 z-40
+          fixed  top-0 left-0 z-40
           h-screen w-72 bg-white border-r border-gray-100
           flex flex-col transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 shadow-lg shadow-green-400'}

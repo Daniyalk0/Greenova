@@ -16,12 +16,13 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return (
-    <div className="min-h-screen flex bg-gray-100">
-   <AdminSidebar/>
+return (
+  <div className="min-h-screen flex bg-gray-100">
+    <AdminSidebar />
 
-      {/* Main */}
-      <main className="flex-1 p-6">{children}</main>
-    </div>
-  );
+    <main className="flex-1 p-6 ml-0 md:ml-72">
+      {children}
+    </main>
+  </div>
+);
 }

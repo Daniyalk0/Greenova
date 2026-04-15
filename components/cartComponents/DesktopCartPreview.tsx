@@ -24,7 +24,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
     router.push("/cart");
   };
 
-  console.log(products);
+  // console.log(products);
   
 
   return (
@@ -79,10 +79,12 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
               ? Math.round(basePricePerKg - (basePricePerKg * cartItem.discount) / 100)
               : Math.round(basePricePerKg);
             const discountedTotal = Math.round(discountedPricePerKg * (cartItem?.weight ?? 0));
+          
+            
 
             return (
               <div
-                key={cartItem?.id}
+                key={cartItem?.productId}
                 className="flex gap-3 py-3 border-b relative"
               >
                 {/* Image */}

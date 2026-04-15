@@ -5,9 +5,14 @@ import { clearGuestAddress } from "@/lib/clientAddress";
 import { useAddress } from "@/src/context/address-context";
 
 export default function GuestAddressHandler() {
-  const { pendingGuestAddress, mergeGuestAddress } = useAddress();
+  const { pendingGuestAddress, mergeGuestAddress, setPendingGuestAddress } = useAddress();
 
   if (!pendingGuestAddress) return null;
+
+  const handleDiscard = () => {
+    clearGuestAddress();
+    setPendingGuestAddress(null);
+  };
 
   return (
     <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-[380px] bg-white border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 sm:p-5 z-50">
@@ -34,7 +39,7 @@ export default function GuestAddressHandler() {
       {/* Action Buttons */}
       <div className="flex items-center gap-3 justify-end shrink-0">
         <button
-          onClick={() => clearGuestAddress()}
+          onClick={handleDiscard}
           className="font-dmsans_semibold text-[13px] text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 px-4 py-2.5 rounded-xl transition-colors"
         >
           Discard

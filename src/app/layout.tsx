@@ -131,12 +131,12 @@ export default function RootLayout({
 
           <div className="hidden sm:block">
             <ToastContainer
-              position="bottom-left"
+              position="bottom-right"
               autoClose={3000}
               closeOnClick
               pauseOnHover
               draggable
-              toastClassName="!rounded-xl !px-4 !py-2 !text-sm font-dmsans_medium sm:!px-6 sm:!py-3 sm:!text-base"
+              toastClassName="!rounded-xl !px-2 !py-1 !text-sm font-dmsans_light sm:!px-6 sm:!py-3 sm:!text-base"
               className="!w-[90vw] sm:!w-auto"
             />
           </div>

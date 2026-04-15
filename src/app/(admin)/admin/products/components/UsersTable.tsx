@@ -17,6 +17,9 @@ import { useRouter } from "next/navigation";
 import { deleteUser } from "../actions";
 import { X } from "lucide-react";
 import UserDetailsModal from "./UserDetailsModal";
+// import DeleteButton from "./DeleteProductButton";
+// import DeleteEntityAction from "./DeleteProductAction";
+import ConfirmDelete from "./ConfirmDelete";
 
 interface Order {
   id: number;
@@ -40,22 +43,21 @@ export default function UsersTable({ users }: { users: User[] }) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const filteredUsers = useMemo(() => {
     return users.filter(
       (user) =>
         user.name?.toLowerCase().includes(search.toLowerCase()) ||
-        user.email?.toLowerCase().includes(search.toLowerCase())
+        user.email?.toLowerCase().includes(search.toLowerCase()),
     );
   }, [users, search]);
 
   const totalUsers = users.length;
-  const totalAdmins = users.filter((u) => u.role === "ADMIN").length;
-  const totalCustomers = users.filter((u) => u.role === "USER").length;
+  const totalAdmins = users.filter((u) => u.role === "admin").length;
+  const totalCustomers = users.filter((u) => u.role === "customer").length;
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this user?",
     );
     if (!confirmDelete) return;
 
@@ -71,10 +73,8 @@ export default function UsersTable({ users }: { users: User[] }) {
     setIsModalOpen(true);
   };
 
-
   return (
     <>
-
       <div className="space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 w-full font-monasans_semibold">
@@ -94,7 +94,9 @@ export default function UsersTable({ users }: { users: User[] }) {
 
           <Card className="rounded-2xl shadow-sm ">
             <CardContent className="p-4">
-              <p className="text-xs sm:text-sm text-muted-foreground">Customers</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Customers
+              </p>
               <p className="text-2xl font-semibold">{totalCustomers}</p>
             </CardContent>
           </Card>
@@ -168,7 +170,6 @@ export default function UsersTable({ users }: { users: User[] }) {
 
         {/* Desktop Table */}
 
-
         <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-xs sm:text-sm">
@@ -195,8 +196,10 @@ export default function UsersTable({ users }: { users: User[] }) {
 
               <tbody>
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-t hover:bg-green-100 font-monasans_semibold">
-
+                  <tr
+                    key={user.id}
+                    className="border-t hover:bg-green-100 font-monasans_semibold"
+                  >
                     {/* User */}
                     <td className="px-3 sm:px-4 py-3 sm:py-4">
                       <div>
@@ -210,14 +213,15 @@ export default function UsersTable({ users }: { users: User[] }) {
                     </td>
 
                     {/* Role */}
-                     <td className="px-0 sm:px-2 py-3 sm:py-4">
+                    <td className="px-0 sm:px-2 py-3 sm:py-4">
                       <span
-                        className={`bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-dmsans_semibold  sm:text-xs ${user.role === "admin"
+                        className={`bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-dmsans_semibold  sm:text-xs ${
+                          user.role === "admin"
                             ? "bg-green-100 text-green-700"
                             : "bg-green-100 text-green-700"
-                          }`}
+                        }`}
                       >
-                        {user.role === "admin" ? "Admin" : "User"}
+                        {user.role === "admin" ? "Admin" : "customer"}
                       </span>
                     </td>
 
@@ -229,7 +233,6 @@ export default function UsersTable({ users }: { users: User[] }) {
                     {/* Actions */}
                     <td className="px-3 sm:px-4 py-3 sm:py-4 text-right">
                       <div className="flex items-center justify-end gap-0">
-
                         {/* Mobile Icons */}
                         <button
                           onClick={() => handleViewUser(user)}
@@ -238,12 +241,10 @@ export default function UsersTable({ users }: { users: User[] }) {
                           <Eye size={16} />
                         </button>
 
-                        <button
-                          onClick={() => handleDelete(user.id)}
-                          className="sm:hidden p-1 rounded-md hover:bg-red-100 text-red-600"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                  
+                          <ConfirmDelete id={user.id} type="user">
+                          <button className="sm:hidden p-1 rounded-md hover:bg-red-100 text-red-600"><Trash2 size={16} /></button>
+                        </ConfirmDelete>
 
                         {/* Desktop Buttons */}
                         <Button
@@ -255,15 +256,9 @@ export default function UsersTable({ users }: { users: User[] }) {
                           View
                         </Button>
 
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleDelete(user.id)}
-                          className="hidden sm:inline-flex"
-                        >
-                          Delete
-                        </Button>
-
+                        <ConfirmDelete id={user.id} type="user">
+                          <button className="text-red-600 hidden sm:inline-block">Delete</button>
+                        </ConfirmDelete>
                       </div>
                     </td>
                   </tr>
@@ -283,7 +278,6 @@ export default function UsersTable({ users }: { users: User[] }) {
             </table>
           </div>
         </div>
-
       </div>
       <UserDetailsModal
         user={selectedUser}
@@ -294,7 +288,6 @@ export default function UsersTable({ users }: { users: User[] }) {
           setIsModalOpen(false);
         }}
       />
-
     </>
   );
 }

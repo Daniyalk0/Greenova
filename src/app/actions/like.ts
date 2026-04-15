@@ -75,22 +75,34 @@ export async function getWishlistDB(userId: number) {
 
   try {
     const wishlist = await prisma.wishlist.findMany({
-      where: {
-        userId,
-      },
+      where: { userId },
       include: {
-        product: true, // remove this if you only want productId
+        product: true,
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    console.log("✅ Wishlist fetched:", wishlist.length);
-    return wishlist;
+    // 🔥 FIX: serialize Dates
+    const serializedWishlist = wishlist.map((item) => ({
+      ...item,
+      createdAt: item.createdAt.toISOString(),
+      // updatedAt: item.updatedAt?.toISOString(),
+      product: item.product
+        ? {
+            ...item.product,
+            createdAt: item.product.createdAt?.toISOString?.(),
+            updatedAt: item.product.updatedAt?.toISOString?.(),
+          }
+        : null,
+    }));
+
+    console.log("✅ Wishlist fetched:", serializedWishlist.length);
+
+    return serializedWishlist;
   } catch (error) {
     console.error("❌ Error fetching wishlist:", error);
     return [];
   }
 }
-

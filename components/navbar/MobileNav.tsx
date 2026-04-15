@@ -93,7 +93,6 @@ const addressList = isLoggedIn
                         <ChevronDown className="w-3 h-3 text-gray-600" />
                     </div>
                 </button>
-{/* git commit -m "add address option for guest users"    */}
 
                 {/* User */}
                 <UserMenu />

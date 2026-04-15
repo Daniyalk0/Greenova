@@ -17,8 +17,6 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
   const { selectedAddress, selectAddress, selectedAddressId } = useAddress();
   const { openAddressFormModal } = useUI();
   const [loading, setLoading] = useState(false);
-
-  console.log('paymentmethod', paymentMethod);
   
 
   const handleOrder = async () => {
@@ -30,8 +28,6 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
     }
 
     setLoading(true);
-
-    const toastId = toast.loading("Placing your order...");
 
     try {
       const res = await fetch("/api/payment/create-order", {
@@ -60,13 +56,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
 
       // ✅ COD
       if (paymentMethod === "cod") {
-        toast.update(toastId, {
-          render: "Order placed successfully",
-          type: "success",
-          isLoading: false,
-          autoClose: 2000,
-        });
-
+        toast.success("Order placed successfully");
         router.push(`/order-success?orderId=${data.orderId}`);
         return;
       }
@@ -77,12 +67,12 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
       }
 
       // Update toast before opening Razorpay
-      toast.update(toastId, {
-        render: "Redirecting to payment...",
-        type: "info",
-        isLoading: false,
-        autoClose: 1500,
-      });
+      // toast.update(toastId, {
+      //   render: "Redirecting to payment...",
+      //   type: "info",
+      //   isLoading: false,
+      //   autoClose: 1500,
+      // });
 
       if (paymentMethod !== "cod" && !(window as any).Razorpay) {
   throw new Error("Payment system still loading. Please try again in a moment.");
@@ -93,13 +83,9 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
     } catch (err: any) {
       console.error(err);
 
-      toast.update(toastId, {
-        render:
-          err?.message || "Something went wrong. Please try again.",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
-      });
+      toast.error(
+        err?.message || "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
