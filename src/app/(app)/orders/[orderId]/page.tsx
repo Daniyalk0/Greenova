@@ -41,9 +41,10 @@ const formatOrderStatus = (status?: string) => {
 export default async function OrderDetailsPage({
   params,
 }: {
-  params: { orderId: string };
+  params: Promise<{ orderId: string }>;
 }) {
   const session = await getServerSession(authConfig);
+  const {orderId} = await params;
 
   if (!session?.user?.id) {
     redirect("/login");
@@ -51,7 +52,7 @@ export default async function OrderDetailsPage({
 
   const order = await prisma.order.findUnique({
     where: {
-      id: Number(params.orderId),
+      id: Number(orderId),
       userId: session.user.id,
     },
     include: {

@@ -44,11 +44,12 @@ PaymentMethod: PaymentMethod;
 export default async function AdminOrderDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const order = await prisma.order.findUnique({
     where: {
-      id: Number(params.id),
+      id: Number(id),
     },
     include: {
       user: true,
