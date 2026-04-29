@@ -104,14 +104,12 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                 {/* Scrollable Items */}
                 <div className="flex-1 overflow-y-auto px-4">
                     {products.map((cartItem: any) => {
-                        const basePrice =
-                            (cartItem?.basePricePerKg ?? 0) * (cartItem?.weight ?? 0);
-                        const discountedPrice =
-                            cartItem?.discount > 0
-                                ? Math.round(
-                                    basePrice - (basePrice * cartItem.discount) / 100
-                                )
-                                : Math.round(basePrice);
+                        const basePricePerKg = cartItem?.basePricePerKg ?? 0;
+                        const basePrice = basePricePerKg * (cartItem?.weight ?? 0);
+                        const discountedPricePerKg = cartItem?.discount > 0
+                            ? Math.round(basePricePerKg - (basePricePerKg * cartItem.discount) / 100)
+                            : Math.round(basePricePerKg);
+                        const discountedPrice = Math.round(discountedPricePerKg * (cartItem?.weight ?? 0));
                         return (
                             <div
                                 key={cartItem?.productId}
@@ -164,6 +162,9 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                                             )}
                                         </div>
 
+                                        <div className="h-7 px-2 font-dmsans_light bg-green-100 rounded flex items-center justify-center text-xs font-semibold text-green-700">
+                                            ₹{discountedPricePerKg} / kg
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +176,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                 <div className="border-t px-4 py-4  font-monasans_bold">
                     <div className="flex justify-between text-sm mb-3">
                         <span>Total</span>
-                        <span className="font-semibold">{total}</span>
+                        <span className="font-semibold">₹{total}</span>
                     </div>
                     <div
                         onClick={handleNavigate}
@@ -183,7 +184,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                         className="
                             flex items-center cursor-pointer justify-center w-full bg-green-600 text-white py-3 rounded-xl font-dmsans_semibold"
                     >
-                        View Cart
+                        Proceed to Cart
                     </div>
 
                 </div>

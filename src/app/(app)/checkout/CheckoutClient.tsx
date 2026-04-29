@@ -1,23 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import AddressSection from "@/components/user-address/AddressSection"
-import OrderSummary from "@/components/cartComponents/OrderSummary"
-import Script from "next/script"
-import { useRouter } from "next/navigation"
-import { handlePayment } from "@/lib/handlePayment"
-import { toast } from "react-toastify"
-import { Plus } from "lucide-react"
-import { useAddress } from "@/src/context/address-context"
-import { useUI } from "@/src/context/ui-context"
+import { useState } from "react";
+import AddressSection from "@/components/user-address/AddressSection";
+import OrderSummary from "@/components/cartComponents/OrderSummary";
+import Script from "next/script";
+import { useRouter } from "next/navigation";
+import { handlePayment } from "@/lib/handlePayment";
+import { toast } from "react-toastify";
+import { Plus } from "lucide-react";
+import { useAddress } from "@/src/context/address-context";
+import { useUI } from "@/src/context/ui-context";
 
 export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
-  const [paymentMethod, setPaymentMethod] = useState("cod")
-  const router = useRouter()
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const router = useRouter();
   const { selectedAddress, selectAddress, selectedAddressId } = useAddress();
   const { openAddressFormModal } = useUI();
   const [loading, setLoading] = useState(false);
-  
 
   const handleOrder = async () => {
     if (loading) return;
@@ -44,7 +43,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-          console.log('addressID', selectedAddress);
+        console.log("addressID", selectedAddress);
         throw new Error(errData?.error || "Failed to create order");
       }
 
@@ -75,17 +74,16 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
       // });
 
       if (paymentMethod !== "cod" && !(window as any).Razorpay) {
-  throw new Error("Payment system still loading. Please try again in a moment.");
-}
+        throw new Error(
+          "Payment system still loading. Please try again in a moment.",
+        );
+      }
 
       await handlePayment(router, data);
-
     } catch (err: any) {
       console.error(err);
 
-      toast.error(
-        err?.message || "Something went wrong. Please try again."
-      );
+      toast.error(err?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -101,7 +99,6 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* LEFT COLUMN: Address & Payment */}
           <div className="lg:col-span-8 space-y-6">
-
             {/* ADDRESS SECTION */}
             <section className="bg-white rounded-2xl shadow-sm border border-green-100 overflow-hidden transition-all">
               <div className="p-5 sm:p-7">
@@ -146,6 +143,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
 
                   <AddressSection />
                 </div>
+              
               </div>
             </section>
 
@@ -185,7 +183,9 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
                         onChange={() => setPaymentMethod("cod")}
                       />
                       <div className="ml-4">
-                        <span className={`block text-base font-dmsans_semibold ${paymentMethod === "cod" ? "text-[#0c831f]" : "text-gray-900 group-hover:text-[#0c831f]"}`}>
+                        <span
+                          className={`block text-base font-dmsans_semibold ${paymentMethod === "cod" ? "text-[#0c831f]" : "text-gray-900 group-hover:text-[#0c831f]"}`}
+                        >
                           Cash on Delivery
                         </span>
                         <span className="block text-sm text-gray-500 mt-0.5">
@@ -210,7 +210,9 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
                         onChange={() => setPaymentMethod("razorpay")}
                       />
                       <div className="ml-4">
-                        <span className={`block text-base font-dmsans_semibold ${paymentMethod === "razorpay" ? "text-[#0c831f]" : "text-gray-900 group-hover:text-[#0c831f]"}`}>
+                        <span
+                          className={`block text-base font-dmsans_semibold ${paymentMethod === "razorpay" ? "text-[#0c831f]" : "text-gray-900 group-hover:text-[#0c831f]"}`}
+                        >
                           Online Payment
                         </span>
                         <span className="block text-sm text-gray-500 mt-0.5">
@@ -234,11 +236,14 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
           <div className="lg:col-span-4">
             <div className="sticky top-8 space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-5 sm:p-7 relative overflow-hidden">
-                
                 {/* Visual subtle top accent line */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#0c831f]" />
 
-                <OrderSummary products={cartItems} pricing={pricing} mode="checkout" />
+                <OrderSummary
+                  products={cartItems}
+                  pricing={pricing}
+                  mode="checkout"
+                />
 
                 <div className="mt-8 pt-6 border-t border-dashed border-gray-200">
                   <button
@@ -257,7 +262,21 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
                   </button>
 
                   <p className="text-center text-xs text-gray-400 mt-4 px-2">
-                    By placing your order, you agree to our <a href="#" className="underline hover:text-gray-600 transition-colors">Terms of Service</a> & <a href="#" className="underline hover:text-gray-600 transition-colors">Privacy Policy</a>.
+                    By placing your order, you agree to our{" "}
+                    <a
+                      href="#"
+                      className="underline hover:text-gray-600 transition-colors"
+                    >
+                      Terms of Service
+                    </a>{" "}
+                    &{" "}
+                    <a
+                      href="#"
+                      className="underline hover:text-gray-600 transition-colors"
+                    >
+                      Privacy Policy
+                    </a>
+                    .
                   </p>
                 </div>
               </div>

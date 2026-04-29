@@ -8,6 +8,7 @@ import CleanFacebookHash from "@/components/CleanFacebookHash"
 import Navbar from "@/components/navbar/Navbar"
 import AddressModal from "@/components/user-address/AddressModal"
 import AddressListModal from "@/components/user-address/AddressListModal"
+import CoverageBar from "@/components/CoverageBar"
 
 export default function AppLayout({
   children,
@@ -16,6 +17,8 @@ export default function AppLayout({
 }) {
   return (
     <>
+             <CoverageBar
+            />
       <Navbar />
       {/* <CategoriesBar /> */}
       <CleanFacebookHash />
@@ -28,6 +31,7 @@ export default function AppLayout({
       <CartPreview />
 
       <main className="min-h-screen">
+        
         {children}
           {/* <AddressModal />
       <AddressListModal /> */}

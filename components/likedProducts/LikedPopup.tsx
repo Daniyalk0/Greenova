@@ -47,6 +47,8 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
       setLocalWishlistState(localWishlist);
     }
   };
+
+
   return (
     <>
       {/* Backdrop */}
@@ -130,7 +132,7 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                         </div>
 
                         {/* Quantity / Add control */}
-                        <div className="h-7 w-20 bg-green-100 rounded" />
+                          {/* <div className="h-7 w-20 bg-green-100 rounded" /> */}
                       </div>
                     </div>
                   </div>

@@ -13,7 +13,7 @@ export default function AddressListModal() {
     useUI();
 
   const { data: session } = useSession();
-  const { addresses, selectAddress, refreshAddresses, selectedAddressId, setAddresses, clearGuest } =
+  const { addresses, selectAddress, refreshAddresses, selectedAddressId, setAddresses, clearGuest , setSelectedAddressId} =
     useAddress();
   const guestAddress = getGuestAddress();
 
@@ -50,6 +50,7 @@ const handleDelete = async (id?: number) => {
 
   // Guest
   if (!session?.user?.id) {
+    
     clearGuest();
     closeAddressListModal();
     return;
@@ -58,19 +59,41 @@ const handleDelete = async (id?: number) => {
   if (!id) return;
 
   const prevAddresses = addresses;
+  const prevSelectedId = selectedAddressId;
 
   try {
     setDeletingAddressId(id);
     setDeleteError(null);
 
-    // Optimistic update
-    setAddresses(prev => prev.filter(a => a.id !== id));
+    // 👉 compute remaining BEFORE updating state
+    const remaining = addresses.filter((a) => a.id !== id);
+
+    // ✅ optimistic remove
+    setAddresses(remaining);
+    if (remaining.length === 0) {
+  setSelectedAddressId(null); // 🔥 immediate reset
+}
+
+    // ✅ FIX: update selected address immediately
+    if (selectedAddressId === id) {
+      const next =
+        remaining.find((a) => a.serviceStatus === "ACTIVE") ||
+        remaining.find((a) => a.serviceStatus === "LIMITED") ||
+        remaining[0] ||
+        null;
+
+      setSelectedAddressId(next?.id || null);
+    }
 
     await deleteAddress(id);
 
+    // 🔄 re-sync with server (ensures consistency)
+    await refreshAddresses();
+
   } catch (error) {
-    // Rollback
+    // ❌ rollback everything
     setAddresses(prevAddresses);
+    setSelectedAddressId(prevSelectedId);
     setDeleteError("Unable to delete address. Please try again.");
   } finally {
     setDeletingAddressId(null);

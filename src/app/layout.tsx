@@ -20,6 +20,7 @@ import { AddressProvider } from "../context/address-context";
 import AddressListModal from "@/components/user-address/AddressListModal";
 import AddressModal from "@/components/user-address/AddressModal";
 import GuestAddressHandler from "@/components/user-address/GuestAddressHandler";
+import CoverageBar from "@/components/CoverageBar";
 
 
 const geistSans = Geist({
@@ -123,9 +124,11 @@ export default function RootLayout({
           <AddressProvider>
 <GuestAddressHandler/>
           <UIProvider>
+            <AddressModal />
+      
             {children}
             <AddressListModal />
-            <AddressModal />
+        
           </UIProvider>
           </AddressProvider>
 

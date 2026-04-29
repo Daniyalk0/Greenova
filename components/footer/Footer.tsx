@@ -81,10 +81,10 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                             <h3 className="text-lg font-semibold text-white mb-3 font-dmsans_light hidden md:block">Socials</h3>
                             <ul className="space-y-2 text-sm flex flex-col gap-2 font-dmsans_light sm:font-monasans_semibold">
                                 <li>
-                                    <a href="https://twitter.com/daniyalkhandev" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">X (Twitter)</a>
+                                    <a href="https://twitter.com/daniyalswe" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">X (Twitter)</a>
                                 </li>
                                 <li>
-                                    <a href="https://instagram.com/seemstobethend" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">Instagram</a>
+                                    <a href="https://instagram.com/unwrittenw0ounds" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">Instagram</a>
                                 </li>
                                 <li>
                                     <a href="https://www.linkedin.com/in/daniyal-khan-648107263/" target="_blank" rel="noopener noreferrer" className=" transition cursor-pointer duration-300 hover:underline">LinkedIn</a>

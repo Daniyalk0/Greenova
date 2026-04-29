@@ -116,3 +116,91 @@ export async function updateOrderStatus(
     return { success: false };
   }
 }
+
+// export async function createBanner(data) {
+//   // 1. Save to database
+//   await prisma.banner.create({
+//     data: {
+//       title: data.title,
+//       subtitle: data.subtitle,
+//       imageUrl: data.uploadedImageUrl, // From Cloudinary
+//       linkUrl: data.linkUrl,
+//       isActive: true,
+//       colors: data.colors // JSON object
+//     }
+//   });
+
+//   // 2. CRUCIAL: Clear the Next.js cache so customers see it immediately!
+//   revalidatePath("/");
+// }
+
+
+export type BannerPayload = {
+  title: string;
+  subtitle?: string;
+  badge?: string;
+  cta?: string;
+  linkUrl?: string;
+  price?: string;
+  originalPrice?: string;
+  discountText?: string;
+  imageUrl: string;
+};
+
+function toFloat(value?: string | null) {
+  if (!value || value.trim() === "") return null;
+  const num = parseFloat(value);
+  return isNaN(num) ? null : num;
+}
+
+// CREATE
+export async function createBanner(data: BannerPayload) {
+  if (!data.imageUrl) {
+    throw new Error("Image is required");
+  }
+
+  const banner = await prisma.banner.create({
+    data: {
+      title: data.title,
+      subtitle: data.subtitle,
+      badge: data.badge,
+      cta: data.cta,
+      linkUrl: data.linkUrl,
+        price: toFloat(data.price),
+    originalPrice: toFloat(data.originalPrice),
+
+      discountText: data.discountText,
+      imageUrl: data.imageUrl,
+    },
+  });
+
+  revalidatePath("/");          // homepage banners
+  revalidatePath("/admin");     // admin panel if needed
+
+  return banner;
+}
+
+// UPDATE
+export async function updateBanner(id: string, data: BannerPayload) {
+  if (!id) throw new Error("Banner ID missing");
+
+  const banner = await prisma.banner.update({
+    where: { id },
+    data: {
+      title: data.title,
+      subtitle: data.subtitle,
+      badge: data.badge,
+      cta: data.cta,
+      linkUrl: data.linkUrl,
+       price: toFloat(data.price),
+    originalPrice: toFloat(data.originalPrice),
+      discountText: data.discountText,
+      imageUrl: data.imageUrl,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+
+  return banner;
+}

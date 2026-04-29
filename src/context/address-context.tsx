@@ -24,6 +24,8 @@ export type Address = {
 
   // Person details
   name: string;
+  serviceStatus?: "ACTIVE" | "LIMITED" | "UNAVAILABLE"; // 👈 add this
+
   phone: string;
 
   // Address details
@@ -85,10 +87,23 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     }
   }, [session?.user?.id]);
 
-  const saveGuest = (data: Address) => {
-    saveGuestAddress(data);
-    setGuestAddress(data);
+ const saveGuest = async (data: Address) => {
+  // 🔥 fetch availability
+  const res = await fetch("/api/check-availability", {
+    method: "POST",
+    body: JSON.stringify({ pincode: data.pincode }),
+  });
+
+  const { status } = await res.json(); // "active" | "limited"
+
+  const enriched = {
+    ...data,
+    serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
   };
+
+  saveGuestAddress(enriched);
+  setGuestAddress(enriched);
+};
 
   const clearGuest = () => {
     clearGuestAddress();
@@ -96,16 +111,21 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   };
 
   // derive selected address
-  const selectedAddress = useMemo(() => {
-    return addresses.find((a) => a.id === selectedAddressId) || null;
-  }, [addresses, selectedAddressId]);
+const selectedAddress = useMemo(() => {
+  if (!selectedAddressId) return null;
+
+  const found = addresses.find((a) => a.id === selectedAddressId);
+  return found || null;
+}, [addresses, selectedAddressId]);
 
  
 
   const fetchAddresses = async () => {
+    
     setLoading(true);
 
     const data = await getUserAddresses();
+
     setAddresses(data);
 
     if (data.length > 0) {
@@ -149,6 +169,31 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     clearGuestAddress();
     setPendingGuestAddress(null);
   };
+
+  useEffect(() => {
+  if (session?.user?.id) {
+    setGuestAddress(null);
+    return;
+  }
+
+  const guest = getGuestAddress();
+
+  if (guest?.pincode) {
+    fetch("/api/check-availability", {
+      method: "POST",
+      body: JSON.stringify({ pincode: guest.pincode }),
+    })
+      .then((res) => res.json())
+      .then(({ status }) => {
+        setGuestAddress({
+          ...guest,
+          serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
+        });
+      });
+  } else {
+    setGuestAddress(null);
+  }
+}, [session?.user?.id]);
 
   return (
     <AddressContext.Provider

@@ -133,6 +133,28 @@ export default function AddressSection() {
                     {deletingAddressId === address?.id ? "Deleting…" : "Delete"}
                   </button>
                 </div>
+
+                {isSelected && address.serviceStatus && (
+  <div className="mt-3 pt-3 border-t border-gray-100">
+    {address.serviceStatus === "ACTIVE" && (
+      <p className="text-xs sm:text-sm text-green-600 font-dmsans_light">
+        Delivery available in this area
+      </p>
+    )}
+
+    {address.serviceStatus === "LIMITED" && (
+      <p className="text-xs sm:text-sm text-amber-600 font-dmsans_light">
+        Limited delivery available • May take longer
+      </p>
+    )}
+
+    {address.serviceStatus === "UNAVAILABLE" && (
+      <p className="text-xs sm:text-sm text-red-600 font-dmsans_light">
+        Not serviceable in this area
+      </p>
+    )}
+  </div>
+)}
               </label>
             );
           })}

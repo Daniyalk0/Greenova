@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -32,10 +32,14 @@ export default function AddressForm({
   const user = session?.user?.id;
 
   const [isPending, startTransition] = useTransition();
+  const [availability, setAvailability] = useState<
+    "idle" | "checking" | "active" | "limited" | "unavailable"
+  >("idle");
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
@@ -52,84 +56,111 @@ export default function AddressForm({
 
   const handleCreate = async (data: AddressFormValues) => {
     if (!user) {
-      saveGuest(data);
+      startTransition(async () => {
+      // ⏳ fake delay
+      await new Promise((res) => setTimeout(res, 1000));
+
+      // save guest (now async)
+      await saveGuest(data);
+
       onClose();
+    });
+
       return;
     }
+    if (availability === "unavailable") {
+      return; // or show toast
+    }
 
-    const tempId = Date.now();
+    // const tempId = Date.now();
 
-    const tempAddress: Address = {
-      id: tempId,
-      name: data.name,
-      phone: data.phone,
-      street: data.street,
-      city: data.city,
-      state: data.state,
-      pincode: data.pincode,
-      // country: data.country ?? null,
-      landmark: data.landmark ?? null,
-      // area: data.area,
-      // label: data.label,
-      isDefault: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    // const tempAddress: Address = {
+    //   id: tempId,
+    //   name: data.name,
+    //   phone: data.phone,
+    //   street: data.street,
+    //   city: data.city,
+    //   state: data.state,
+    //   pincode: data.pincode,
+    //   // country: data.country ?? null,
+    //   landmark: data.landmark ?? null,
+    //   // area: data.area,
+    //   // label: data.label,
+    //   isDefault: false,
+    //   createdAt: new Date(),
+    //   updatedAt: new Date(),
+    // };
 
-    const prevSelected = selectedAddressId;
+    // const prevSelected = selectedAddressId;
 
     try {
       // optimistic
       // optimistic add
-      setAddresses((prev) => [tempAddress, ...prev]);
+      // setAddresses((prev) => [tempAddress, ...prev]);
 
       // ✅ ADD THIS
-      setSelectedAddressId(tempId);
+      // setSelectedAddressId(tempId);
 
       const saved = await createAddress(data);
+      await refreshAddresses();
 
       // replace with real
-      setAddresses((prev) => prev.map((a) => (a.id === tempId ? saved : a)));
+      // setAddresses((prev) => prev.map((a) => (a.id === tempId ? saved : a)));
 
       setSelectedAddressId(saved.id);
 
       onClose();
     } catch (error) {
       // rollback
-      setAddresses((prev) => prev.filter((a) => a.id !== tempId));
-      setSelectedAddressId(prevSelected);
+      // setAddresses((prev) => prev.filter((a) => a.id !== tempId));
+      // setSelectedAddressId(prevSelected);
+      console.log(error);
+      throw error;
     }
   };
 
   const handleUpdate = async (id: number, data: AddressFormValues) => {
     if (!user) {
-      saveGuest(data); // guest overwrite
+      startTransition(async () => {
+      // ⏳ fake delay
+      await new Promise((res) => setTimeout(res, 1000));
+
+      // save guest (now async)
+      await saveGuest(data);
+
       onClose();
+    });
+
       return;
     }
+    if (availability === "unavailable") {
+      return; // or show toast
+    }
 
-    const prevAddresses = addresses;
+    // const prevAddresses = addresses;
 
     try {
       // ✅ optimistic update
-      setAddresses((prev) =>
-        prev.map((a) =>
-          a.id === id
-            ? {
-                ...a,
-                ...data,
-                updatedAt: new Date(), // keep UI fresh
-              }
-            : a,
-        ),
-      );
+      // setAddresses((prev) =>
+      //   prev.map((a) =>
+      //     a.id === id
+      //       ? {
+      //           ...a,
+      //           ...data,
+      //           updatedAt: new Date(), // keep UI fresh
+      //         }
+      //       : a,
+      //   ),
+      // );
 
       await updateAddress(id, data);
+ await refreshAddresses(); // 🔥 critical
 
-      onClose();
+    onClose();
     } catch (error) {
       // ❌ rollback
-      setAddresses(prevAddresses);
+      // setAddresses(prevAddresses);
+      console.error(error);
     }
   };
 
@@ -141,9 +172,38 @@ export default function AddressForm({
     }
   };
 
+  const pincode = watch("pincode");
+  useEffect(() => {
+    if (!pincode || pincode.length !== 6) {
+      setAvailability("idle");
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setAvailability("checking");
+
+        const res = await fetch("/api/check-availability", {
+          method: "POST",
+          body: JSON.stringify({ pincode }),
+        });
+
+        const data = await res.json();
+        console.log("Availability response:", data);
+        setAvailability(data.status);
+      } catch {
+        setAvailability("unavailable");
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [pincode]);
+
   const onSubmit = (data: AddressFormValues) => {
     startTransition(() => condtionalHandle(data));
   };
+
+  const isServiceable = availability === "active" || availability === "limited";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -282,6 +342,29 @@ export default function AddressForm({
               {errors.pincode.message}
             </p>
           )}
+          {availability === "checking" && (
+            <p className="text-xs text-gray-500 mt-1 ml-1 font-dmsans_light">
+              Checking availability...
+            </p>
+          )}
+
+          {availability === "active" && (
+            <p className="text-xs text-green-600 mt-1 ml-1 font-dmsans_light">
+              Delivery available in this area
+            </p>
+          )}
+
+          {availability === "limited" && (
+            <p className="text-xs text-amber-600 mt-1 ml-1 font-dmsans_light">
+              Limited delivery available
+            </p>
+          )}
+
+          {availability === "unavailable" && (
+            <p className="text-xs text-red-600 mt-1 ml-1 font-dmsans_light">
+              Not available in this area yet. Try a nearby pincode.
+            </p>
+          )}
         </div>
 
         {/* Landmark */}
@@ -304,7 +387,7 @@ export default function AddressForm({
       <div className="pt-1 mt-2 sm:mt-1">
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || !isServiceable}
           className="w-full bg-[#0c831f] hover:bg-[#0a6d1a] text-white py-3 sm:py-3.5 px-6 rounded-xl font-dmsans_semibold text-[15px] sm:text-base transition-all active:scale-[0.98] shadow-md shadow-[#0c831f]/20 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2.5"
         >
           {isPending ? (

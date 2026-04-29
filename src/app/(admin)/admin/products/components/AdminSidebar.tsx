@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ExternalLink, LayoutDashboard, LogOut, Menu, Package, Settings, ShoppingBag, Users, X } from 'lucide-react';
+import { ExternalLink, LayoutDashboard, LogOut, MapPin, Menu, Package, Settings, ShoppingBag, Users, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
@@ -43,6 +43,7 @@ export default function AdminSidebar() {
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Service Areas', href: '/admin/service-area', icon: MapPin },
   ];
 
    return (

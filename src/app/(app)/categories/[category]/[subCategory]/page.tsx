@@ -29,7 +29,7 @@ export default async function SubCategoryPage({ params, searchParams }: {
   searchParams: Promise<SearchParams>;
 }) {
 
-   await new Promise((resolve) => setTimeout(resolve, 5000));
+  //  await new Promise((resolve) => setTimeout(resolve, 5000));
   const { category, subCategory } = await params;
   const { season } = await searchParams;
 
@@ -44,11 +44,11 @@ export default async function SubCategoryPage({ params, searchParams }: {
     ? season ?? Season.ALL
     : undefined;
 
-  const products = await getProducts({
-    category: category.toUpperCase() as Category,
-    subCategory: isSeasonalPage ? undefined : subCategory,
-    season: selectedSeason,
-  });
+  // const products = await getProducts({
+  //   category: category.toUpperCase() as Category,
+  //   subCategory: isSeasonalPage ? undefined : subCategory,
+  //   season: selectedSeason,
+  // });
 
 
  return (
