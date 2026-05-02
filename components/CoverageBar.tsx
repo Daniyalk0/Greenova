@@ -100,7 +100,7 @@ export default function CoverageBar() {
 
   return (
     <div
-      className={`sticky top-0 w-full border-b z-[9999] transition-colors duration-300 ${current.bg}`}
+      className={`sticky top-0 w-full border-b z-[1100] transition-colors duration-300 ${current.bg}`}
     >
       {/* 
         Key changes here: 

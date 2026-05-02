@@ -15,12 +15,17 @@ export default async function AdminProductsPage() {
   });
 
   return (
-    <div className="space-y-6">
+     <div className=" sm:mt-6 lg:mt-8 p-3 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl text-center md:text-left font-semibold mb-6 font-monasans_semibold">
-          Products
-        </h1>
+   <div className="my-3 md:mb-3 md:mt-0">
+  <h1 className="text-xl sm:text-2xl lg:text-3xl font-monasans_semibold text-gray-900">
+    Products Management
+  </h1>
+  <p className="text-gray-500 text-[13px] sm:text-[14px] font-dmsans_light mt-1">
+Manage and update your product catalog with ease.
+  </p>
+</div>
 
         <Link
           href="/admin/products/new"
@@ -125,34 +130,32 @@ export default async function AdminProductsPage() {
                       <div className="flex items-center justify-end gap-2 sm:gap-3">
                         {/* Mobile Icon */}
                         <Link
-    href={`/admin/products/${p.id}/edit`}
-    className="text-blue-600 flex items-center"
-  >
-    {/* Icon (mobile) */}
-    <span className="sm:hidden">
-      <Pencil size={16} />
-    </span>
+                          href={`/admin/products/${p.id}/edit`}
+                          className="text-blue-600 flex items-center"
+                        >
+                          {/* Icon (mobile) */}
+                          <span className="sm:hidden">
+                            <Pencil size={16} />
+                          </span>
 
-    {/* Text (desktop) */}
-    <span className="hidden sm:inline text-sm">
-      Edit
-    </span>
-  </Link>
+                          {/* Text (desktop) */}
+                          <span className="hidden sm:inline text-sm">Edit</span>
+                        </Link>
 
-  {/* Delete */}
-  <ConfirmDelete id={p.id} type="product">
-    <button className="text-red-600 flex items-center">
-      {/* Icon (mobile) */}
-      <span className="sm:hidden">
-        <Trash2 size={16} />
-      </span>
+                        {/* Delete */}
+                        <ConfirmDelete id={p.id} type="product">
+                          <button className="text-red-600 flex items-center">
+                            {/* Icon (mobile) */}
+                            <span className="sm:hidden">
+                              <Trash2 size={16} />
+                            </span>
 
-      {/* Text (desktop) */}
-      <span className="hidden sm:inline text-sm">
-        Delete
-      </span>
-    </button>
-  </ConfirmDelete>
+                            {/* Text (desktop) */}
+                            <span className="hidden sm:inline text-sm">
+                              Delete
+                            </span>
+                          </button>
+                        </ConfirmDelete>
                       </div>
                     </td>
                   </tr>

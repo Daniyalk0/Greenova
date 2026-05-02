@@ -20,7 +20,7 @@ return (
   <div className="min-h-screen flex bg-gray-100">
     <AdminSidebar />
 
-    <main className="flex-1 p-6 ml-0 md:ml-72">
+    <main className="flex-1 p-4 mt-8 ml-0 md:ml-72">
       {children}
     </main>
   </div>
