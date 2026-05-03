@@ -44,30 +44,16 @@ export default async function SubCategoryPage({ params, searchParams }: {
     ? season ?? Season.ALL
     : undefined;
 
-  // const products = await getProducts({
-  //   category: category.toUpperCase() as Category,
-  //   subCategory: isSeasonalPage ? undefined : subCategory,
-  //   season: selectedSeason,
-  // });
-
-  function AlwaysSuspend() {
-  throw new Promise(() => {});
-}
-
-
 
  return (
-  // <Suspense fallback={<SeasonalRowSkeleton count={8} className="m-8" />}>
-  //   <ProductsWrapper
-  //     category={category}
-  //     subCategory={subCategory}
-  //     isSeasonalPage={isSeasonalPage}
-  //     selectedSeason={selectedSeason}
-  //   />
-  // </Suspense>
-  <Suspense fallback={<SeasonalRowSkeleton count={8} />}>
-  <AlwaysSuspend />
-</Suspense>
+  <Suspense fallback={<SeasonalRowSkeleton count={8} className="m-8" />}>
+    <ProductsWrapper
+      category={category}
+      subCategory={subCategory}
+      isSeasonalPage={isSeasonalPage}
+      selectedSeason={selectedSeason}
+    />
+  </Suspense>
 
 );
 }
