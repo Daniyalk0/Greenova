@@ -74,7 +74,7 @@ const ProductCard = ({
     const result = await addToCartUtil({
       product,
       weight: selectedWeightPrice.weight,
-      cart,
+      cart : cart ?? [],
       session,
       dispatch,
       onOptimisticAdd: (msg) => {

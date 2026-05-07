@@ -90,7 +90,7 @@ return (
  <>
   <div className="sm:hidden">
     <MobileNav
-      itemCount={cartProducts.length}
+      itemCount={cartProducts?.length || 0}
       likedItemCount={wishlistItems.length}
       data={session}
       setDrawerOpen={setDrawerOpen}
@@ -102,7 +102,7 @@ return (
   <div className="hidden sm:block">
     <DesktopNav
       likedItemCount={wishlistItems.length}
-      itemCount={cartProducts.length}
+      itemCount={cartProducts?.length || 0}
       data={session}
       setDrawerOpen={setDrawerOpen}
       total={total}

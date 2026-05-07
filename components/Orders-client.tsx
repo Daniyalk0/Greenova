@@ -64,11 +64,11 @@ const formatOrderStatus = (status: string) => {
 export default function OrdersPage({ orders }: OrdersPageProps) {
 
   return (
-    <div className="min-h-screen bg-gray-50/50 py-10 sm:py-16 px-4">
+    <div className="min-h-screen bg-gray-50/50 py-8 sm:py-10 px-4">
       <div className="max-w-4xl mx-auto">
         
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
+        {/* <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-monasans_semibold text-gray-900 flex items-center gap-3">
               <Package className="w-8 h-8 text-[#0c831f]" />
@@ -86,7 +86,7 @@ export default function OrdersPage({ orders }: OrdersPageProps) {
             Continue Shopping
             <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
+        </div> */}
 
         {/* Orders List */}
         {orders.length > 0 ? (

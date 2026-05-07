@@ -1,9 +1,18 @@
 
 export const calcOrderSummary = (
-  products: any[],
+  products: any[] | null,
 ) => {
 
-  
+  if (!products || products.length === 0) {
+    return {
+      subtotal: 0,
+      discountAmount: 0,
+      discountPercent: 0,
+      discountedPrice: 0,
+      total: 0
+    };
+  }
+
  const { subtotal, discountAmount, discountPercent } = products.reduce(
   (acc, item) => {
     const weight = item?.weight ?? 0;

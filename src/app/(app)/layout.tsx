@@ -9,6 +9,7 @@ import Navbar from "@/components/navbar/Navbar"
 import AddressModal from "@/components/user-address/AddressModal"
 import AddressListModal from "@/components/user-address/AddressListModal"
 import CoverageBar from "@/components/CoverageBar"
+import Breadcrumbs from "@/components/BreadCrump"
 
 export default function AppLayout({
   children,
@@ -31,7 +32,9 @@ export default function AppLayout({
       <CartPreview />
 
       <main className="min-h-screen">
-        
+        <div className="px-4 py-2">
+  <Breadcrumbs />
+</div>
         {children}
           {/* <AddressModal />
       <AddressListModal /> */}

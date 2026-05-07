@@ -57,7 +57,7 @@ const applyDiscount = (price: number) =>
     const result = await addToCartUtil({
       product,
       weight: selectedWeightPrice.weight,
-      cart: cartProducts,
+      cart: cartProducts ?? [],
       session,
       dispatch,
       onOptimisticAdd: (msg) => {
@@ -89,7 +89,7 @@ const applyDiscount = (price: number) =>
 
 
 
-  const isExactInCart = cartProducts.some(
+  const isExactInCart = cartProducts?.some(
     (item) =>
       item.productId === product.id &&
       item.weight === selectedWeightPrice?.weight

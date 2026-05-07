@@ -8,10 +8,12 @@ import { useUI } from "@/src/context/ui-context";
 import { useState } from "react";
 
 export default function AddressSection() {
-
-  const [deletingAddressId, setDeletingAddressId] = useState<number | null>(null);
+  const [deletingAddressId, setDeletingAddressId] = useState<number | null>(
+    null,
+  );
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const { addresses, selectedAddressId, selectAddress, refreshAddresses } = useAddress();
+  const { addresses, selectedAddressId, selectAddress, refreshAddresses } =
+    useAddress();
   const { openAddressFormModal } = useUI();
 
   const handleDelete = async (id: number | undefined) => {
@@ -56,10 +58,11 @@ export default function AddressSection() {
             return (
               <label
                 key={address.id}
-                className={`relative flex flex-col p-3.5 sm:p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group ${isSelected
+                className={`relative flex flex-col p-3.5 sm:p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 group ${
+                  isSelected
                     ? "border-[#0c831f] bg-[#f2fcf5] shadow-sm"
                     : "border-gray-100 bg-white hover:border-[#0c831f]/30 hover:bg-[#f9fbf9] shadow-sm hover:shadow-md"
-                  }`}
+                }`}
               >
                 <input
                   type="radio"
@@ -101,14 +104,16 @@ export default function AddressSection() {
 
                   <p className="font-dmsans_light text-xs sm:text-sm text-gray-600 mt-0.5">
                     {address.city}, {address.state} -{" "}
-                    <span className="font-dmsans_semibold">{address.pincode}</span>
+                    <span className="font-dmsans_semibold">
+                      {address.pincode}
+                    </span>
                   </p>
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center gap-3.5 mt-3 pt-3 border-t border-gray-100">
                   <button
-                  disabled={deletingAddressId === address.id}
+                    disabled={deletingAddressId === address.id}
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
@@ -125,36 +130,37 @@ export default function AddressSection() {
                   <button
                     onClick={() => handleDelete(address?.id)}
                     disabled={deletingAddressId === address?.id}
-                    className={`font-dmsans_semibold text-[13px] ${deletingAddressId === address?.id
+                    className={`font-dmsans_semibold text-[13px] ${
+                      deletingAddressId === address?.id
                         ? "text-gray-300 bg-gray-100 cursor-not-allowed"
                         : "text-gray-500 hover:text-red-600 hover:bg-red-50"
-                      } px-3 py-1.5 rounded-lg transition-colors`}
+                    } px-3 py-1.5 rounded-lg transition-colors`}
                   >
                     {deletingAddressId === address?.id ? "Deleting…" : "Delete"}
                   </button>
                 </div>
 
                 {isSelected && address.serviceStatus && (
-  <div className="mt-3 pt-3 border-t border-gray-100">
-    {address.serviceStatus === "ACTIVE" && (
-      <p className="text-xs sm:text-sm text-green-600 font-dmsans_light">
-        Delivery available in this area
-      </p>
-    )}
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    {address.serviceStatus === "ACTIVE" && (
+                      <p className="text-xs sm:text-sm text-green-600 font-dmsans_light">
+                        Delivery available in this area
+                      </p>
+                    )}
 
-    {address.serviceStatus === "LIMITED" && (
-      <p className="text-xs sm:text-sm text-amber-600 font-dmsans_light">
-        Limited delivery available • May take longer
-      </p>
-    )}
+                    {address.serviceStatus === "LIMITED" && (
+                      <p className="text-xs sm:text-sm text-amber-600 font-dmsans_light">
+                        Limited delivery available • May take longer
+                      </p>
+                    )}
 
-    {address.serviceStatus === "UNAVAILABLE" && (
-      <p className="text-xs sm:text-sm text-red-600 font-dmsans_light">
-        Not serviceable in this area
-      </p>
-    )}
-  </div>
-)}
+                    {address.serviceStatus === "UNAVAILABLE" && (
+                      <p className="text-xs sm:text-sm text-red-600 font-dmsans_light">
+                        Not serviceable in this area
+                      </p>
+                    )}
+                  </div>
+                )}
               </label>
             );
           })}

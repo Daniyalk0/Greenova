@@ -70,7 +70,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
 
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto px-4 py-3 ">
-          {products.map((cartItem: any) => {
+          {products?.map((cartItem: any) => {
             // const product = isNextAuthUser ? cartItem?.product : cartItem;
 
             const basePricePerKg = cartItem?.basePricePerKg ?? 0;

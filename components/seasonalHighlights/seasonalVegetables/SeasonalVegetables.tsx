@@ -83,7 +83,7 @@ const SeasonalVegetables = ({vegetables}:any) => {
               <ProductCard
                 product={p}
                 wishlist={wishlistItems}
-                cart={cartProducts}
+                cart={cartProducts ?? []}
                 options={buildProductOptions(p)}
               />
             </div>

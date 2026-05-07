@@ -7,12 +7,12 @@ export type CartSource = "local" | "db" | null;
 
 
 interface CartState {
-  items: any[];
+  items: any[] | null; // 👈 IMPORTANT
   source: CartSource;
 }
 
 const initialState: CartState = {
-  items: [],
+  items: null, // ❗ not []
   source: null,
 };
 

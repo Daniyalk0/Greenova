@@ -31,11 +31,19 @@ export default function SearchPopup() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [suggestedResults, setSuggestedResults] = useState<any[]>([]);
 
-  const [dynamicPlaceholders, setDynamicPlaceholders] = useState<string[]>([
-    "milk",
-    "bread",
-    "eggs",
-  ]);
+const [dynamicPlaceholders, setDynamicPlaceholders] = useState<string[]>([
+  "apple",
+  "banana",
+  "mango",
+  "tomato",
+  "potato",
+  "carrot",
+  "broccoli",
+  "almonds",
+  "cashews",
+  "raisins",
+]);
+
   const [index, setIndex] = useState(0);
   const [focused, setFocused] = useState(false);
 
@@ -92,9 +100,9 @@ export default function SearchPopup() {
         const data = await searchProducts("");
         setSuggestedResults(data);
 
-        if (data.length > 0) {
-          setDynamicPlaceholders(data.map((p) => p.name));
-        }
+        // if (data.length > 0) {
+        //   setDynamicPlaceholders(data.map((p) => p.name));
+        // }
       } catch (error) {
         console.error(error);
       } finally {
@@ -111,24 +119,6 @@ export default function SearchPopup() {
     }, 2500);
     return () => clearInterval(id);
   }, [focused, dynamicPlaceholders.length]);
-
-  // --- Close handlers ---
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  //   setSearchTerm("");
-  //   setDebouncedTerm("");
-  // };
-
-  // const handleOpen = () => {
-  //   setIsOpen(true);
-  //   setSearchTerm("");
-  //   setDebouncedTerm("");
-
-  //   // fallback if hover didn't trigger
-  //   if (suggestedResults.length === 0) {
-  //     fetchSuggested();
-  //   }
-  // };
 
   // --- UX helpers ---
   const isSearching = debouncedTerm.trim() !== "";
@@ -271,7 +261,7 @@ return (
       <input
         type="text"
         readOnly
-        className="relative z-10 w-full pl-10 pr-4 py-3 text-[14px] font-dmsans_light border border-gray-200 rounded-xl bg-gray-50/50 group-hover:bg-gray-50 outline-none cursor-text transition-colors shadow-sm"
+        className="relative z-10 w-full pl-10 pr-4 py-3 text-[14px] font-dmsans_light border border-gray-200 rounded-xl bg-gray-50/50 outline-none cursor-text transition-colors shadow-sm"
       />
 
       {!focused && (

@@ -46,7 +46,7 @@ export default function CartPreview() {
     const result = await addToCartUtil({
       product,
       weight,
-      cart: cartProducts,
+      cart: cartProducts ?? [],
       session,
       dispatch,
       onOptimisticAdd: (msg) => {
@@ -81,7 +81,7 @@ const handleRemoveProduct = async (
   weight: number,
   product: any
 ): Promise<void> => {
-  const previous = [...cartProducts];
+ const previous = [...(cartProducts ?? [])];
 
   // ------------------------
   // ⚡ Optimistic UI update

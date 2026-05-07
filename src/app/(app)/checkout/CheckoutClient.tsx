@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
 import { useAddress } from "@/src/context/address-context";
 import { useUI } from "@/src/context/ui-context";
+import AddressSectionWrapper from "@/components/user-address/AddressSectionWrapper";
 
 export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -141,7 +142,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
                     </div>
                   )}
 
-                  <AddressSection />
+                  <AddressSectionWrapper />
                 </div>
               
               </div>

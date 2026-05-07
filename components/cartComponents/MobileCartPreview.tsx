@@ -103,7 +103,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
 
                 {/* Scrollable Items */}
                 <div className="flex-1 overflow-y-auto px-4">
-                    {products.map((cartItem: any) => {
+                    {products?.map((cartItem: any) => {
                         const basePricePerKg = cartItem?.basePricePerKg ?? 0;
                         const basePrice = basePricePerKg * (cartItem?.weight ?? 0);
                         const discountedPricePerKg = cartItem?.discount > 0
