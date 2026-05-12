@@ -10,10 +10,18 @@ import SeasonalSkeleton from "@/components/ui/loadingSkeletons/SeasonalSkeleton"
 import { prisma } from "@/lib/prisma";
 
 const Home = async () => {
-  const dbBanners = await prisma.banner.findMany({
-    where: { isActive: true }, // Only show active banners
-    orderBy: { sortOrder: "asc" }, // Show them in the correct order
-  });
+  let dbBanners: any[] = [];
+
+  try {
+    dbBanners = await prisma.banner.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: "asc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch banners:", error);
+
+    dbBanners = []; // safe fallback
+  }
 
   return (
     <div className="">

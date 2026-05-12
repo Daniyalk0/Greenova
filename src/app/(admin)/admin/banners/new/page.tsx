@@ -2,8 +2,11 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import BannerForm from "./BannerForm";
+import { getBannerProducts } from "../../products/actions";
 
-export default function NewBannerPage() {
+export default async function NewBannerPage() {
+    const { products } = await getBannerProducts();
+    
   return (
     <main className="p-4 sm:p-6 lg:p-8 bg-gray-50/50 min-h-screen">
       <div className="max-w-[1400px] mx-auto">
@@ -24,7 +27,7 @@ export default function NewBannerPage() {
           </p>
         </div>
 
-        <BannerForm mode="create" />
+        <BannerForm mode="create"  products={products}/>
       </div>
     </main>
   );

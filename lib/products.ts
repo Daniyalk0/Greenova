@@ -12,30 +12,26 @@ export async function getProducts({
   season?: Season;
   limit?: number;
 }) {
+  // throw new Error("Testing category failure");
+  try{
 
+    return prisma.product.findMany({
+      where: {
+      category,
+      isActive: true,
+      inStock: true,
 
- return prisma.product.findMany({
-  where: {
-    category,
-    isActive: true,
-    inStock: true,
-
-    ...(subCategory && { subCategory }),
-
-    ...(season && {
-      OR: [
-        { season },
-        { season: Season.ALL },
-      ],
-    }),
-  },
-  take: limit,
- orderBy: [
-  { rating: "desc" },
-  { updatedAt: "desc" },
-],
-
-});
-
+      ...(subCategory && { subCategory }),
+      
+      ...(season && {
+        OR: [{ season }, { season: Season.ALL }],
+      }),
+    },
+    take: limit,
+    orderBy: [{ rating: "desc" }, { updatedAt: "desc" }],
+  });
+}catch(error){
+  console.error("getProducts error:", error);
+  throw error; // re-throw to be caught by caller 
 }
-
+}

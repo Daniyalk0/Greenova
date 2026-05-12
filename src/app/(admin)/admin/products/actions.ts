@@ -66,6 +66,7 @@ export async function uploadProductImage(file: File) {
   const fileExt = file.name.split(".").pop();
   const fileName = `${crypto.randomUUID()}.${fileExt}`;
   const filePath = `${fileName}`;
+  console.log("SUPABASE URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
 
   const { error } = await supabaseAdmin.storage
     .from("products")
@@ -145,6 +146,10 @@ export type BannerPayload = {
   originalPrice?: string;
   discountText?: string;
   imageUrl: string;
+    linkType: "product" | "category";
+
+  productSlug?: string | null;
+  categoryHref?: string | null;
 };
 
 function toFloat(value?: string | null) {
@@ -162,39 +167,30 @@ export async function createBanner(data: BannerPayload) {
   const banner = await prisma.banner.create({
     data: {
       title: data.title,
+
       subtitle: data.subtitle,
       badge: data.badge,
+
       cta: data.cta,
-      linkUrl: data.linkUrl,
-        price: toFloat(data.price),
-    originalPrice: toFloat(data.originalPrice),
+
+      linkType: data.linkType,
+
+      productSlug:
+        data.linkType === "product" && data.productSlug
+          ? data.productSlug
+          : null,
+
+      categoryHref:
+        data.linkType === "category"
+          ? data.categoryHref
+          : null,
+
+      price: toFloat(data.price),
+
+      originalPrice: toFloat(data.originalPrice),
 
       discountText: data.discountText,
-      imageUrl: data.imageUrl,
-    },
-  });
 
-  revalidatePath("/");          // homepage banners
-  revalidatePath("/admin");     // admin panel if needed
-
-  return banner;
-}
-
-// UPDATE
-export async function updateBanner(id: string, data: BannerPayload) {
-  if (!id) throw new Error("Banner ID missing");
-
-  const banner = await prisma.banner.update({
-    where: { id },
-    data: {
-      title: data.title,
-      subtitle: data.subtitle,
-      badge: data.badge,
-      cta: data.cta,
-      linkUrl: data.linkUrl,
-       price: toFloat(data.price),
-    originalPrice: toFloat(data.originalPrice),
-      discountText: data.discountText,
       imageUrl: data.imageUrl,
     },
   });
@@ -203,4 +199,150 @@ export async function updateBanner(id: string, data: BannerPayload) {
   revalidatePath("/admin");
 
   return banner;
+}
+
+// UPDATE
+export async function updateBanner(
+  id: string,
+  data: BannerPayload
+) {
+  if (!id) {
+    throw new Error("Banner ID missing");
+  }
+
+  const banner = await prisma.banner.update({
+    where: { id },
+
+    data: {
+      title: data.title,
+
+      subtitle: data.subtitle,
+      badge: data.badge,
+
+      cta: data.cta,
+
+      linkType: data.linkType,
+
+      productSlug:
+        data.linkType === "product" && data.productSlug
+          ? data.productSlug
+          : null,
+
+      categoryHref:
+        data.linkType === "category"
+          ? data.categoryHref
+          : null,
+
+      price: toFloat(data.price),
+
+      originalPrice: toFloat(data.originalPrice),
+
+      discountText: data.discountText,
+
+      imageUrl: data.imageUrl,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+
+  return banner;
+}
+
+export async function deleteBanner(id: string) {
+  try {
+    if (!id) {
+      return {
+        success: false,
+        error: "Banner ID is required.",
+      };
+    }
+
+    await prisma.banner.delete({
+      where: {
+        id,
+      },
+    });
+
+    revalidatePath("/admin/banners");
+    // revalidatePath("/admin/banners");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Delete banner error:", error);
+
+    return {
+      success: false,
+      error: "Failed to delete banner.",
+    };
+  }
+}
+
+
+export async function toggleBannerStatus(id: string) {
+  try {
+    const banner = await prisma.banner.findUnique({
+      where: { id },
+      select: { isActive: true },
+    });
+
+    if (!banner) {
+      return {
+        success: false,
+        error: "Banner not found.",
+      };
+    }
+
+    await prisma.banner.update({
+      where: { id },
+      data: {
+        isActive: !banner.isActive,
+      },
+    });
+
+    revalidatePath("/admin/banners");
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Toggle banner status error:", error);
+
+    return {
+      success: false,
+      error: "Failed to update banner status.",
+    };
+  }
+}
+
+
+
+export async function getBannerProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return {
+      success: true,
+      products,
+    };
+  } catch (error) {
+    console.error("GET_BANNER_PRODUCTS_ERROR:", error);
+
+    return {
+      success: false,
+      products: [],
+    };
+  }
 }

@@ -24,6 +24,30 @@ img.dark-mode-fix {
   @apply w-full px-3 py-2.5 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-500 cursor-not-allowed;
 }
 
+/* globals.css */
+
+.banner-swiper .swiper-pagination {
+  bottom: 14px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.banner-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition: all 0.35s ease;
+  opacity: 1;
+}
+
+.banner-swiper .swiper-pagination-bullet-active {
+  width: 28px;
+  background: white;
+}
+
 @layer base {
   :root {
         --background: 0 0% 100%;

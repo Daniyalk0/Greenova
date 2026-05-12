@@ -21,6 +21,7 @@ import {
 
 export type Address = {
   id: number;
+  
 
   // Person details
   name: string;
@@ -51,6 +52,7 @@ export type Address = {
 
 type AddressContextType = {
   addresses: Address[];
+  error: boolean;
   selectedAddress: Address | null;
   selectedAddressId: number | null;
   loading: boolean;
@@ -74,6 +76,7 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [pendingGuestAddress, setPendingGuestAddress] =
     useState<Address | null>(null);
   const { data: session } = useSession();
@@ -120,26 +123,34 @@ const selectedAddress = useMemo(() => {
 
  
 
-  const fetchAddresses = async () => {
-    
+const fetchAddresses = async () => {
+  try {
     setLoading(true);
-
+    setError(false);
+  await new Promise((resolve) => setTimeout(resolve, 3000));
     const data = await getUserAddresses();
 
-    setAddresses(data);
+    setAddresses(data as any);
 
     if (data.length > 0) {
       setSelectedAddressId((prev) => {
-        // keep previous if still valid
         const exists = data.some((a) => a.id === prev);
         return exists ? prev : data[0].id;
       });
     } else {
       setSelectedAddressId(null);
     }
+  } catch (err) {
+    console.error("Failed to fetch addresses:", err);
 
+    setError(true);
+
+    // important:
+    // don't wipe existing addresses on failure
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   useEffect(() => {
     fetchAddresses();
@@ -203,7 +214,8 @@ const selectedAddress = useMemo(() => {
         setAddresses,
         selectedAddressId,
         setSelectedAddressId,
-        loading,
+         loading,
+    error,
         selectAddress,
         refreshAddresses: fetchAddresses,
         pendingGuestAddress,

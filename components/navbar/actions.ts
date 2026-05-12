@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function searchProducts(keyword: string) {
   // 1. If empty, maybe return top 4 featured products
+  // throw new Error("Testing search failure");
   if (!keyword || keyword.trim() === "") {
     return await prisma.product.findMany({
       take: 4,

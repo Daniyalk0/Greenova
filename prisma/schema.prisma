@@ -211,8 +211,12 @@ model Banner {
   originalPrice Float?
   discountText  String?
   cta           String   @default("Shop Now")
-  linkUrl       String   @default("/collections/all")
   imageUrl      String   // URL from Cloudinary/AWS S3
+
+  linkType       String
+  productSlug    String?
+  
+  categoryHref   String?
   
   // Design / Colors (Stored as a JSON object to save columns)
   colors        Json?    // { text: "text-white", ctaBg: "bg-black" }

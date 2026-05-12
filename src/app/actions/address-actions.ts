@@ -82,36 +82,48 @@ export async function deleteAddress(id: number) {
 }
 
 export async function getUserAddresses() {
-  const session = await getServerSession(authConfig);
+  try {
+    const session = await getServerSession(authConfig);
 
-  if (!session?.user?.id) return [];
+    if (!session?.user?.id) return [];
 
-  
+    const addresses = await prisma.address.findMany({
+      where: {
+        userId: Number(session.user.id),
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  const addresses = await prisma?.address?.findMany({
-    where: {
-      userId: Number(session.user.id),
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+    if (!addresses.length) return [];
 
-  const pincodes = [...new Set(addresses.map((a) => a.pincode))];
+    const pincodes = [...new Set(addresses.map((a) => a.pincode))];
 
-  const serviceAreas = await prisma.serviceArea.findMany({
-    where: {
-      pincode: { in: pincodes },
-    },
-  });
+    let serviceMap = new Map<string, string>();
 
-  const serviceMap = new Map(
-    serviceAreas.map((a) => [a.pincode, a.status])
-  );
+    try {
+      const serviceAreas = await prisma.serviceArea.findMany({
+        where: {
+          pincode: { in: pincodes },
+        },
+      });
 
+      serviceMap = new Map(
+        serviceAreas.map((a) => [a.pincode, a.status])
+      );
+    } catch (error) {
+      console.error("Failed to fetch service areas:", error);
+    }
 
-   return addresses.map((addr) => ({
-    ...addr,
-    serviceStatus: serviceMap.get(addr.pincode) || "UNAVAILABLE",
-  }));
+    return addresses.map((addr) => ({
+      ...addr,
+      serviceStatus: serviceMap.get(addr.pincode) || "UNAVAILABLE",
+    }));
+  } catch (error) {
+    console.error("Failed to fetch addresses:", error);
+
+    // prevents app from crashing/blocking rendering
+    return [];
+  }
 }

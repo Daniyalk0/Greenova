@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Address, useAddress } from "@/src/context/address-context";
 import { useUI } from "@/src/context/ui-context";
-import { X, MapPin, CheckCircle } from "lucide-react";
+import { X, MapPin, CheckCircle, AlertCircle } from "lucide-react";
 import { deleteAddress } from "@/src/app/actions/address-actions";
 import { clearGuestAddress, getGuestAddress } from "@/lib/clientAddress";
 import { useSession } from "next-auth/react";
@@ -13,7 +13,7 @@ export default function AddressListModal() {
     useUI();
 
   const { data: session } = useSession();
-  const { addresses, selectAddress, refreshAddresses, selectedAddressId, setAddresses, clearGuest , setSelectedAddressId} =
+  const { addresses, selectAddress, refreshAddresses, selectedAddressId, setAddresses, clearGuest , setSelectedAddressId, error , loading} =
     useAddress();
   const guestAddress = getGuestAddress();
 
@@ -135,132 +135,162 @@ const handleDelete = async (id?: number) => {
           </button>
         </div>
 
-        <div className="p-4 sm:p-6 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto custom-scrollbar bg-[#f4f8f5]/40">
-          {addressList.length > 0 ? (
-            <div className="space-y-3">
-              {addressList.map((addr) => {
-                const isSelected = session?.user?.id
-                  ? addr.id === selectedAddressId
-                  : true;
+     <div className="p-4 sm:p-6 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto custom-scrollbar bg-[#f4f8f5]/40">
+  {loading ? (
+    /* Loading State */
+    <div className="flex flex-col items-center justify-center py-16">
+      <div className="w-8 h-8 border-[2.5px] border-[#0c831f] border-t-transparent rounded-full animate-spin" />
+      <p className="mt-4 text-sm text-gray-500 font-dmsans_medium">
+        Loading addresses...
+      </p>
+    </div>
+  ) : error ? (
+    /* Error State */
+    <div className="flex flex-col items-center justify-center py-10 sm:py-12 text-center px-4">
+      <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 border border-red-100">
+        <AlertCircle
+          className="w-8 h-8 text-red-500"
+          strokeWidth={1.8}
+        />
+      </div>
 
-                return (
+      <p className="font-monasans_semibold text-gray-900 text-lg mb-1.5">
+        Failed to load addresses
+      </p>
+
+      <p className="font-dmsans_light text-gray-500 text-[14px] max-w-[260px] leading-relaxed mb-5">
+        Something went wrong while fetching your delivery locations.
+      </p>
+
+      <button
+        onClick={refreshAddresses}
+        className="bg-[#0c831f] hover:bg-[#0a6c19] text-white px-5 py-2.5 rounded-xl text-sm font-dmsans_semibold transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+  ) : addressList.length > 0 ? (
+    /* Address List */
+    <div className="space-y-3">
+      {addressList.map((addr) => {
+        const isSelected = session?.user?.id
+          ? addr.id === selectedAddressId
+          : true;
+
+        return (
+          <div
+            key={addr.id}
+            className={`group border rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center transition-all duration-200 relative ${
+              isSelected
+                ? "border-[#0c831f] bg-[#0c831f]/5 shadow-[0_4px_20px_-4px_rgba(12,131,31,0.12)]"
+                : "bg-white border-gray-200 hover:border-[#0c831f] hover:shadow-[0_4px_20px_-4px_rgba(12,131,31,0.12)]"
+            }`}
+          >
+            {/* Address Details */}
+            <div
+              onClick={() => {
+                selectAddress(addr.id);
+                closeAddressListModal();
+              }}
+              className="flex-1 cursor-pointer pr-4 w-full min-w-0"
+            >
+              <div className="flex items-start gap-3.5 w-full min-w-0">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-200 ${
+                    isSelected
+                      ? "bg-[#0c831f] text-white"
+                      : "bg-[#0c831f]/10 text-[#0c831f] group-hover:bg-[#0c831f] group-hover:text-white"
+                  }`}
+                >
+                  <MapPin className="w-4 h-4" strokeWidth={2.5} />
+                </div>
+
+                <div className="flex flex-col flex-1 min-w-0">
                   <div
-                    key={addr.id}
-                    className={`group border rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center transition-all duration-200 relative ${
+                    className={`font-dmsans_semibold text-[15px] sm:text-[16px] leading-snug transition-colors flex items-center gap-2 w-full min-w-0 ${
                       isSelected
-                        ? "border-[#0c831f] bg-[#0c831f]/5 shadow-[0_4px_20px_-4px_rgba(12,131,31,0.12)]"
-                        : "bg-white border-gray-200 hover:border-[#0c831f] hover:shadow-[0_4px_20px_-4px_rgba(12,131,31,0.12)]"
+                        ? "text-[#0c831f]"
+                        : "text-gray-800 group-hover:text-[#0c831f]"
                     }`}
                   >
-                    {/* Address Details (Clickable Area) */}
-                    <div
-                      onClick={() => {
-                        selectAddress(addr.id);
-                        closeAddressListModal();
-                      }}
-                      // ADDED: min-w-0 to allow child truncation
-                      className="flex-1 cursor-pointer pr-4 w-full min-w-0"
-                    >
-                      {/* ADDED: w-full min-w-0 */}
-                      <div className="flex items-start gap-3.5 w-full min-w-0">
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-200 ${
-                            isSelected
-                              ? "bg-[#0c831f] text-white"
-                              : "bg-[#0c831f]/10 text-[#0c831f] group-hover:bg-[#0c831f] group-hover:text-white"
-                          }`}
-                        >
-                          <MapPin className="w-4 h-4" strokeWidth={2.5} />
-                        </div>
+                    <span className="truncate">
+                      {addr.city}, {addr.state}
+                    </span>
 
-                        {/* ADDED: flex-1 min-w-0 */}
-                        <div className="flex flex-col flex-1 min-w-0">
-                          {/* Title & Checkmark */}
-                          <div
-                            className={`font-dmsans_semibold text-[15px] sm:text-[16px] leading-snug transition-colors flex items-center gap-2 w-full min-w-0 ${
-                              isSelected
-                                ? "text-[#0c831f]"
-                                : "text-gray-800 group-hover:text-[#0c831f]"
-                            }`}
-                          >
-                            {/* ADDED: span with truncate */}
-                            <span className="truncate">
-                              {addr.city}, {addr.state}
-                            </span>
-                            {isSelected && (
-                              <CheckCircle
-                                className="w-4 h-4 text-[#0c831f] shrink-0"
-                                strokeWidth={2.5}
-                              />
-                            )}
-                          </div>
-
-                          {/* ADDED: truncate to subtitle as well */}
-                          <p
-                            className={`font-dmsans_light text-[13px] mt-1 truncate ${
-                              isSelected
-                                ? "text-[#0c831f]/80 font-medium"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {isSelected
-                              ? "Selected delivery location"
-                              : "Tap to select this delivery location"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 mt-4 sm:mt-0 pl-11 sm:pl-4 sm:border-l sm:border-gray-100 w-full sm:w-auto justify-end shrink-0">
-                      <button
-                        disabled={deletingAddressId !== null}
-                        onClick={() => {
-                          closeAddressListModal();
-                          openAddressFormModal(addr);
-                        }}
-                        className="font-dmsans_semibold text-[13px] text-gray-400 hover:text-[#0c831f] hover:bg-green-50 px-3 py-1.5 rounded-lg transition-colors"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(addr?.id)}
-                        disabled={deletingAddressId === addr?.id}
-                        className={`font-dmsans_semibold text-[13px] ${
-                          deletingAddressId === addr?.id
-                            ? "text-gray-300 bg-gray-100 cursor-not-allowed"
-                            : "text-gray-400 hover:text-red-600 hover:bg-red-50"
-                        } px-3 py-1.5 rounded-lg transition-colors`}
-                      >
-                        {deletingAddressId === addr?.id
-                          ? "Deleting…"
-                          : "Delete"}
-                      </button>
-                    </div>
+                    {isSelected && (
+                      <CheckCircle
+                        className="w-4 h-4 text-[#0c831f] shrink-0"
+                        strokeWidth={2.5}
+                      />
+                    )}
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            /* Empty State */
-            <div className="flex flex-col items-center justify-center py-10 sm:py-12 text-center px-4">
-              <div className="w-16 h-16 bg-[#0c831f]/10 rounded-full flex items-center justify-center mb-4 border border-[#0c831f]/20">
-                <MapPin
-                  className="w-8 h-8 text-[#0c831f] opacity-90"
-                  strokeWidth={1.5}
-                />
-              </div>
-              <p className="font-monasans_semibold text-gray-900 text-lg mb-1.5">
-                No addresses found
-              </p>
-              <p className="font-dmsans_light text-gray-500 text-[14px] max-w-[250px] leading-relaxed">
-                You haven&apos;t saved any delivery locations yet.
-              </p>
-            </div>
-          )}
-        </div>
 
+                  <p
+                    className={`font-dmsans_light text-[13px] mt-1 truncate ${
+                      isSelected
+                        ? "text-[#0c831f]/80 font-medium"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {isSelected
+                      ? "Selected delivery location"
+                      : "Tap to select this delivery location"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 mt-4 sm:mt-0 pl-11 sm:pl-4 sm:border-l sm:border-gray-100 w-full sm:w-auto justify-end shrink-0">
+              <button
+                disabled={deletingAddressId !== null}
+                onClick={() => {
+                  closeAddressListModal();
+                  openAddressFormModal(addr);
+                }}
+                className="font-dmsans_semibold text-[13px] text-gray-400 hover:text-[#0c831f] hover:bg-green-50 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDelete(addr?.id)}
+                disabled={deletingAddressId === addr?.id}
+                className={`font-dmsans_semibold text-[13px] ${
+                  deletingAddressId === addr?.id
+                    ? "text-gray-300 bg-gray-100 cursor-not-allowed"
+                    : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+                } px-3 py-1.5 rounded-lg transition-colors`}
+              >
+                {deletingAddressId === addr?.id
+                  ? "Deleting…"
+                  : "Delete"}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    /* Empty State */
+    <div className="flex flex-col items-center justify-center py-10 sm:py-12 text-center px-4">
+      <div className="w-16 h-16 bg-[#0c831f]/10 rounded-full flex items-center justify-center mb-4 border border-[#0c831f]/20">
+        <MapPin
+          className="w-8 h-8 text-[#0c831f] opacity-90"
+          strokeWidth={1.5}
+        />
+      </div>
+
+      <p className="font-monasans_semibold text-gray-900 text-lg mb-1.5">
+        No addresses found
+      </p>
+
+      <p className="font-dmsans_light text-gray-500 text-[14px] max-w-[250px] leading-relaxed">
+        You haven&apos;t saved any delivery locations yet.
+      </p>
+    </div>
+  )}
+</div>
         {/* Modal Footer */}
         {session?.user?.id && (
           <div className="p-4 sm:p-6 border-t border-gray-100 bg-white">

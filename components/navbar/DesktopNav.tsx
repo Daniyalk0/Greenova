@@ -42,7 +42,7 @@ const DesktopNav = ({
   
 
   const { openAddressListModal, openAddressFormModal } = useUI();
-  const { addresses, selectedAddress, guestAddress } = useAddress();
+  const { addresses, selectedAddress, guestAddress, error, loading } = useAddress();
    console.log(selectedAddress)
 
 // const [guestAddress, setGuestAddress] = useState(() =>
@@ -107,30 +107,53 @@ const DesktopNav = ({
             </Link>
 
             {/* Location Button */}
-            <button
-              onClick={() => {
-                if (addressList.length === 0) {
-                  openAddressFormModal(); // no address
-                } else {
-                  openAddressListModal(); // has address
-                }
-              }}
-              className="flex flex-col items-start"
-            >
-              <span className="text-xs text-gray-500 font-dmsans_light">
-                Delivery to
-              </span>
+       {loading ? (
+  /* Loading Skeleton */
+  <div className="flex flex-col items-start animate-pulse">
+    <div className="h-3 w-16 rounded bg-gray-200 mb-2" />
 
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-                  {finalAddress
-                    ? `${finalAddress.city}, ${finalAddress.state}`
-                    : "Add delivery location"}
-                </span>
+    <div className="flex items-center gap-2">
+      <div className="h-4 w-32 rounded bg-gray-300" />
+      <div className="w-3 h-3 rounded-full bg-gray-200" />
+    </div>
+  </div>
+) : (
+  <button
+    onClick={() => {
+      if (addressList.length === 0) {
+        openAddressFormModal();
+      } else {
+        openAddressListModal();
+      }
+    }}
+    className="flex flex-col items-start"
+  >
+    <span className="text-xs text-gray-500 font-dmsans_light">
+      Delivery to
+    </span>
 
-                <ChevronDown className="w-3 h-3 text-gray-600" />
-              </div>
-            </button>
+    <div className="flex items-center gap-1">
+      <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
+        {error
+          ? "Location unavailable"
+          : finalAddress
+          ? `${finalAddress.city}, ${finalAddress.state}`
+          : "Add delivery location"}
+      </span>
+
+      {!error && (
+        <ChevronDown className="w-3 h-3 text-gray-600" />
+      )}
+    </div>
+
+    {/* Optional helper text */}
+    {error && (
+      <span className="text-[11px] text-red-500 mt-0.5 font-dmsans_medium">
+        Tap to retry
+      </span>
+    )}
+  </button>
+)}
           </div>
 
           {/* CENTER: Search (Wide like Zepto/Blinkit) */}

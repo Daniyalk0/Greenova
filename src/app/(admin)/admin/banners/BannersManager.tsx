@@ -11,15 +11,22 @@ import {
   Eye,
   EyeOff,
   GripVertical,
+  Loader2,
 } from "lucide-react";
+import { deleteBanner, toggleBannerStatus } from "../products/actions";
+import { useRouter } from "next/navigation";
 
 type Banner = {
   id: string;
   title: string;
   subtitle: string | null;
   imageUrl: string;
-  linkUrl: string;
+  // linkUrl: string;
   isActive: boolean;
+linkType: string;
+
+  productSlug: string | null;
+  categoryHref: string | null;
 };
 
 export default function BannerManager({
@@ -30,28 +37,75 @@ export default function BannerManager({
   // In a real app, you would use Server Actions to update this data
   // For now, we store it in local state so the UI is interactive
   const [banners, setBanners] = useState<Banner[]>(initialBanners);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const router = useRouter();
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
-  // Placeholder function for toggling active status
-  const handleToggleActive = (id: string) => {
+  const handleToggleActive = async (id: string) => {
+    // preserve previous state for rollback
+    const previousBanners = banners;
+
+    // optimistic update
     setBanners((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, isActive: !b.isActive } : b)),
+      prev.map((b) =>
+        b.id === id
+          ? {
+              ...b,
+              isActive: !b.isActive,
+            }
+          : b,
+      ),
     );
-    // TODO: Call your Server Action here to update DB
-    // e.g., await toggleBannerStatus(id);
+
+    try {
+      setTogglingId(id);
+
+      const result = await toggleBannerStatus(id);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+
+      // rollback on failure
+      setBanners(previousBanners);
+
+      alert("Failed to update banner status.");
+    } finally {
+      setTogglingId(null);
+    }
   };
 
-  // Placeholder function for deleting
-  const handleDelete = (id: string) => {
-    if (!confirm("Are you sure you want to delete this banner?")) return;
-    setBanners((prev) => prev.filter((b) => b.id !== id));
-    // TODO: Call your Server Action here to delete from DB
-    // e.g., await deleteBanner(id);
+  const handleDelete = async (id: string) => {
+    const confirmed = confirm("Are you sure you want to delete this banner?");
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+
+      const result = await deleteBanner(id);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      // update UI only after successful deletion
+      setBanners((prev) => prev.filter((b) => b.id !== id));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete banner.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
+  
   return (
     <div className="max-w-6xl mx-auto mt-10 md:mt-0">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-8">
+      {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-monasans_semibold text-gray-900">
             Banners Management
@@ -61,7 +115,7 @@ export default function BannerManager({
           </p>
         </div>
 
-        {/* Add New Banner Button */}
+
         <Link
           href="/admin/banners/new" // Route to your "Create Banner" form
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0c831f] text-white rounded-xl hover:bg-[#0a6c19] hover:shadow-[0_4px_12px_rgba(12,131,31,0.2)] transition-all font-dmsans_semibold text-[14px] flex-shrink-0"
@@ -69,7 +123,7 @@ export default function BannerManager({
           <Plus className="w-4 h-4" />
           Add New Banner
         </Link>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       {banners.length > 0 ? (
@@ -95,12 +149,18 @@ export default function BannerManager({
               </thead>
 
               <tbody className="divide-y divide-gray-100">
-                {banners.map((banner) => (
-                  <tr
-                    key={banner.id}
-                    className="hover:bg-gray-50/50 transition-colors group"
-                  >
-                    {/* Drag Handle (Visual only for now) */}
+                {banners.map((banner) => {
+                  const bannerUrl =
+                    banner.linkType === "product"
+                      ? `/products/${banner?.productSlug}`
+                      : banner.categoryHref;
+
+                  return (
+                    <tr
+                      key={banner.id}
+                      className="hover:bg-gray-50/50 transition-colors group"
+                    >
+                      {/* Drag Handle (Visual only for now) */}
                     <td className="px-4 py-4 text-gray-300 cursor-grab active:cursor-grabbing hover:text-gray-500 transition-colors">
                       <GripVertical className="w-5 h-5" />
                     </td>
@@ -162,26 +222,33 @@ export default function BannerManager({
                     {/* Link URL */}
                     <td className="px-5 py-4 font-dmsans_light text-[13px] text-gray-600">
                       <span className="bg-gray-100 px-2.5 py-1 rounded-md border border-gray-200 truncate max-w-[150px] inline-block">
-                        {banner.linkUrl}
+                        {bannerUrl}
                       </span>
                     </td>
 
                     {/* Status Badge */}
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-dmsans_semibold ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-dmsans_semibold transition-all ${
                           banner.isActive
                             ? "bg-green-50 text-[#0c831f] border border-green-200"
                             : "bg-gray-100 text-gray-600 border border-gray-200"
                         }`}
                       >
-                        {banner.isActive ? (
+                        {togglingId === banner.id ? (
                           <>
-                            <Eye className="w-3.5 h-3.5" /> Active
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            Updating
+                          </>
+                        ) : banner.isActive ? (
+                          <>
+                            <Eye className="w-3.5 h-3.5" />
+                            Active
                           </>
                         ) : (
                           <>
-                            <EyeOff className="w-3.5 h-3.5" /> Hidden
+                            <EyeOff className="w-3.5 h-3.5" />
+                            Hidden
                           </>
                         )}
                       </span>
@@ -207,7 +274,7 @@ export default function BannerManager({
 
                         {/* Edit Banner */}
                         <Link
-                          href={`/admin/banners/${banner.id}/edit`}
+                          href={`/admin/banners/edit/${banner.id}`}
                           className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-100"
                         >
                           <Edit className="w-4 h-4" />
@@ -216,14 +283,19 @@ export default function BannerManager({
                         {/* Delete Banner */}
                         <button
                           onClick={() => handleDelete(banner.id)}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                          disabled={deletingId === banner.id}
+                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          {deletingId === banner.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
                         </button>
                       </div>
                     </td>
                   </tr>
-                ))}
+                )})}
               </tbody>
             </table>
           </div>
@@ -252,6 +324,7 @@ export default function BannerManager({
             Create First Banner
           </Link>
         </div>
+    
       )}
     </div>
   );

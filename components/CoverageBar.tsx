@@ -20,7 +20,7 @@ type CoverageConfig = {
 export default function CoverageBar() {
   const [mounted, setMounted] = useState(false);
 
-  const { addresses, selectedAddress, guestAddress } = useAddress();
+  const { addresses, selectedAddress, guestAddress , loading, error, refreshAddresses} = useAddress();
   const { openAddressListModal, openAddressFormModal } = useUI();
   const { data: session } = useSession();
 
@@ -42,6 +42,10 @@ export default function CoverageBar() {
     status = activeAddress.serviceStatus.toLowerCase() as CoverageStatus;
   }
 
+  if (error) {
+  status = "none";
+}
+
   // 👉 Location label
   const location =
     activeAddress?.city || activeAddress?.pincode || "your area";
@@ -50,17 +54,30 @@ export default function CoverageBar() {
     ? addresses.length > 0
     : !!guestAddress;
 
-  const handleLocationClick = () => {
-    if (!hasAnyAddress) {
-      openAddressFormModal();
-    } else {
-      openAddressListModal();
-    }
-  };
+const handleLocationClick = () => {
+  if (loading) return;
+
+  if (error) {
+    refreshAddresses();
+    return;
+  }
+
+  if (!hasAnyAddress) {
+    openAddressFormModal();
+  } else {
+    openAddressListModal();
+  }
+};
+  const shouldHideBar = loading;
+
+const visibilityClass = shouldHideBar
+  ? "-translate-y-full opacity-0 max-h-0 pointer-events-none border-transparent"
+  : "translate-y-0 opacity-100 max-h-[60px]";
 
 // --- FRESH & ORGANIC COLOR PALETTE ---
 // --- ORGANIC MULTI-SHADE GRADIENT PALETTE ---
   const config: Record<CoverageStatus, CoverageConfig> = {
+    
     active: {
       text: `Now delivering in ${location}`,
       // Lush Greens (Spinach/Kale): Light green fading into your deep brand green
@@ -97,11 +114,14 @@ export default function CoverageBar() {
     },
   };
   const current = config[status];
+  const barText = error
+  ? "Unable to verify delivery coverage"
+  : current.text;
 
   return (
-    <div
-      className={`sticky top-0 w-full border-b z-[1100] transition-colors duration-300 ${current.bg}`}
-    >
+ <div
+  className={`sticky top-0 w-full overflow-hidden border-b z-[1100] transition-all duration-500 ease-out ${visibilityClass} ${current.bg}`}
+>
       {/* 
         Key changes here: 
         1. Removed flex-wrap
@@ -125,7 +145,7 @@ export default function CoverageBar() {
 
           {/* Added 'truncate' so long city names don't break onto two lines */}
           <p className={`font-dmsans_semibold text-[12px] sm:text-[13.5px] ${current.textColor} truncate`}>
-            {current.text}
+            {barText}
           </p>
         </div>
 

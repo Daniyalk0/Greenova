@@ -59,15 +59,15 @@ before:bg-gradient-to-b before:from-[#76ff64bf] before:to-transparent
                                 </li>
                                 <li>
                                     <Link
-                                        href="/contact"
+                                        href="/orders"
                                         className=" transition cursor-pointer duration-300 hover:underline"
                                     >
-                                        Contact
+                                        My Orders
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
-                                        href="/blog"
+                                        href="/"
 
                                         className=" transition cursor-pointer duration-300 hover:underline"
                                     >

@@ -41,11 +41,24 @@ function sleep(ms: number) {
 }
 
 export async function getSeasonalProducts() {
-   await sleep(8000);
-  const [fruits, vegetables] = await Promise.all([
-    getByCategory("FRUITS", 5),
-    getByCategory("VEGETABLES", 5),
-  ]);
+  
+  try {
+    // throw new Error("Testing failure");
+    const [fruits, vegetables] = await Promise.all([
+      getByCategory("FRUITS", 5),
+      getByCategory("VEGETABLES", 5),
+    ]);
 
-  return { fruits, vegetables };
+    return {
+      fruits,
+      vegetables,
+    };
+  } catch (error) {
+    console.error("Failed to fetch seasonal products:", error);
+
+    return {
+      fruits: [],
+      vegetables: [],
+    };
+  }
 }

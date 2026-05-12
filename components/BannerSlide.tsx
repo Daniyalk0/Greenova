@@ -24,6 +24,9 @@ type BannerSlideProps = {
   isPriority?: boolean; // ADDED: Set to true for the first slide so it loads instantly
   colors?: BannerColors;
   isPreview?: boolean; // ADDED: If true, use <img> instead of Next.js Image for instant preview without needing a valid URL
+  productSlug?: string; // ADDED: For product link generation
+  categoryHref?: string; // ADDED: For category link generation
+  linkType?: "product" | "category"; // ADDED: To determine link generation logic
 };
 
 export default function BannerSlide({
@@ -36,8 +39,11 @@ export default function BannerSlide({
   discountText,
   meta,
   cta,
-  linkUrl = "/collections/all", // Default fallback
+  // linkUrl = "/", // Default fallback
   imageUrl,
+  productSlug,
+  categoryHref,
+  linkType,
   isPriority = false,
   colors = {},
 }: BannerSlideProps) {
@@ -57,6 +63,11 @@ export default function BannerSlide({
   const isStoredImage =
     typeof imageUrl === "string" &&
     imageUrl.startsWith(`https://${ALLOWED_HOST}`);
+
+    const bannerUrl =
+                    linkType === "product"
+                      ? `/products/${productSlug}`
+                      : categoryHref;
 
   const shouldUseNextImage = !isPreview && isStoredImage;
   return (
@@ -191,7 +202,7 @@ export default function BannerSlide({
     {/* Bottom Actions */}
     <div className="flex items-center gap-3 mt-2 sm:mt-4">
       <Link
-        href={linkUrl}
+        href={bannerUrl || "/"}
         className={`
           px-4 py-1.5 text-[12px]
           sm:px-5 sm:py-2 sm:text-[13px]

@@ -20,9 +20,39 @@ type Params = {
 
 export default async function ProductPage({ params }: { params: Promise<Params>; }) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug: slug },
-  });
+
+  let product = null;
+  try {
+    // throw new Error("Simulated fetch error"); // Simulate an error for testing
+    product = await prisma.product.findUnique({
+      where: { slug },
+    });
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+
+    return (
+      <section className="px-4 sm:px-6 lg:px-20 py-20">
+        <div className="mx-auto max-w-xl rounded-3xl border border-red-100 bg-red-50/50 px-6 py-14 text-center shadow-sm">
+          <h2 className="text-xl font-semibold text-red-800 font-dmsans_semibold">
+            Unable to load product
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-red-600 font-dmsans_light">
+            We&apos;re having trouble loading this product right now.
+            Please try again in a moment.
+          </p>
+
+          <a
+            href=""
+            className="mt-6 inline-flex font-dmsans_light rounded-full bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
+          >
+            Refresh page
+          </a>
+        </div>
+      </section>
+    );
+  }
+
   
 
   if (!product) notFound();

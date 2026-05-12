@@ -6,6 +6,7 @@ import OrdersPage from "@/components/Orders-client";
 import { authConfig } from "../../api/auth/[...nextauth]/auth.config";
 
 export default async function OrdersWrapper() {
+    // await new Promise((r) => setTimeout(r, 2000));
   const session = await getServerSession(authConfig);
 
   if (!session?.user?.id) {
