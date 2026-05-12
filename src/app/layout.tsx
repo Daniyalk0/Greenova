@@ -36,6 +36,10 @@ const geistMono = Geist_Mono({
 export const metadata = {
  title: "Greenova",
   description: "Fresh fruits & vegetables",
+    verification: {
+    google: "crr2ULgLQ8qlZDSKiR4V2icmriy0BiwB9D2-hgkFnXc",
+  },
+
 };
 
 const playFairDisplay = localFont({
