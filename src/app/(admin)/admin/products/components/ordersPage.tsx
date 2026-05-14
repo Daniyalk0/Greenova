@@ -119,7 +119,7 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
   }, [orders]);
 
   return (
-    <div className=" sm:mt-6 lg:mt-8 p-1 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+    <div className=" sm:mt-6 lg:mt-8 p-1 sm:p-4 lg:p-8 bg-gray-50/50 ]">
       {/* Header Section */}
    
 

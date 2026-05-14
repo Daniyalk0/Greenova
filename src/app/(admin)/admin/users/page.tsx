@@ -9,7 +9,7 @@ import UsersTableWrapper from "./UsersTableWrapper";
 
 export default function Page() {
   return (
-    <div className="p-3 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+    <div className="p-3 sm:p-4 lg:p-8 bg-gray-50/50">
       {/* ✅ Header (same pattern as Users) */}
       <div className="my-3 md:mb-3 md:mt-0">
         <h1 className="text-xl sm:text-2xl lg:text-3xl font-monasans_semibold text-gray-900 flex items-center gap-2 sm:gap-3">

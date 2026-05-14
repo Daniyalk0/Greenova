@@ -38,12 +38,11 @@ const DesktopNav = ({
   const { data: session } = useSession();
   const router = useRouter();
 
-
   
 
   const { openAddressListModal, openAddressFormModal } = useUI();
   const { addresses, selectedAddress, guestAddress, error, loading } = useAddress();
-   console.log(selectedAddress)
+   console.log(addresses)
 
 // const [guestAddress, setGuestAddress] = useState(() =>
 //   !session?.user?.id ? getGuestAddress() : null

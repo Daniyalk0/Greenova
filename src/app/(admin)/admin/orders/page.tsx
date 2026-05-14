@@ -7,7 +7,7 @@ import { Filter, Search } from "lucide-react";
 
 export default function Page() {
   return (
-    <div className=" p-0 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+<div className="p-0 sm:p-4 lg:p-8 bg-gray-50/50 ">
       
       {/* ✅ HEADER (now here) */}
       <div className="max-w-6xl mx-auto mb-5 sm:mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">

@@ -130,7 +130,7 @@ export default function AdminProductsPage({
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
             <div className="text-xs lg:text-sm font-dmsans_light text-gray-600 text-center sm:text-left w-full sm:w-auto">
               Showing {(page - 1) * limit + 1} to{" "}
               {Math.min(page * limit, totalCount)} of{" "}

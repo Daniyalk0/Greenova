@@ -23,6 +23,8 @@ export default function CoverageBar() {
   const { addresses, selectedAddress, guestAddress , loading, error, refreshAddresses} = useAddress();
   const { openAddressListModal, openAddressFormModal } = useUI();
   const { data: session } = useSession();
+  console.log(guestAddress);
+  
 
   const isLoggedIn = !!session?.user?.id;
 
@@ -33,7 +35,7 @@ export default function CoverageBar() {
   if (!mounted) return null;
 
   // 👉 Determine active address
-  const activeAddress = selectedAddress || guestAddress || null;
+  const activeAddress = selectedAddress || null;
 
   // 👉 Determine status
   let status: CoverageStatus = "none";
@@ -50,9 +52,9 @@ export default function CoverageBar() {
   const location =
     activeAddress?.city || activeAddress?.pincode || "your area";
 
-  const hasAnyAddress = isLoggedIn
-    ? addresses.length > 0
-    : !!guestAddress;
+ const hasAnyAddress = isLoggedIn
+  ? addresses.length > 0
+  : !!selectedAddress;
 
 const handleLocationClick = () => {
   if (loading) return;
