@@ -8,7 +8,7 @@ export default function Page(props: {
   searchParams: Promise<{ page?: string }>;
 }){
    return (
-    <div className=" p-3 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+    <div className=" p-0 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
 
       {/* ✅ HEADER (instant render) */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">

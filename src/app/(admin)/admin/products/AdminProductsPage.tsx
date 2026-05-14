@@ -32,7 +32,7 @@ export default function AdminProductsPage({
        
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 p-3 sm:p-4 lg:p-8">
+        <div className="flex-1 p-1 sm:p-4 lg:p-8">
           {/* Desktop Table */}
           <div className="bg-white rounded-xl shadow-sm border overflow-hidden mb-8">
             <table className="w-full text-xs sm:text-sm">

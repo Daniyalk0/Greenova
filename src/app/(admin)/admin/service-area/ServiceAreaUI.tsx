@@ -20,7 +20,7 @@ const ServiceAreaUI = ({ areas }: { areas: any[] }) => {
   return (
     <div>
       {" "}
-      <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-6 shadow-sm">
         <h2 className="font-dmsans_semibold text-[16px] text-gray-900 mb-4">
           Add or Update Pincode
         </h2>

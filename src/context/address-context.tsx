@@ -127,7 +127,7 @@ const fetchAddresses = async () => {
   try {
     setLoading(true);
     setError(false);
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
     const data = await getUserAddresses();
 
     setAddresses(data as any);

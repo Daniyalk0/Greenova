@@ -130,7 +130,7 @@ export default function StatusDropdown({ value, onChange, disabled }: Props) {
         ref={buttonRef}
         disabled={disabled}
         onClick={handleToggle}
-        className={`flex ${disabled ? "opacity-50 cursor-not-allowed" : ""} items-center gap-1.5 px-3 py-1.5 rounded-full border text-[12px] font-dmsans_semibold transition-all duration-200 ${getBadgeStyles(
+        className={`flex ${disabled ? "opacity-50 cursor-not-allowed" : ""} items-center gap-1.5 px-2 py-1 rounded-full border text-[10px] font-dmsans_semibold transition-all duration-200 ${getBadgeStyles(
           value
         )}`}
       >

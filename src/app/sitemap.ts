@@ -6,5 +6,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://greenova-pi.vercel.app",
       lastModified: new Date(),
     },
+    
   ];
 }

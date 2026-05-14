@@ -10,18 +10,6 @@ import { ZodNumber } from "zod";
 export async function createAddress(data: any) {
   const session = await getServerSession(authConfig);
   if (!session?.user?.id) throw new Error("Unauthorized");
-//   const area = await prisma.serviceArea.findUnique({
-//   where: { pincode: data.pincode },
-// });
-
-// const mapStatus = (s?: string): "ACTIVE" | "LIMITED" | "UNAVAILABLE" => {
-//   if (!s) return "UNAVAILABLE";
-//   const v = s.toUpperCase();
-//   if (v === "ACTIVE" || v === "LIMITED" || v === "UNAVAILABLE") return v;
-//   return "UNAVAILABLE";
-// };
-
-// const serviceStatus = mapStatus(area?.status);
 
   const address = await prisma.address.create({
     data: {

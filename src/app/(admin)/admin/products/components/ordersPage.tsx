@@ -119,7 +119,7 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
   }, [orders]);
 
   return (
-    <div className=" sm:mt-6 lg:mt-8 p-3 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+    <div className=" sm:mt-6 lg:mt-8 p-1 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
       {/* Header Section */}
    
 
@@ -165,28 +165,28 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
               <table className="w-full table-fixed border-collapse">
                 <thead className="bg-gray-50/80 border-b border-gray-200">
                   <tr>
-                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
                       Order ID
                     </th>
 
-                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
                       Customer
                     </th>
 
                     {/* hide on very small screens */}
-                    <th className="hidden sm:table-cell px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="hidden sm:table-cell px-3 sm:px-9py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
                       Date
                     </th>
 
-                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
                       Total
                     </th>
 
-                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-left">
                       Status
                     </th>
 
-                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[11px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-right">
+                    <th className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-[12px] font-dmsans_semibold text-gray-500 uppercase tracking-wider text-right">
                       Actions
                     </th>
                   </tr>
@@ -200,7 +200,7 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
                     >
                       {/* ID */}
                       <td className="px-3 sm:px-5 py-3 sm:py-4">
-                        <span className="font-dmsans_semibold text-[13px] sm:text-[14px] text-gray-900 bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
+                        <span className="font-dmsans_semibold text-[11px] sm:text-[14px] text-gray-900 bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
                           #{order.id}
                         </span>
                       </td>
@@ -208,17 +208,17 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
                       {/* Customer */}
                       <td className="px-3 sm:px-5 py-3 sm:py-4">
                         <div className="flex flex-col leading-tight">
-                          <span className="font-dmsans_semibold text-[13px] sm:text-[14px] text-gray-900">
+                          <span className="font-dmsans_semibold text-[11px] sm:text-[14px] text-gray-900">
                             {order.customer || order.user?.name || "Guest User"}
                           </span>
-                          <span className="font-dmsans_light text-[12px] sm:text-[13px] text-gray-500 truncate max-w-[140px] sm:max-w-none">
+                          <span className="font-dmsans_light text-[11px] sm:text-[13px] text-gray-500 truncate max-w-[140px] sm:max-w-none">
                             {order.email || "No email"}
                           </span>
                         </div>
                       </td>
 
                       {/* Date */}
-                      <td className="hidden sm:table-cell px-3 sm:px-5 py-3 sm:py-4 font-dmsans_light text-[13px] sm:text-[14px] text-gray-600">
+                      <td className="hidden sm:table-cell px-3 sm:px-5 py-3 sm:py-4 font-dmsans_light text-[11px] sm:text-[14px] text-gray-600">
                         {order.createdAt
                           ? new Date(order.createdAt).toLocaleDateString(
                               "en-IN",

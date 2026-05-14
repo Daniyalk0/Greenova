@@ -32,19 +32,19 @@ if (!banners || banners.length === 0) {
       </div>
 
       {/* Title */}
-      <h2 className="text-lg font-semibold text-gray-800">
+      <h2 className="text-lg font-dmsans_semibold text-gray-800">
         Unable to load banners
       </h2>
 
       {/* Subtitle */}
-      <p className="text-sm text-gray-500 mt-1">
+      <p className="text-sm font-dmsans_light text-gray-500 mt-1">
         Something went wrong while fetching banner data.
       </p>
 
       {/* Retry Button */}
       <button
         onClick={() => window.location.reload()}
-        className="mt-5 px-5 py-2 rounded-lg bg-[#0c831f] text-white text-sm font-medium hover:bg-[#0a6e1a] transition"
+        className="mt-5 font-dmsans_light px-5 py-2 rounded-lg bg-[#0c831f] text-white text-sm font-medium hover:bg-[#0a6e1a] transition"
       >
         Reload
       </button>

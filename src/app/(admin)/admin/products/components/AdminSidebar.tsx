@@ -128,13 +128,7 @@ export default function AdminSidebar() {
             <p className="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 font-dmsans_semibold">
               Support
             </p>
-            <Link
-              href="/admin/settings"
-              className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-all font-dmsans_semibold"
-            >
-              <Settings size={20} />
-              <span className="font-medium">Settings</span>
-            </Link>
+          
             <Link
               href="/"
               target="_blank"

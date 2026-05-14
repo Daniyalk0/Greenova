@@ -7,7 +7,7 @@ import { Filter, Search } from "lucide-react";
 
 export default function Page() {
   return (
-    <div className=" p-3 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
+    <div className=" p-0 sm:p-4 lg:p-8 bg-gray-50/50 min-h-screen">
       
       {/* ✅ HEADER (now here) */}
       <div className="max-w-6xl mx-auto mb-5 sm:mb-6 lg:mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">
@@ -33,7 +33,7 @@ export default function Page() {
             />
           </div>
 
-          <button className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:text-[#0c831f] text-[13px] sm:text-[14px] font-dmsans_semibold text-gray-700 shadow-sm">
+          <button className=" hidden  items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:text-[#0c831f] text-[13px] sm:text-[14px] font-dmsans_semibold text-gray-700 shadow-sm">
             <Filter className="w-4 h-4" />
             Filters
           </button>
