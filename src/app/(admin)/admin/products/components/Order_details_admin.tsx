@@ -15,7 +15,8 @@ import StatusDropdown from "../../products/components/orderStatusDD";
 import Link from "next/link";
 import { updateOrderStatus } from "../actions";
 import { OrderStatus } from "@prisma/client";
-import { AdminOrderDetails } from "../../orders/[id]/page";
+import { AdminOrderDetails } from "../../orders/[id]/AdminOrderDetailsContent.";
+// import { AdminOrderDetails } from "../../orders/[id]/page";
 
 const Order_details_admin = ({ order }: { order: AdminOrderDetails }) => {
   const [orderState, setOrderState] = useState(order);

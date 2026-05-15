@@ -1,10 +1,15 @@
+import { clearCart } from "@/src/store/cartProductsSlice";
+import { AppDispatch } from "@/src/store/store";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 export const handlePayment = (
   router: any,
-  orderData: any
+  orderData: any,
+  dispatch: AppDispatch
 ) => {
   return new Promise<void>((resolve, reject) => {
+  
     if (!(window as any).Razorpay) {
       const error = new Error(
         "Razorpay payment SDK failed to load. Please refresh the page."
@@ -43,6 +48,7 @@ export const handlePayment = (
           }
 
           toast.success("Payment successful");
+           dispatch(clearCart());
 
           router.push(`/order-success?orderId=${data.orderId}`);
 

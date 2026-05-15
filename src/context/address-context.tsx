@@ -174,11 +174,12 @@ const fetchAddresses = async () => {
 
     const saved = await createAddress(pendingGuestAddress);
 
-    await fetchAddresses();
-    setSelectedAddressId(saved.id);
+  setSelectedAddressId(saved.id);
 
-    clearGuestAddress();
-    setPendingGuestAddress(null);
+await fetchAddresses();
+
+clearGuestAddress();
+setPendingGuestAddress(null);
   };
 
   useEffect(() => {

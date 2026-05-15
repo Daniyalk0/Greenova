@@ -11,6 +11,9 @@ import { Plus } from "lucide-react";
 import { useAddress } from "@/src/context/address-context";
 import { useUI } from "@/src/context/ui-context";
 import AddressSectionWrapper from "@/components/user-address/AddressSectionWrapper";
+import { clearCart } from "@/src/store/cartProductsSlice";
+import { AppDispatch } from "@/src/store/store";
+import { useDispatch } from "react-redux";
 
 export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -18,7 +21,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
   const { selectedAddress, selectAddress, selectedAddressId } = useAddress();
   const { openAddressFormModal } = useUI();
   const [loading, setLoading] = useState(false);
-
+const dispatch  = useDispatch<AppDispatch>();
   const handleOrder = async () => {
     if (loading) return;
 
@@ -56,6 +59,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
 
       // ✅ COD
       if (paymentMethod === "cod") {
+         dispatch(clearCart());
         toast.success("Order placed successfully");
         router.push(`/order-success?orderId=${data.orderId}`);
         return;
@@ -80,7 +84,7 @@ export default function CheckoutClient({ cartItems, addresses, pricing }: any) {
         );
       }
 
-      await handlePayment(router, data);
+      await handlePayment(router, data, dispatch);
     } catch (err: any) {
       console.error(err);
 

@@ -43,7 +43,7 @@ export default async function CheckoutWrapper() {
   }));
 
   const pricing = calcOrderSummary(normalized);
-  console.log(pricing);
+  // console.log(pricing);
   
 
   // optional: keep OR move to client for even faster UX
