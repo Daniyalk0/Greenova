@@ -10,9 +10,6 @@ export default function Breadcrumbs() {
   const pathname = usePathname();
 
   const segments = pathname?.split("/").filter(Boolean) ?? [];
-
-  if (segments.length === 0) return null;
-
   const { labelMap, validRoutes } = useMemo(() => {
     const labelMap: Record<string, string> = {
       categories: "Categories",
@@ -34,6 +31,9 @@ export default function Breadcrumbs() {
     
     return { labelMap, validRoutes };
   }, []);
+
+  if (segments.length === 0) return null;
+
   
   const formatFallback = (str: string) =>
     str.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
