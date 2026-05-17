@@ -26,6 +26,7 @@ export const authConfig: NextAuthOptions = {
       authorization: {
         params: {
           scope: "openid email profile",
+            prompt: "consent",
         },
       },
     }),
@@ -120,6 +121,7 @@ export const authConfig: NextAuthOptions = {
 
     async signIn({ user, account, profile }) {
       // Account linking on OAuth sign-in
+      
       if (account && account.provider !== "credentials") {
         if (!user.email) throw new Error("Email is required");
 

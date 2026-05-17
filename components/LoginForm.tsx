@@ -164,7 +164,8 @@ const LoginForm = () => {
               type="email"
               placeholder="Email address"
               {...register("email")}
-              className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              disabled={!!OAuthLoading}
+              className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
             />
             {errors.email && (
               <p className="text-xs text-red-500">{errors.email.message}</p>
@@ -178,7 +179,8 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 {...register("password")}
-                className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                disabled={!!OAuthLoading}
+                className="w-full rounded-lg font-dmsans_light border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
               />
               <EyeIcon
                 onClick={() => setShowPassword((prev) => !prev)}
@@ -216,15 +218,25 @@ const LoginForm = () => {
             )}
           </button> */}
 
-              <AuthButton type="submit" loading={loading} loadingText="Logging in...">Log in</AuthButton>
+              <AuthButton type="submit" loading={loading || !!OAuthLoading} loadingText="Logging in..." disabled={!!OAuthLoading}>Log in</AuthButton>
 
           {/* Signup */}
-          <p className="mt-4 text-center text-xs text-gray-500 font-dmsans_light font-semibold">
-            Don’t have an account?{" "}
-            <Link href="/signup" className="text-cyan-600 hover:underline">
-              Sign up
-            </Link>
-          </p>
+         <p className="mt-4 text-center text-xs text-gray-500 font-dmsans_light font-semibold">
+  Don’t have an account?{" "}
+  
+  {!!OAuthLoading || loading ? (
+    <span className="text-cyan-400 font-dmsans_light font-semibold cursor-not-allowed">
+      Sign up
+    </span>
+  ) : (
+    <Link
+      href="/signup"
+      className="text-cyan-600 hover:underline font-dmsans_light font-semibold"
+    >
+      Sign up
+    </Link>
+  )}
+</p>
 
           {/* OAuth password notice */}
           {providerName && (

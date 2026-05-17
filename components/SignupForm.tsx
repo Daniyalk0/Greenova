@@ -108,7 +108,8 @@ const onSubmit = async (data: SignupInput) => {
         type="text"
         placeholder="Full name"
         {...register("name")}
-        className="w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 font-dmsans_light "
+        disabled={!!OAuthLoading}
+        className="w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 font-dmsans_light disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 "
       />
       {errors.name && (
         <p className="text-xs text-red-500 font-dmsans_light left-0 absolute">{errors.name.message}</p>
@@ -124,7 +125,8 @@ const onSubmit = async (data: SignupInput) => {
         onChange={() => {
           if (error) setError("");
         }}
-        className="w-full font-dmsans_light  rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        disabled={!!OAuthLoading}
+        className="w-full font-dmsans_light  rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500  disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
       />
       {errors.email && (
         <p className="text-xs left-0 text-red-500 font-dmsans_light absolute">{errors.email.message}</p>
@@ -138,7 +140,8 @@ const onSubmit = async (data: SignupInput) => {
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           {...register("password")}
-          className="w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 font-dmsans_light "
+          disabled={!!OAuthLoading}
+          className="w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 font-dmsans_light  disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
         />
         <EyeIcon
           onClick={() => setShowPassword((prev) => !prev)}
@@ -182,15 +185,25 @@ const onSubmit = async (data: SignupInput) => {
         "Sign up"
       )}
     </button> */}
-    <AuthButton type="submit" loading={loading} loadingText="Signing up...">Sign up</AuthButton>
+     <AuthButton type="submit" loading={loading || !!OAuthLoading} loadingText="Logging in..." disabled={!!OAuthLoading}>Sign up</AuthButton>
 
     {/* Login */}
-    <p className="mt-4 text-center text-xs text-gray-500 font-dmsans_light font-semibold">
-      Already have an account?{" "}
-      <Link href="/login" className="text-cyan-600 hover:underline">
-        Login
-      </Link>
-    </p>
+   <p className="mt-4 text-center text-xs text-gray-500 font-dmsans_light font-semibold">
+  Already have an account?{" "}
+  
+  {!!OAuthLoading || loading ? (
+    <span className="text-cyan-400 font-dmsans_light font-semibold cursor-not-allowed">
+      Login
+    </span>
+  ) : (
+    <Link
+      href="/login"
+      className="text-cyan-600 hover:underline font-dmsans_light font-semibold"
+    >
+      Login
+    </Link>
+  )}
+</p>
 
     {/* Feedback */}
     {error && (

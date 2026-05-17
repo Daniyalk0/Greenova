@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink, GalleryHorizontal, LayoutDashboard, LogOut, MapPin, Menu, Package, Settings, ShoppingBag, Users, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 
 const getInitials = (name?: string | null, email?: string | null) => {
@@ -32,8 +32,9 @@ const getPastelColor = (seed: string) => {
 
 export default function AdminSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-   const pathname = usePathname();
-    const { data: session } = useSession();
+  const pathname = usePathname();
+    const { data: session, status } = useSession();
+     const [loggingOut, setLoggingOut] = React.useState(false);
       const { email, name, image } = session?.user ?? {};
   const initials = getInitials(name, email);
   const pastelBg = getPastelColor(email ?? name ?? "user");
@@ -46,6 +47,24 @@ export default function AdminSidebar() {
     { name: 'Service Areas', href: '/admin/service-area', icon: MapPin },
     { name: 'Banners', href: '/admin/banners', icon: GalleryHorizontal },
   ];
+
+  const handleLogout = async () => {
+      if (loggingOut) return;
+  
+      try {
+        setLoggingOut(true);
+        await signOut();
+      } finally {
+        setLoggingOut(false);
+      }
+    };
+  
+    if (status === "loading") {
+      return (
+        <div className="w-[90px] h-[38px] rounded-lg bg-gray-200 animate-pulse mr-2" />
+      );
+    }
+  
 
   return (
   <>
@@ -192,8 +211,20 @@ export default function AdminSidebar() {
           </div>
 
           {/* Logout */}
-          <button className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 transition-colors shrink-0">
-            <LogOut size={16} />
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className={`p-1.5 sm:p-2 transition-colors shrink-0 rounded-md ${
+              loggingOut
+                ? "text-red-400 bg-red-50/50 cursor-not-allowed"
+                : "text-gray-400 hover:text-red-600"
+            }`}
+          >
+            {loggingOut ? (
+              <span className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full animate-spin block" />
+            ) : (
+              <LogOut size={16} />
+            )}
           </button>
         </div>
       </div>
