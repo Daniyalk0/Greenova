@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ConfirmDelete from "./components/ConfirmDelete";
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2 } from "lucide-react";
 
 type Product = {
   id: number;
@@ -24,7 +26,34 @@ export default function AdminProductsPage({
   totalCount,
   limit,
 }: AdminProductsPageProps) {
-  console.log({ page, limit, totalCount });
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const [loadingPage, setLoadingPage] = useState<number | null>(null);
+
+  const totalPages = Math.ceil(totalCount / limit);
+
+  const buildPageUrl = (targetPage: number) => {
+    const params = new URLSearchParams(searchParams?.toString() || "");
+    params.set("page", targetPage.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
+  const navigateToPage = (targetPage: number) => {
+    if (targetPage < 1 || targetPage > totalPages || targetPage === page) return;
+    setLoadingPage(targetPage);
+    startTransition(() => {
+      router.push(buildPageUrl(targetPage));
+    });
+  };
+
+  useEffect(() => {
+    if (!isPending) {
+      setLoadingPage(null);
+    }
+  }, [isPending, page]);
+
   return (
     <div className="flex flex-col max-h-screen overflow-hidden sm:overflow-y-auto bg-gray-50/50">
       {/* Header */}
@@ -34,8 +63,16 @@ export default function AdminProductsPage({
         {/* Scrollable Content Area */}
         <div className="flex-1 p-1 sm:p-4 lg:p-8">
           {/* Desktop Table */}
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden mb-8">
-            <table className="w-full text-xs sm:text-sm">
+          <div className="relative bg-white rounded-xl shadow-sm border overflow-hidden mb-8">
+            {isPending && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-800 shadow-sm">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading products...
+                </div>
+              </div>
+            )}
+            <table className="w-full text-xs sm:text-sm opacity-90">
               <thead>
                 <tr className="text-zinc-700 border-b border-zinc-300 font-dmsans_semibold">
                   <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-semibold uppercase">
@@ -139,52 +176,67 @@ export default function AdminProductsPage({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto">
-              <Link
-                href={`/admin/products?page=${page - 1}`}
+              <button
+                type="button"
+                onClick={() => navigateToPage(page - 1)}
+                disabled={page <= 1 || isPending}
                 className={`px-4 py-2 rounded-lg border font-dmsans_semibold text-xs lg:text-sm transition-all ${
-                  page <= 1
+                  page <= 1 || isPending
                     ? "opacity-50 cursor-not-allowed border-gray-200 text-gray-400"
                     : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
                 }`}
-                onClick={(e) => page <= 1 && e.preventDefault()}
               >
-                ← Prev
-              </Link>
+                {loadingPage === page - 1 ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "← Prev"
+                )}
+              </button>
 
               <div className="flex items-center gap-1">
-                {Array.from({ length: Math.ceil(totalCount / limit) }).map(
-                  (_, idx) => {
-                    const pageNum = idx + 1;
-                    return (
-                      <Link
-                        key={pageNum}
-                        href={`/admin/products?page=${pageNum}`}
-                        className={`w-8 h-8 flex items-center justify-center rounded text-xs font-dmsans_semibold transition-all ${
-                          page === pageNum
-                            ? "bg-black text-white"
-                            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        {pageNum}
-                      </Link>
-                    );
-                  },
-                )}
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pageNum = idx + 1;
+                  const isLoadingPage = loadingPage === pageNum;
+                  const isActivePage = page === pageNum;
+                  return (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      onClick={() => navigateToPage(pageNum)}
+                      aria-current={isActivePage ? "page" : undefined}
+                      disabled={isPending || isActivePage}
+                      className={`w-8 h-8 flex items-center justify-center rounded text-xs font-dmsans_semibold transition-all ${
+                        isActivePage
+                          ? "bg-black text-white"
+                          : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                      } ${isPending && !isActivePage ? "cursor-not-allowed opacity-80" : ""}`}
+                    >
+                      {isLoadingPage ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        pageNum
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
-              <Link
-                href={`/admin/products?page=${page + 1}`}
+              <button
+                type="button"
+                onClick={() => navigateToPage(page + 1)}
+                disabled={page >= totalPages || isPending}
                 className={`px-4 py-2 rounded-lg border font-dmsans_semibold text-xs lg:text-sm transition-all ${
-                  page >= Math.ceil(totalCount / limit)
+                  page >= totalPages || isPending
                     ? "opacity-50 cursor-not-allowed border-gray-200 text-gray-400"
                     : "border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
                 }`}
-                onClick={(e) =>
-                  page >= Math.ceil(totalCount / limit) && e.preventDefault()
-                }
               >
-                Next →
-              </Link>
+                {loadingPage === page + 1 ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Next →"
+                )}
+              </button>
             </div>
           </div>
 
