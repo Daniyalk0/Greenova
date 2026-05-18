@@ -19,7 +19,7 @@ const DiscountedPrice = ({ product, className }: { product: any, className?: str
   return (
     <div className="flex items-center gap-2 font-monasans_semibold">
  <span 
-  className={`text-md ${className} ${
+  className={`text-sm md:text-md ${className} ${
     isProductPage 
       ? "text-[#024418] font-bold" 
       : "text-gray-900"
@@ -30,7 +30,7 @@ const DiscountedPrice = ({ product, className }: { product: any, className?: str
 
       {hasDiscount && (
         <>
-          <span className="text-sm text-gray-400 line-through">
+          <span className="text-xs sm:text-sm text-gray-400 line-through">
             ₹{product.basePricePerKg}
           </span>
           {/* <span className="text-xs font-semibold text-green-600">
