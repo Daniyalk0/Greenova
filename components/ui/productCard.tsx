@@ -66,7 +66,7 @@ const ProductCard = ({
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const isInCart = cart?.some(item => item?.productId === product.id);
+  const isInCart = cart?.some(item => item?.productId === product.id && item?.weight === selectedWeightPrice?.weight);
 
 
   const handleAddToCart = async () => {
