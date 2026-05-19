@@ -7,6 +7,7 @@ import { RootState } from "@/src/store/store";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { removeWishlistItemDB } from "@/src/app/actions/like";
+import { setWishlist } from "@/src/store/wishListSlice";
 
 interface LikedPopupProps {
   isOpen: boolean;
@@ -18,36 +19,38 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
   const wishlist = useSelector((state: RootState) => state.wishlist.items);
 
   // console.log(wishlist);
-  
 
   const [localWishlist, setLocalWishlistState] = useState<any[]>([]);
 
   // console.log(localWishlist);
-  
 
   useEffect(() => {
     setLocalWishlistState(wishlist);
   }, [wishlist]);
 
-
-
-
   const handleRemoveItem = async (product: any, productId: number) => {
     // Optimistic UI
-    const updated = localWishlist.filter(item => item.product.id !== productId);
+    const updated = localWishlist.filter(
+      (item) => item.product.id !== productId,
+    );
+
     setLocalWishlistState(updated);
-    
+
+    dispatch(
+      setWishlist({
+        items: updated,
+      }),
+    );
+
     const productName = product?.product?.name || product?.name || "Item";
     toast.success(`${productName} removed!`);
     try {
       await removeWishlistItemDB(productId);
-
     } catch (error) {
       console.log("Delete failed, rolling back...");
       setLocalWishlistState(localWishlist);
     }
   };
-
 
   return (
     <>
@@ -67,20 +70,29 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-300">
           <h2 className="text-lg font-monasans_semibold flex items-center gap-1">
-            <span>  <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="red"
-              className="w-5 h-5 transition-transform hover:scale-110"
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 
+            <span>
+              {" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="red"
+                className="w-5 h-5 transition-transform hover:scale-110"
+              >
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 
              4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 
              3.81 14.76 3 16.5 3 19.58 3 22 5.42 
              22 8.5c0 3.78-3.4 6.86-8.55 
-             11.54L12 21.35z"/>
-            </svg></span> Liked Products ({localWishlist.length})
+             11.54L12 21.35z"
+                />
+              </svg>
+            </span>{" "}
+            Liked Products ({localWishlist.length})
           </h2>
-          <button onClick={onClose} className="text-gray-800 hover:text-gray-900 text-3xl font-bold">
+          <button
+            onClick={onClose}
+            className="text-gray-800 hover:text-gray-900 text-3xl font-bold"
+          >
             ×
           </button>
         </div>
@@ -92,14 +104,21 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
               No liked items yet ❤️
             </div>
           ) : (
-            localWishlist.map(item => {
-              const basePrice = item?.product?.basePricePerKg * item?.product?.availableWeights[0];
+            localWishlist.map((item) => {
+              const basePrice =
+                item?.product?.basePricePerKg *
+                item?.product?.availableWeights[0];
               const discountedPrice =
                 item?.product?.discount > 0
-                  ? Math.round(basePrice - (basePrice * item?.product?.discount) / 100)
+                  ? Math.round(
+                      basePrice - (basePrice * item?.product?.discount) / 100,
+                    )
                   : Math.round(basePrice);
               return (
-                <div key={item.id} className="flex items-center justify-between">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between"
+                >
                   <div className="flex items-center space-x-3">
                     <Image
                       src={item?.product?.imageUrl}
@@ -109,7 +128,9 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                       className="rounded object-cover"
                     />
                     <div>
-                      <h3 className="text-sm font-dmsans_semibold">{item?.product?.name}</h3>
+                      <h3 className="text-sm font-dmsans_semibold">
+                        {item?.product?.name}
+                      </h3>
                       <div className="flex justify-between mt-2 items-center">
                         {/* Price */}
                         <div className="flex items-center gap-2 font-dmsans_light">
@@ -132,7 +153,7 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                         </div>
 
                         {/* Quantity / Add control */}
-                          {/* <div className="h-7 w-20 bg-green-100 rounded" /> */}
+                        {/* <div className="h-7 w-20 bg-green-100 rounded" /> */}
                       </div>
                     </div>
                   </div>
@@ -143,13 +164,12 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
                     ×
                   </button>
                 </div>
-              )
+              );
             })
           )}
         </div>
 
         {/* Footer */}
-
       </div>
     </>
   );

@@ -88,7 +88,7 @@ const Reviews = () => {
               </div>
             </Marquee>
           ) : (
-            <div className="hidden md:flex flex-col items-center justify-center py-10 text-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl shadow-inner">
+            <div className="mt-6 hidden md:flex flex-col items-center justify-center py-10 text-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl shadow-inner">
               <div className="relative mb-6">
                 <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center animate-pulse">
                   <svg

@@ -151,7 +151,7 @@ const UserMenu = () => {
           <div className="border-t border-gray-100" />
 
           {/* Navigation Actions */}
-          <div className="flex flex-col py-2 px-2">
+          <div className={`flex flex-col py-2 px-2 transition-all ${loggingOut ? "opacity-40 pointer-events-none grayscale" : ""}`}>
             {/* New Orders Route */}
             <Link
               href="/orders"

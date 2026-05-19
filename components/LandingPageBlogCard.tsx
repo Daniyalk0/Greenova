@@ -26,7 +26,7 @@ useEffect(() => {
 
     return (
         <div
-            className={`w-full  h-48 md:h-60 rounded-2xl shadow-2xl sm:h-48 relative px-3 py-2 sm:px-4  md:px-5 flex flex-col justify-between transition-all duration-700 cursor-pointer overflow-hidden `}
+            className={`w-full  h-48 md:h-60 rounded-2xl shadow-2xl sm:h-48 relative px-3 py-2 sm:px-4  md:px-5 flex flex-col justify-between transition-all duration-700  overflow-hidden `}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >

@@ -88,6 +88,8 @@ const DesktopNav = ({
     pathname.startsWith(route)
   );
 
+  console.log(likedItemCount);
+  
   return (
     <nav className="sticky top-0 z-[2000] bg-white border-b p-2">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-9">

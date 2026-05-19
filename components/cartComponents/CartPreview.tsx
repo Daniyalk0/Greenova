@@ -7,20 +7,19 @@ import MobileCartPreview from "./MobileCartPreview";
 import { AppDispatch, RootState } from "@/src/store/store";
 import { setCart } from "@/src/store/cartProductsSlice";
 import { useSession } from "next-auth/react";
-import { removeCartItem, syncLocalCartToSupabase } from "@/src/app/actions/cart";
+import {
+  removeCartItem,
+  syncLocalCartToSupabase,
+} from "@/src/app/actions/cart";
 import { addToCart } from "@/lib/cartUtils";
 import { toast } from "react-toastify";
 import { addToCartUtil } from "@/lib/addToCartUtil";
 
-
 export default function CartPreview() {
-  const isOpen = useSelector(
-    (state: RootState) => state.cartUI.isCartOpen
-  );
+  const isOpen = useSelector((state: RootState) => state.cartUI.isCartOpen);
   const dispatch = useDispatch<AppDispatch>();
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   const userId = session?.user?.id ? Number(session.user.id) : null;
-
 
   React.useEffect(() => {
     if (isOpen) {
@@ -37,12 +36,13 @@ export default function CartPreview() {
     };
   }, [isOpen]);
 
-  const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
+  const cartProducts = useSelector(
+    (state: RootState) => state.cartProducts.items,
+  );
 
   // console.log( cartProducts);
-  
 
-  const handleAddToCart = async (product : any, weight : any) => {
+  const handleAddToCart = async (product: any, weight: any) => {
     const result = await addToCartUtil({
       product,
       weight,
@@ -76,86 +76,91 @@ export default function CartPreview() {
     }
   };
 
-const handleRemoveProduct = async (
-  productId: number,
-  weight: number,
-  product: any
-): Promise<void> => {
- const previous = [...(cartProducts ?? [])];
+  const handleRemoveProduct = async (
+    productId: number,
+    weight: number,
+    product: any,
+  ): Promise<void> => {
+    // Find exact item being removed
+    const removedItem = (cartProducts ?? []).find(
+      (item) => item.productId === productId && item.weight === weight,
+    );
 
-  // ------------------------
-  // ⚡ Optimistic UI update
-  // ------------------------
-  const updated = previous.filter(
-    (item) => !(item.productId === productId && item.weight === weight)
-  );
+    if (!removedItem) return;
 
-  dispatch(
-    setCart({
-      items: updated,
-      source: session?.user?.id ? "db" : "local",
-    })
-  );
+    // ------------------------
+    // ⚡ Optimistic UI update
+    // ------------------------
+    const updatedCart = (cartProducts ?? []).filter(
+      (item) => !(item.productId === productId && item.weight === weight),
+    );
 
-  // ------------------------
-  // Toast with Undo
-  // ------------------------
-  const toastId = toast(
-    ({ closeToast }) => (
-      <div className="flex items-center gap-3">
-        <span>Item removed</span>
-        <button
-          onClick={() => {
-            handleAddToCart(product, weight);
-            closeToast();
-          }}
-          className="text-green-600 underline"
-        >
-          Undo
-        </button>
-      </div>
-    ),
-    { autoClose: 4000 }
-  );
-
-  try {
-    if (session?.user?.id) {
-      // Auth user → remove from DB
-      await removeCartItem(session.user.id, productId, weight);
-      // ✅ No need to refetch; Redux already has updated snapshot
-    } else {
-      // Guest → remove from localStorage
-      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
-      const newCart = localCart.filter(
-        (item: any) => !(item.productId === productId && item.weight === weight)
-      );
-      localStorage.setItem("cart", JSON.stringify(newCart));
-    }
-  } catch (error) {
-    console.error("❌ Failed to remove item:", error);
-
-    // 🔁 Rollback UI
     dispatch(
       setCart({
-        items: previous,
+        items: updatedCart,
         source: session?.user?.id ? "db" : "local",
-      })
+      }),
     );
-  }
-};
 
+    // ------------------------
+    // Toast with Undo
+    // ------------------------
+    toast(
+      ({ closeToast }) => (
+        <div className="flex items-center gap-3">
+          <span>Item removed</span>
 
+          <button
+            onClick={() => {
+              handleAddToCart(product, weight);
+              closeToast();
+            }}
+            className="text-green-600 underline"
+          >
+            Undo
+          </button>
+        </div>
+      ),
+      { autoClose: 4000 },
+    );
 
+    try {
+      if (session?.user?.id) {
+        // Logged-in user → DB remove
+        await removeCartItem(session.user.id, productId, weight);
+      } else {
+        // Guest → localStorage remove
+        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const newCart = localCart.filter(
+          (item: any) =>
+            !(item.productId === productId && item.weight === weight),
+        );
+
+        localStorage.setItem("cart", JSON.stringify(newCart));
+      }
+    } catch (error) {
+      console.error("❌ Failed to remove item:", error);
+
+      handleAddToCart(removedItem.product, removedItem.weight);
+    }
+  };
 
   return (
     <div className="relative z-[2500]">
       <div className="hidden md:block">
-        <DesktopCartPreview products={cartProducts} handleRemoveProduct={handleRemoveProduct} />
+        <DesktopCartPreview
+          products={cartProducts}
+          handleRemoveProduct={handleRemoveProduct}
+        />
       </div>
 
       {/* Mobile */}
       <div className="md:hidden">
-        <MobileCartPreview products={cartProducts} handleRemoveProduct={handleRemoveProduct} />
+        <MobileCartPreview
+          products={cartProducts}
+          handleRemoveProduct={handleRemoveProduct}
+        />
       </div>
     </div>
   );
