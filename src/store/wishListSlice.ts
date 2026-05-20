@@ -26,14 +26,12 @@ import { CartSource } from "./cartProductsSlice";
 // );
 
 interface WishlistState {
-  items: any[];
+  items: any[] | null;
 }
-
 // ✅ Initial state
 const initialState: WishlistState = {
-  items: [],
+  items: null,
 };
-
 // ✅ Slice
 const wishlistSlice = createSlice({
   name: "wishlist",

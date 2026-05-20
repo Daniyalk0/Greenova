@@ -54,7 +54,7 @@ const SeasonalFruits = ({ fruits }: any) => {
             >
               <ProductCard
                 product={p}
-                wishlist={wishlistItems}
+                wishlist={wishlistItems ?? []}
                 cart={cartProducts ?? []} 
                  options={buildProductOptions(p)}
               />

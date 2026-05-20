@@ -12,6 +12,7 @@ const SeasonalVegetables = ({vegetables}:any) => {
   //   { id: 2, label: "2 kg - ₹230" },
   //   { id: 5, label: "5 kg - ₹550" },
   // ]
+  
   const seasonalNames = [
     "Cucumber",
     "Tomato",
@@ -82,7 +83,7 @@ const SeasonalVegetables = ({vegetables}:any) => {
             >
               <ProductCard
                 product={p}
-                wishlist={wishlistItems}
+                wishlist={wishlistItems ?? []}
                 cart={cartProducts ?? []}
                 options={buildProductOptions(p)}
               />

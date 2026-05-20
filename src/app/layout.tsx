@@ -13,7 +13,7 @@ import WishlistSyncManager from "@/components/WishlistSyncManager";
 import ProductsSyncManager from "@/components/ProductsSyncManager";
 import CartPreview from "@/components/cartComponents/CartPreview";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import LocationProvider from "@/components/LocationProvider";
 import { UIProvider } from "../context/ui-context";
 import { AddressProvider } from "../context/address-context";
@@ -21,6 +21,7 @@ import AddressListModal from "@/components/user-address/AddressListModal";
 import AddressModal from "@/components/user-address/AddressModal";
 import GuestAddressHandler from "@/components/user-address/GuestAddressHandler";
 import CoverageBar from "@/components/CoverageBar";
+import ToastProvider from "@/components/ToastProvider";
 
 
 const geistSans = Geist({
@@ -135,18 +136,7 @@ export default function RootLayout({
         
           </UIProvider>
           </AddressProvider>
-
-          <div className="hidden sm:block">
-            <ToastContainer
-              position="bottom-right"
-              autoClose={3000}
-              closeOnClick
-              pauseOnHover
-              draggable
-              toastClassName="!rounded-xl !px-2 !py-1 !text-sm font-dmsans_light sm:!px-6 sm:!py-3 sm:!text-base"
-              className="!w-[90vw] sm:!w-auto"
-            />
-          </div>
+<ToastProvider/>
 
         </SessionAuthProvider>
       </body>

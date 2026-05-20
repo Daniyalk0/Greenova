@@ -187,7 +187,7 @@ export default function SearchPopup() {
 
   const handleToggleWishlist = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    toggleWishlistUtil({ product, wishlist: wishlistItems, session, dispatch });
+    toggleWishlistUtil({ product, wishlist: wishlistItems ?? [], session, dispatch });
   };
 
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
@@ -233,7 +233,11 @@ export default function SearchPopup() {
       <div
         tabIndex={0}
         className={`relative transition-[max-width] duration-300 ease-in-out cursor-text group
-        ${wishlistItems.length > 0 ? "max-w-[calc(100%-0.7rem)]" : "max-w-full"}`}
+        ${
+  (wishlistItems?.length ?? 0) > 0
+    ? "max-w-[calc(100%-0.7rem)]"
+    : "max-w-full"
+}`}
         onClick={handleOpen}
         onMouseEnter={fetchSuggested}
         onFocus={fetchSuggested}
@@ -361,7 +365,7 @@ export default function SearchPopup() {
                 {resultsToShow.length > 0 && (
                   <>
                     {resultsToShow.map((item: any) => {
-                      const isWishlisted = wishlistItems.some(
+                      const isWishlisted = wishlistItems?.some(
                         (w) => w.productId === item.id,
                       );
 

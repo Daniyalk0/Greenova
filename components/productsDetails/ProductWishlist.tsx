@@ -18,7 +18,7 @@ export default function ProductWishlist({ product, onToggle }: Props) {
     (state: RootState) => state.wishlist.items
   );
 
-  const isWishlisted = wishlist.some(
+  const isWishlisted = wishlist?.some(
     (item) => item.productId === product.id
   );
 
@@ -28,7 +28,7 @@ export default function ProductWishlist({ product, onToggle }: Props) {
   const handleToggleWishlist = async () => {
      const result = await toggleWishlistUtil({
        product,
-       wishlist,
+       wishlist      : wishlist ?? [],
        session,
        dispatch,
        onOptimisticAdd: (msg) => {

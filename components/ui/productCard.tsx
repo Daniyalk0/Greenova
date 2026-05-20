@@ -1,38 +1,38 @@
-"use client"
-import React, { useEffect, useState } from "react"
-import Image from "next/image"
-import { CalendarOff, Heart, ShoppingCart } from "lucide-react"
-import QuantitySelect from "./QuantitySelect"
-import { useSession } from "next-auth/react"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "@/src/store/store"
-import { toggleWishlistUtil } from "@/lib/wishlistUtils"
-import { addToCartUtil } from "@/lib/addToCartUtil"
-import Link from "next/link"
-import DiscountedPrice from "../DiscountedPrice"
+"use client";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { CalendarOff, Heart, ShoppingCart } from "lucide-react";
+import QuantitySelect from "./QuantitySelect";
+import { useSession } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/store/store";
+import { toggleWishlistUtil } from "@/lib/wishlistUtils";
+import { addToCartUtil } from "@/lib/addToCartUtil";
+import Link from "next/link";
+import DiscountedPrice from "../DiscountedPrice";
 import { toast } from "react-toastify";
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type Option = {
-  weight: number
-  price: number
-}
+  weight: number;
+  price: number;
+};
 
 type ProductCardProps = {
-  options?: Option[]   // 👈 fix here
+  options?: Option[]; // 👈 fix here
   // product: Product
-  cart?: any[]
-  product: any
-  wishlist?: any[]
-  highlight?: boolean
+  cart?: any[];
+  product: any;
+  wishlist?: any[];
+  highlight?: boolean;
   enableSeasonHighlight?: boolean;
-
-}
+  cartHydrated?: boolean; // New prop to indicate if cart state is hydrated
+};
 
 type SelectedWeightPrice = {
   weight: number;
   price: number;
-}
+};
 
 const ProductCard = ({
   // name = "Fresh Mangoes",
@@ -40,41 +40,42 @@ const ProductCard = ({
   options = [],
   product,
   highlight = false,
-  enableSeasonHighlight
-
+  enableSeasonHighlight,
+  cartHydrated,
 }: ProductCardProps) => {
-
   const cart = useSelector((state: RootState) => state.cartProducts.items);
+  const cartReady = cart !== null;
   const wishlist = useSelector((state: RootState) => state.wishlist.items);
+  const wishlistReady = wishlist !== null;
   const [localProducts, setLocalProducts] = useState(cart || []);
   // const [wishList, setwishList] = useState(wishlist || [])
-  const { data: session } = useSession()
-
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (Array.isArray(cart)) {
       setLocalProducts(cart);
-
     }
   }, [cart, session]);
 
-
   // const { data: session } = useSession()
-  const defaultOption = options.find(opt => opt.weight === 1) || options[0]
+  const defaultOption = options.find((opt) => opt.weight === 1) || options[0];
 
-  const [selectedWeightPrice, setSelectedWeightPrice] = useState<SelectedWeightPrice>(defaultOption);
+  const [selectedWeightPrice, setSelectedWeightPrice] =
+    useState<SelectedWeightPrice>(defaultOption);
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const isInCart = cart?.some(item => item?.productId === product.id && item?.weight === selectedWeightPrice?.weight);
-
+  const isInCart = cart?.some(
+    (item) =>
+      item?.productId === product.id &&
+      item?.weight === selectedWeightPrice?.weight,
+  );
 
   const handleAddToCart = async () => {
-
     const result = await addToCartUtil({
       product,
       weight: selectedWeightPrice.weight,
-      cart : cart ?? [],
+      cart: cart ?? [],
       session,
       dispatch,
       onOptimisticAdd: (msg) => {
@@ -104,12 +105,12 @@ const ProductCard = ({
     }
   };
 
-  const isInWishlist = wishlist?.some(item => item.productId === product.id);
+  const isInWishlist = wishlist?.some((item) => item.productId === product.id);
 
   const handleToggleWishlist = async () => {
     const result = await toggleWishlistUtil({
       product,
-      wishlist,
+      wishlist: wishlist ?? [],
       session,
       dispatch,
       onOptimisticAdd: (msg) => {
@@ -127,48 +128,62 @@ const ProductCard = ({
       default:
         break;
     }
-  }
+  };
 
-
-    const isOffSeason = enableSeasonHighlight && !highlight;
+  const isOffSeason = enableSeasonHighlight && !highlight;
 
   return (
-
-       <div
+    <div
       className={cn(
         "relative w-full bg-white rounded-2xl border border-gray-100 px-4 pt-4 pb-5 transition-all duration-300",
-        isOffSeason 
+        isOffSeason
           ? "opacity-60 grayscale-[20%] pointer-events-none" // Dims the card and disables ALL clicks inside it
-          : "hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0c831f]/20 cursor-pointer shadow-sm"
+          : "hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#0c831f]/20 cursor-pointer shadow-sm",
       )}
     >
       {/* Seasonal Badge (Only shows if item is ON season) */}
-      {enableSeasonHighlight && highlight && product?.season && product.season.toLowerCase() !== "all" && (
-        <span className="absolute top-3 left-3 bg-[#0c831f]/10 text-[#0c831f] border border-[#0c831f]/20 text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-dmsans_semibold z-10">
-          {product.season}
-        </span>
-      )}
+      {enableSeasonHighlight &&
+        highlight &&
+        product?.season &&
+        product.season.toLowerCase() !== "all" && (
+          <span className="absolute top-3 left-3 bg-[#0c831f]/10 text-[#0c831f] border border-[#0c831f]/20 text-[10px] uppercase tracking-wider px-2 py-1 rounded-md font-dmsans_semibold z-10">
+            {product.season}
+          </span>
+        )}
 
-      {/* Wishlist Button */}
-      <button
-        onClick={handleToggleWishlist}
-        disabled={isOffSeason}
-        className="absolute top-2 right-2 group w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 z-10"
-        aria-label="Add to wishlist"
-      >
-        <div className="absolute inset-0 rounded-full transition-all duration-300 group-hover:bg-red-50 group-active:scale-90" />
-        <Heart
-          size={18}
-          className={`relative z-10 transition-colors duration-300 ${
-            isInWishlist
-              ? "fill-red-500 text-red-500"
-              : "text-gray-400 group-hover:text-red-500"
-          }`}
-        />
-      </button>
+     {/* Wishlist Button */}
+{wishlist === null ? (
+  <div
+    className="
+      absolute top-2 right-2
+      w-9 h-9
+      rounded-full
+      bg-gray-200
+      animate-pulse
+      z-10
+    "
+  />
+) : (
+  <button
+    onClick={handleToggleWishlist}
+    disabled={isOffSeason}
+    className="absolute top-2 right-2 group w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 z-10"
+    aria-label="Add to wishlist"
+  >
+    <div className="absolute inset-0 rounded-full transition-all duration-300 group-hover:bg-red-50 group-active:scale-90" />
 
+    <Heart
+      size={18}
+      className={`relative z-10 transition-colors duration-300 ${
+        isInWishlist
+          ? "fill-red-500 text-red-500"
+          : "text-gray-400 group-hover:text-red-500"
+      }`}
+    />
+  </button>
+)}
       {/* Product Image Wrapper with specific Image Overlay */}
-      <Link 
+      <Link
         href={`/products/${product?.slug || "#"}`}
         tabIndex={isOffSeason ? -1 : 0} // Prevents tabbing to the link if off-season
       >
@@ -180,7 +195,7 @@ const ProductCard = ({
             height={100}
             className={cn(
               "object-contain transition-transform duration-300",
-              !isOffSeason && "hover:scale-105 drop-shadow-sm"
+              !isOffSeason && "hover:scale-105 drop-shadow-sm",
             )}
           />
 
@@ -221,10 +236,27 @@ const ProductCard = ({
         </div>
 
         {/* Cart CTA */}
-        {isInCart ? (
+        {!cartReady ? (
+          <div
+            className="
+      flex items-center justify-center gap-1.5
+      px-4 py-2
+      rounded-xl
+      bg-gray-200 animate-pulse
+      min-w-[72px]
+      h-[36px]
+    "
+          >
+            <div className="w-4 h-4 rounded-full bg-gray-300" />
+
+            <div className="hidden sm:block w-8 h-3 rounded bg-gray-300" />
+          </div>
+        ) : isInCart ? (
           <div className="flex items-center justify-center gap-1.5 px-4 py-2 text-[12px] rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
             <ShoppingCart className="w-4 h-4" />
-            <span className="hidden sm:inline font-dmsans_semibold">In Cart</span>
+            <span className="hidden sm:inline font-dmsans_semibold">
+              In Cart
+            </span>
           </div>
         ) : (
           <button
@@ -233,14 +265,13 @@ const ProductCard = ({
             className="flex items-center justify-center gap-1.5 px-4 py-2 text-[12px] rounded-xl bg-[#0c831f] text-white transition-all active:scale-95 disabled:bg-gray-300 disabled:text-gray-500 disabled:active:scale-100"
           >
             <ShoppingCart className="w-4 h-4" />
+
             <span className="hidden sm:inline font-dmsans_semibold">Add</span>
           </button>
         )}
       </div>
-
     </div>
+  );
+};
 
-  )
-}
-
-export default ProductCard
+export default ProductCard;

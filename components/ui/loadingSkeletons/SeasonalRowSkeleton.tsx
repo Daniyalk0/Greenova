@@ -8,22 +8,26 @@ export default function SeasonalRowSkeleton({
   className?: string;
 }) {
   return (
-<div className="w-full px-2 sm:px-6 md:px-10 lg:px-16 py-6 ">
-  <div
-    className={`
-      grid grid-cols-2 gap-4
-      sm:grid-cols-3
-      md:grid-cols-4
-      lg:grid-cols-5
-      w-full
-      
-      ${className}
-    `}
-  >
-    {Array.from({ length: count }).map((_, i) => (
-      <SkeletonCard key={i} />
-    ))}
-  </div>
-</div>
+    <div className="flex w-full flex-col lg:px-10 xl:px-20 py-6">
+      <div
+        className={`
+          flex gap-4 overflow-x-auto scrollbar-hide
+          lg:grid lg:grid-cols-5 sm:gap-6 lg:overflow-visible
+          ${className}
+        `}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <div
+            key={i}
+            className="
+              min-w-[160px] md:min-w-[180px]
+              lg:min-w-0
+            "
+          >
+            <SkeletonCard />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

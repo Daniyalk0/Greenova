@@ -48,6 +48,22 @@ img.dark-mode-fix {
   background: white;
 }
 
+.Toastify__toast {
+  min-height: unset !important;
+}
+
+.Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: center;
+}
+
+.Toastify__close-button {
+  align-self: center !important;
+  color: #6b7280 !important;
+}
+
+
 @layer base {
   :root {
         --background: 0 0% 100%;

@@ -25,7 +25,7 @@ export default function LikedPopup({ isOpen, onClose }: LikedPopupProps) {
   // console.log(localWishlist);
 
   useEffect(() => {
-    setLocalWishlistState(wishlist);
+    setLocalWishlistState(wishlist || []);
   }, [wishlist]);
 
   const handleRemoveItem = async (product: any, productId: number) => {
