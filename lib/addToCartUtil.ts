@@ -1,5 +1,6 @@
 import { setCart } from "@/src/store/cartProductsSlice";
 import { syncLocalCartToSupabase } from "@/src/app/actions/cart";
+import { store } from "@/src/store/store";
 
 export const addToCartUtil = async ({
   product,
@@ -16,6 +17,7 @@ export const addToCartUtil = async ({
   dispatch: any;
   onOptimisticAdd?: (message: string) => void;
 }) => {
+  
   const totalPrice = (product.basePricePerKg || 0) * weight;
 
   // 1️⃣ UI SNAPSHOT (Redux + localStorage)
@@ -38,11 +40,14 @@ export const addToCartUtil = async ({
   };
 
   // 🔍 Duplicate check (UI shape)
-  const exists = cart.some(
-    (item) =>
-      item.productId === uiItem.productId &&
-      item.weight === uiItem.weight
-  );
+const latestCart =
+  store.getState().cartProducts.items ?? [];
+
+const exists = latestCart.some(
+  (item) =>
+    item.productId === uiItem.productId &&
+    item.weight === uiItem.weight
+);
 
   if (exists) {
     return {
@@ -51,9 +56,8 @@ export const addToCartUtil = async ({
     };
   }
 
-  const previousCart = [...cart];
-  const updatedCart = [...cart, uiItem];
-
+  const previousCart = [...latestCart];
+const updatedCart = [...latestCart, uiItem];
   // ⚡ INSTANT UI UPDATE (NO WAITING)
   dispatch(
     setCart({

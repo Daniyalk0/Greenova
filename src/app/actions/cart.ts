@@ -7,6 +7,7 @@ export async function syncLocalCartToSupabase(
   localCart: any[],
 ) {
   if (!localCart || localCart.length === 0) return;
+  
 
   try {
     for (const item of localCart) {

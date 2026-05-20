@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 type Option = {
@@ -25,6 +25,7 @@ export default function QuantitySelect({
 
   const [isOpen, setIsOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const handleSelect = (opt: Option) => {
     setSelected(opt);
     onSelect(opt);
@@ -39,8 +40,22 @@ export default function QuantitySelect({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    function handlePointerDown(e: PointerEvent) {
+      if (!containerRef.current) return;
+      const target = e.target as Node | null;
+      if (target && !containerRef.current.contains(target)) {
+        setIsOpen(false);
+        setDesktopOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, []);
+
   return (
-    <div className={`mt-3 font-dmsans_light relative ${className}`}>
+    <div ref={containerRef} className={`mt-3 font-dmsans_light relative ${className}`}>
       {/* ✅ Mobile (< sm) → Trigger button */}
       <div className="block sm:hidden">
         <button

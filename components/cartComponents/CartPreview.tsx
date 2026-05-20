@@ -4,7 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DesktopCartPreview from "./DesktopCartPreview";
 import MobileCartPreview from "./MobileCartPreview";
-import { AppDispatch, RootState } from "@/src/store/store";
+import { AppDispatch, RootState, store } from "@/src/store/store";
 import { setCart } from "@/src/store/cartProductsSlice";
 import { useSession } from "next-auth/react";
 import {
@@ -82,6 +82,7 @@ export default function CartPreview() {
     product: any,
   ): Promise<void> => {
     // Find exact item being removed
+    let undone = false;
     const removedItem = (cartProducts ?? []).find(
       (item) => item.productId === productId && item.weight === weight,
     );
@@ -111,8 +112,37 @@ export default function CartPreview() {
           <span>Item removed</span>
 
           <button
-            onClick={() => {
-              handleAddToCart(product, weight);
+            onClick={async () => {
+              undone = true;
+
+              const latestCart = store.getState().cartProducts.items ?? [];
+
+              const restoredCart = [...latestCart, removedItem];
+
+              // Redux restore
+              dispatch(
+                setCart({
+                  items: restoredCart,
+                  source: session?.user?.id ? "db" : "local",
+                }),
+              );
+
+              // Guest persistence
+              if (!session?.user?.id) {
+                localStorage.setItem("cart", JSON.stringify(restoredCart));
+              }
+
+              // Logged-in persistence
+              if (session?.user?.id) {
+                await syncLocalCartToSupabase(session.user.id, [
+                  {
+                    productId: removedItem.productId,
+                    weight: removedItem.weight,
+                    totalPrice: removedItem.totalPrice,
+                  },
+                ]);
+              }
+
               closeToast();
             }}
             className="text-green-600 underline"
@@ -140,6 +170,7 @@ export default function CartPreview() {
         localStorage.setItem("cart", JSON.stringify(newCart));
       }
     } catch (error) {
+      if (undone) return;
       console.error("❌ Failed to remove item:", error);
 
       handleAddToCart(removedItem.product, removedItem.weight);

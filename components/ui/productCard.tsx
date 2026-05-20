@@ -129,8 +129,6 @@ const ProductCard = ({
     }
   }
 
-  console.log("enableSeasonHighlight:", enableSeasonHighlight);
-  console.log("highlight:", highlight);
 
     const isOffSeason = enableSeasonHighlight && !highlight;
 
