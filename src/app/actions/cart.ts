@@ -43,6 +43,8 @@ export async function syncLocalCartToSupabase(
 
 export async function getCartItemsFromSupabase(userId: number): Promise<any[]> {
   try {
+    // await new Promise(r => setTimeout(r, 19000));
+
     if (!userId) throw new Error("Missing User Id");
 
     const cart = await prisma.cart.findMany({

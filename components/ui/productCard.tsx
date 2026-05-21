@@ -151,10 +151,10 @@ const ProductCard = ({
           </span>
         )}
 
-     {/* Wishlist Button */}
-{wishlist === null ? (
-  <div
-    className="
+      {/* Wishlist Button */}
+      {wishlist === null ? (
+        <div
+          className="
       absolute top-2 right-2
       w-9 h-9
       rounded-full
@@ -162,26 +162,26 @@ const ProductCard = ({
       animate-pulse
       z-10
     "
-  />
-) : (
-  <button
-    onClick={handleToggleWishlist}
-    disabled={isOffSeason}
-    className="absolute top-2 right-2 group w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 z-10"
-    aria-label="Add to wishlist"
-  >
-    <div className="absolute inset-0 rounded-full transition-all duration-300 group-hover:bg-red-50 group-active:scale-90" />
+        />
+      ) : (
+        <button
+          onClick={handleToggleWishlist}
+          disabled={isOffSeason}
+          className="absolute top-2 right-2 group w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 z-10"
+          aria-label="Add to wishlist"
+        >
+          <div className="absolute inset-0 rounded-full transition-all duration-300 group-hover:bg-red-50 group-active:scale-90" />
 
-    <Heart
-      size={18}
-      className={`relative z-10 transition-colors duration-300 ${
-        isInWishlist
-          ? "fill-red-500 text-red-500"
-          : "text-gray-400 group-hover:text-red-500"
-      }`}
-    />
-  </button>
-)}
+          <Heart
+            size={18}
+            className={`relative z-10 transition-colors duration-300 ${
+              isInWishlist
+                ? "fill-red-500 text-red-500"
+                : "text-gray-400 group-hover:text-red-500"
+            }`}
+          />
+        </button>
+      )}
       {/* Product Image Wrapper with specific Image Overlay */}
       <Link
         href={`/products/${product?.slug || "#"}`}
@@ -243,7 +243,7 @@ const ProductCard = ({
       px-4 py-2
       rounded-xl
       bg-gray-200 animate-pulse
-      min-w-[72px]
+      min-w-[50px]
       h-[36px]
     "
           >
