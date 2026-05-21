@@ -84,7 +84,7 @@ const DesktopCartPreview = ({ products, handleRemoveProduct }: any) => {
 
             return (
               <div
-                key={cartItem?.productId}
+            key={`${cartItem.productId}-${cartItem.weight}`}
                 className="flex gap-3 py-3 border-b relative"
               >
                 {/* Image */}

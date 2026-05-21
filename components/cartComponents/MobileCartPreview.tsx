@@ -112,7 +112,7 @@ const MobileCartPreview = ({ products, handleRemoveProduct }: any) => {
                         const discountedPrice = Math.round(discountedPricePerKg * (cartItem?.weight ?? 0));
                         return (
                             <div
-                                key={cartItem?.productId}
+                                key={`${cartItem.productId}-${cartItem.weight}`}
                                 className="flex gap-3 py-4 border-b relative"
                             >
                                 {/* Image */}
