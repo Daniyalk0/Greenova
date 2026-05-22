@@ -140,7 +140,7 @@ const handleDelete = async (id?: number) => {
     /* Loading State */
     <div className="flex flex-col items-center justify-center py-16">
       <div className="w-8 h-8 border-[2.5px] border-[#0c831f] border-t-transparent rounded-full animate-spin" />
-      <p className="mt-4 text-sm text-gray-500 font-dmsans_medium">
+      <p className="mt-4 text-sm text-gray-500 font-dmsans_semibold">
         Loading addresses...
       </p>
     </div>

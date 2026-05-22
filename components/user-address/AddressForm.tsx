@@ -36,7 +36,7 @@ export default function AddressForm({
   address: any;
   onClose: () => void;
 }) {
-  const { refreshAddresses, setSelectedAddressId, saveGuest } = useAddress();
+  const { refreshAddresses, setSelectedAddressId, saveGuest, addresses } = useAddress();
   const { data: session } = useSession();
   const user = session?.user?.id;
 
@@ -69,6 +69,32 @@ export default function AddressForm({
 const state = watch("state");
   const pincode = watch("pincode");
 
+
+const normalizeAddressField = (value: string) =>
+  value
+    .trim()
+    .replace(/\s+/g, "")
+    .toLowerCase();
+
+const isDuplicateAddress = (
+  data: AddressFormValues,
+  addresses: any[],
+  editingAddressId?: string
+) => {
+  return addresses.some((addr) => {
+    // Ignore currently edited address
+    if (editingAddressId && addr.id === editingAddressId) {
+      return false;
+    }
+
+    return (
+      addr.pincode === data.pincode &&
+      normalizeAddressField(addr.street) ===
+        normalizeAddressField(data.street)
+    );
+  });
+};
+
   // --- SUBMIT HANDLERS ---
   const onSubmit = (data: AddressFormValues) => {
     startTransition(async () => {
@@ -85,11 +111,19 @@ const state = watch("state");
 
         if (address) {
           // Update
+          if (isDuplicateAddress(data, addresses, address?.id)) {
+  toast.error("Address already exists");
+  return;
+}
           await updateAddress(address.id, data);
           await refreshAddresses();
           onClose();
         } else {
           // Create
+          if (isDuplicateAddress(data, addresses, address?.id)) {
+  toast.error("Address already exists");
+  return;
+}
           const saved = await createAddress(data);
           await refreshAddresses();
           setSelectedAddressId(saved.id);

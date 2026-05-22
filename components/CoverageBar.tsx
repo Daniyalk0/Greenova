@@ -35,7 +35,9 @@ export default function CoverageBar() {
   if (!mounted) return null;
 
   // 👉 Determine active address
-const activeAddress = selectedAddress || guestAddress || null;
+const activeAddress = isLoggedIn
+  ? selectedAddress
+  : guestAddress;
 
   // 👉 Determine status
   let status: CoverageStatus = "none";
