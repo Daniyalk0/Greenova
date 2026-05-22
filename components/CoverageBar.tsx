@@ -49,8 +49,8 @@ const activeAddress = selectedAddress || guestAddress || null;
 }
 
   // 👉 Location label
-  const location =
-    activeAddress?.city || activeAddress?.pincode || "your area";
+const location =
+  activeAddress?.pincode || "your area";
     
 const hasAnyAddress = isLoggedIn
   ? addresses.length > 0
@@ -78,46 +78,54 @@ const visibilityClass = shouldHideBar
 
 // --- FRESH & ORGANIC COLOR PALETTE ---
 // --- ORGANIC MULTI-SHADE GRADIENT PALETTE ---
-  const config: Record<CoverageStatus, CoverageConfig> = {
-    
-    active: {
-      text: `Now delivering in ${location}`,
-      // Lush Greens (Spinach/Kale): Light green fading into your deep brand green
-      bg: "bg-gradient-to-r from-[#22c55e] via-[#0c831f] to-[#065f15] border-b-[#065f15]", 
-      textColor: "text-white",
-      dot: "bg-white",
-      hoverColor: "hover:text-green-100",
-      pulse: true,
-    },
-    limited: {
-      text: `Serving limited areas in ${location}`,
-      // Ripe Citrus (Mango/Orange): Sunny yellow fading into deep, rich orange
-      bg: "bg-gradient-to-r from-[#fbbf24] via-[#f59e0b] to-[#d97706] border-b-[#b45309]", 
-      textColor: "text-white",
-      dot: "bg-white",
-      hoverColor: "hover:text-orange-100",
-      pulse: true,
-    },
-    unavailable: {
-      text: `Not available in ${location}`,
-      // Earthy Roots (Mushroom/Potato): Soft, organic stone-browns blending together
-      bg: "bg-gradient-to-r from-[#a8a29e] via-[#78716c] to-[#57534e] border-b-[#44403c]", 
-      textColor: "text-white",
-      dot: "bg-stone-200",
-      hoverColor: "hover:text-stone-200",
-    },
-    none: {
-      text: "Select your delivery location",
-      // Crisp Lettuce (Morning Dew): Very pale, refreshing minty greens
-      bg: "bg-gradient-to-r from-[#f0fdf4] via-[#dcfce7] to-[#bbf7d0] border-b-[#86efac]", 
-      textColor: "text-[#0c831f]", // Deep green text to contrast the pale green background
-      dot: "bg-[#0c831f]",
-      hoverColor: "hover:text-[#096617]",
-    },
-  };
+const config: Record<CoverageStatus, CoverageConfig> = {
+  active: {
+    text: activeAddress?.pincode
+      ? `Delivering to ${activeAddress.pincode}`
+      : `Delivery available in ${location}`,
+
+    bg: "bg-gradient-to-r from-[#22c55e] via-[#0c831f] to-[#065f15] border-b-[#065f15]",
+    textColor: "text-white",
+    dot: "bg-white",
+    hoverColor: "hover:text-green-100",
+    pulse: true,
+  },
+
+  limited: {
+    text: activeAddress?.pincode
+      ? `Limited delivery in ${activeAddress.pincode}`
+      : `Limited delivery coverage`,
+
+    bg: "bg-gradient-to-r from-[#fbbf24] via-[#f59e0b] to-[#d97706] border-b-[#b45309]",
+    textColor: "text-white",
+    dot: "bg-white",
+    hoverColor: "hover:text-orange-100",
+    pulse: true,
+  },
+
+  unavailable: {
+    text: activeAddress?.pincode
+      ? `Currently unavailable in ${activeAddress.pincode}`
+      : `Currently unavailable in your area`,
+
+    bg: "bg-gradient-to-r from-[#a8a29e] via-[#78716c] to-[#57534e] border-b-[#44403c]",
+    textColor: "text-white",
+    dot: "bg-stone-200",
+    hoverColor: "hover:text-stone-200",
+  },
+
+  none: {
+    text: "Check delivery availability in your area",
+
+    bg: "bg-gradient-to-r from-[#f0fdf4] via-[#dcfce7] to-[#bbf7d0] border-b-[#86efac]",
+    textColor: "text-[#0c831f]",
+    dot: "bg-[#0c831f]",
+    hoverColor: "hover:text-[#096617]",
+  },
+};
   const current = config[status];
-  const barText = error
-  ? "Unable to verify delivery coverage"
+const barText = error
+  ? "Unable to verify delivery availability"
   : current.text;
 
   return (
