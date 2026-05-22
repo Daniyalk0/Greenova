@@ -131,6 +131,7 @@ export default function AdminProductsPage({
                           {/* Mobile Icon */}
                           <Link
                             href={`/admin/products/${p.id}/edit`}
+                            prefetch={false}
                             className="text-blue-600 flex items-center"
                           >
                             {/* Icon (mobile) */}

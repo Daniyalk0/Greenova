@@ -252,6 +252,7 @@ const AdminOrdersPage = ({ orders }: { orders: BaseOrder[] }) => {
                           className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-gray-500 hover:text-[#0c831f] hover:bg-green-50 rounded-lg transition-colors text-[12px] sm:text-[13px]"
                           onClick={() =>
                             router.push(`/admin/orders/${order.id}`)
+                            
                           }
                         >
                           <Eye className="w-4 h-4" />
