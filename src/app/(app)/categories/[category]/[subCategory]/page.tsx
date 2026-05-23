@@ -6,6 +6,7 @@ import { Category, Season } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import ProductsWrapper from "./ProductsWrapper";
+import CategoriesSkeleton from "@/components/ui/loadingSkeletons/CategoriesSkeleton";
 
 
 // type Props = {
@@ -46,7 +47,7 @@ export default async function SubCategoryPage({ params, searchParams }: {
 
 
  return (
-  <Suspense fallback={<SeasonalRowSkeleton count={8} className="m-8" />}>
+  <Suspense fallback={<CategoriesSkeleton count={8} className="m-8" />}>
     <ProductsWrapper
       category={category}
       subCategory={subCategory}

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
-// import ProductCard from "../ui/productCard";
 import SeasonSelect from "../ui/SeasonSelect";
 import { buildProductOptions } from "@/lib/productOptions";
 import ProductCard from "../ui/productCard";
 import { useRouter } from "next/navigation";
 import { Season } from "@prisma/client";
+import SeasonalRowSkeleton from "../ui/loadingSkeletons/SeasonalRowSkeleton";
+import CategoriesSkeleton from "../ui/loadingSkeletons/CategoriesSkeleton";
 
 type Props = {
   products: any[];
@@ -29,7 +30,9 @@ export default function CategoryCommonComponent({
   enableSeasonHighlight = false,
 }: Props) {
   const [localSeason, setLocalSeason] = useState(selectedSeason);
+
   const [isPending, startTransition] = useTransition();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -42,15 +45,19 @@ export default function CategoryCommonComponent({
     }
 
     return [...products].sort((a, b) => {
-      const aPriority = a.season === localSeason ? 1 : 0;
-      const bPriority = b.season === localSeason ? 1 : 0;
-      return bPriority - aPriority;
+      const getPriority = (season: Season) => {
+        if (season === localSeason) return 3;
+        if (season === Season.ALL) return 2;
+        return 1;
+      };
+
+      return getPriority(b.season) - getPriority(a.season);
     });
   }, [products, localSeason, isSeasonalPage, enableSeasonHighlight]);
 
   return (
     <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-6">
-      {/* Season selector only for seasonal pages */}
+      {/* Season selector */}
       {isSeasonalPage && (
         <div className="mb-6">
           <SeasonSelect
@@ -62,44 +69,68 @@ export default function CategoryCommonComponent({
             onSelect={(opt) => {
               const newUrl = `?season=${opt.value}`;
 
-              // 1. instant UI
+              // instant UI update
               setLocalSeason(opt.value);
 
-              // 2. instant URL update (no waiting)
+              // instant URL update
               window.history.replaceState(null, "", newUrl);
 
-              // 3. trigger Next.js navigation (data fetch)
-              router.push(newUrl);
+              // navigation with loading state
+              startTransition(() => {
+                router.push(newUrl);
+              });
             }}
           />
         </div>
       )}
 
-      {/* Products grid */}
-      <div
-        className="
-          grid grid-cols-2 gap-4
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-          w-full
-        "
-      >
-        {orderedProducts.map((p) => {
-          const isHighlighted =
-            enableSeasonHighlight && isSeasonalPage && p.season === localSeason;
+      {/* Skeleton loading */}
+      {isPending ? (
+        // <div
+        //   className="
+        //     grid grid-cols-2 gap-4
+        //     sm:grid-cols-3
+        //     md:grid-cols-4
+        //     lg:grid-cols-5
+        //     w-full
+        //   "
+        // >
+        //   {Array.from({ length: 10 }).map((_, i) => (
+        //     <div
+        //       key={i}
+        //       className="h-[320px] rounded-2xl bg-gray-200 animate-pulse"
+        //     />
+        //   ))}
+        // </div>
+        <CategoriesSkeleton count={8} className="w-full" />
+      ) : (
+        <div
+          className="
+            grid grid-cols-2 gap-4
+            sm:grid-cols-3
+            md:grid-cols-4
+            lg:grid-cols-5
+            w-full
+          "
+        >
+          {orderedProducts.map((p) => {
+            const isHighlighted =
+              enableSeasonHighlight &&
+              isSeasonalPage &&
+              p.season === localSeason;
 
-          return (
-            <ProductCard
-              key={p.id}
-              product={p}
-              options={buildProductOptions(p)}
-              highlight={isHighlighted}
-              enableSeasonHighlight={enableSeasonHighlight}
-            />
-          );
-        })}
-      </div>
+            return (
+              <ProductCard
+                key={p.id}
+                product={p}
+                options={buildProductOptions(p)}
+                highlight={isHighlighted}
+                enableSeasonHighlight={enableSeasonHighlight}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
