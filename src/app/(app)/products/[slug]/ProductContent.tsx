@@ -1,11 +1,15 @@
+'use client'
 import DiscountedPrice from "@/components/DiscountedPrice";
 import ProductAddToCart from "@/components/productsDetails/ProductAddToCart";
 import ProductWishlist from "@/components/productsDetails/ProductWishlist";
 import Nutrition from "@/components/ui/Nutrition";
 import ProductImage from "@/components/ui/ZoomableImage";
+import { RootState } from "@/src/store/store";
 import { Star } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function ProductContent({ product }: any) {
+
   return (
     <div className="px-3 sm:px-6 lg:px-20 py-4 sm:py-6 md:mt-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12">
@@ -38,7 +42,7 @@ export default function ProductContent({ product }: any) {
           />
 
           <div className="pt-2 md:pt-0">
-            <ProductAddToCart product={product} />
+            <ProductAddToCart product={product}  />
           </div>
 
           <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">

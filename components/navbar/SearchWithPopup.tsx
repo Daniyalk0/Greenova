@@ -16,6 +16,9 @@ import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { searchProducts } from "./actions";
+import { addToCart } from "@/lib/cartUtils";
+import { addToCartUtil } from "@/lib/addToCartUtil";
+import { toast } from "react-toastify";
 
 // IMPORT YOUR SERVER ACTION HERE
 // import { searchProducts } from "@/src/actions/searchActions";
@@ -52,6 +55,7 @@ export default function SearchPopup() {
   const [isPending, startTransition] = useTransition();
 
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
+  const cartItems = useSelector((state: RootState) => state.cartProducts.items);
   const dispatch = useDispatch<AppDispatch>();
   const { data: session } = useSession();
   const router = useRouter();
@@ -62,6 +66,9 @@ export default function SearchPopup() {
   // const hasFetchedRef = useRef(false);
   const hasFetchedRef = useRef(false);
   const isSuggestionFetchRef = useRef(false);
+
+  // console.log(cartItems);
+  
 
   // --- Debounce ---
   useEffect(() => {
@@ -187,12 +194,19 @@ export default function SearchPopup() {
 
   const handleToggleWishlist = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    toggleWishlistUtil({ product, wishlist: wishlistItems ?? [], session, dispatch });
+    toggleWishlistUtil({
+      product,
+      wishlist: wishlistItems ?? [],
+      session,
+      dispatch,
+    });
   };
 
   const handleAddToCart = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    console.log("Adding to cart:", product);
+    addToCartUtil({ product, weight: 1, cart: [], session, dispatch });
+    toast.success("Added to cart!");
+    // console.log("Adding to cart:", product);
   };
 
   const handleProductRoute = (slug: string) => {
@@ -234,10 +248,10 @@ export default function SearchPopup() {
         tabIndex={0}
         className={`relative transition-[max-width] duration-300 ease-in-out cursor-text group
         ${
-  (wishlistItems?.length ?? 0) > 0
-    ? "max-w-[calc(100%-0.7rem)]"
-    : "max-w-full"
-}`}
+          (wishlistItems?.length ?? 0) > 0
+            ? "max-w-[calc(100%-0.7rem)]"
+            : "max-w-full"
+        }`}
         onClick={handleOpen}
         onMouseEnter={fetchSuggested}
         onFocus={fetchSuggested}
@@ -326,7 +340,9 @@ export default function SearchPopup() {
                 Search unavailable
               </h3>
 
-              <p className="mt-1 text-sm text-gray-500 font-dmsans_light">{error}</p>
+              <p className="mt-1 text-sm text-gray-500 font-dmsans_light">
+                {error}
+              </p>
             </div>
           ) : (
             <div className="max-h-[50vh] overflow-y-auto custom-scrollbar pr-1 -mr-1">
@@ -368,6 +384,10 @@ export default function SearchPopup() {
                       const isWishlisted = wishlistItems?.some(
                         (w) => w.productId === item.id,
                       );
+
+                     const cartItem = cartItems?.find(
+  (cartItem) => cartItem.productId === item.id
+);
 
                       const discountedPricePerKg =
                         item?.discount > 0
@@ -441,12 +461,18 @@ export default function SearchPopup() {
                               />
                             </button>
 
-                            <button
-                              onClick={(e) => handleAddToCart(e, item)}
-                              className="font-dmsans_semibold text-[13px] px-4 py-2 bg-[#0c831f]/10 text-[#0c831f] hover:bg-[#0c831f] hover:text-white rounded-lg transition-all"
-                            >
-                              Add
-                            </button>
+                        {cartItem ? (
+  <div className="font-dmsans_semibold text-[13px] px-4 py-2 bg-gray-100 text-gray-600 rounded-lg">
+    {cartItem.weight}kg added
+  </div>
+) : (
+  <button
+    onClick={(e) => handleAddToCart(e, item)}
+    className="font-dmsans_semibold text-[13px] px-4 py-2 bg-[#0c831f]/10 text-[#0c831f] hover:bg-[#0c831f] hover:text-white rounded-lg transition-all"
+  >
+    Add
+  </button>
+)}
                           </div>
                         </div>
                       );

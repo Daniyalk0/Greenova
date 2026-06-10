@@ -7,6 +7,7 @@ import { useAddress } from "@/src/context/address-context";
 export default function GuestAddressHandler() {
   const { pendingGuestAddress, mergeGuestAddress, setPendingGuestAddress } = useAddress();
 
+// const addressToShow = pendingGuestAddress ?? testAddress;
   if (!pendingGuestAddress) return null;
 
   const handleDiscard = () => {
@@ -15,7 +16,7 @@ export default function GuestAddressHandler() {
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-[380px] bg-white border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 sm:p-5 z-50">
+    <div className="fixed bottom-20  left-4 right-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-[380px] bg-white border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 sm:p-5 z-50">
       
       {/* Content Area */}
       <div className="flex items-start gap-3.5 w-full min-w-0">
@@ -28,7 +29,7 @@ export default function GuestAddressHandler() {
             Use previous address?
           </p>
           <p className="font-dmsans_light text-gray-500 text-[13px] mt-1 truncate w-full">
-            {pendingGuestAddress.city}, {pendingGuestAddress.state}
+            {pendingGuestAddress?.city}, {pendingGuestAddress?.state}
           </p>
         </div>
       </div>

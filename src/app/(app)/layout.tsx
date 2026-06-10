@@ -1,29 +1,24 @@
-import CartPreview from "@/components/cartComponents/CartPreview"
-import Footer from "@/components/footer/Footer"
-import LocationProvider from "@/components/LocationProvider"
-import WishlistSyncManager from "@/components/WishlistSyncManager"
-import ProductsSyncManager from "@/components/ProductsSyncManager"
-import CartSyncManager from "@/components/CartSyncManager"
-import CleanFacebookHash from "@/components/CleanFacebookHash"
-import Navbar from "@/components/navbar/Navbar"
-import AddressModal from "@/components/user-address/AddressModal"
-import AddressListModal from "@/components/user-address/AddressListModal"
-import CoverageBar from "@/components/CoverageBar"
-import Breadcrumbs from "@/components/BreadCrump"
+import CartPreview from "@/components/cartComponents/CartPreview";
+import Footer from "@/components/footer/Footer";
+import LocationProvider from "@/components/LocationProvider";
+import WishlistSyncManager from "@/components/WishlistSyncManager";
+import ProductsSyncManager from "@/components/ProductsSyncManager";
+import CartSyncManager from "@/components/CartSyncManager";
+import CleanFacebookHash from "@/components/CleanFacebookHash";
+import Navbar from "@/components/navbar/Navbar";
+import AddressModal from "@/components/user-address/AddressModal";
+import AddressListModal from "@/components/user-address/AddressListModal";
+import CoverageBar from "@/components/CoverageBar";
+import Breadcrumbs from "@/components/BreadCrump";
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-             <CoverageBar
-            />
+      <CoverageBar />
       <Navbar />
       {/* <CategoriesBar /> */}
       <CleanFacebookHash />
-    
+
       <CartSyncManager />
       <WishlistSyncManager />
       {/* <ProductsSyncManager /> */}
@@ -33,14 +28,14 @@ export default function AppLayout({
 
       <main className="min-h-screen">
         <div className="px-4 py-2">
-  <Breadcrumbs />
-</div>
+          <Breadcrumbs />
+        </div>
         {children}
-          {/* <AddressModal />
+        {/* <AddressModal />
       <AddressListModal /> */}
       </main>
 
       <Footer />
     </>
-  )
+  );
 }

@@ -127,8 +127,8 @@ export default function RootLayout({
       >
         <SessionAuthProvider>
           <AddressProvider>
-<GuestAddressHandler/>
           <UIProvider>
+<GuestAddressHandler/>
             <AddressModal />
       
             {children}

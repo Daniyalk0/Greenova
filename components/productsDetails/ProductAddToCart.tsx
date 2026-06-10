@@ -23,6 +23,7 @@ export default function ProductAddToCart({
 
 }: Props) {
   
+    // const cartItems = useSelector((state:RootState) => state.cartProducts.items);
 const discountPercent = product.discount ?? 0;
 
 const applyDiscount = (price: number) =>
@@ -119,12 +120,13 @@ const applyDiscount = (price: number) =>
           }
   `}
       >
-        {!selectedWeightPrice
-          ? "Select quantity"
-          : isExactInCart
-            ? "Added to Cart"
-            : `Add to Cart • ₹${selectedWeightPrice.price.toLocaleString()}`
-        }
+      {
+  !selectedWeightPrice
+    ? "Select quantity"
+    : isExactInCart
+      ? `${selectedWeightPrice.weight} kg of ${product.name} added`
+      : `Add to Cart • ₹${selectedWeightPrice.price.toLocaleString()}`
+}
       </button>
 
 
