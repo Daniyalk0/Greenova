@@ -36,7 +36,8 @@ export default function AddressForm({
   address: any;
   onClose: () => void;
 }) {
-  const { refreshAddresses, setSelectedAddressId, saveGuest, addresses } = useAddress();
+  const { refreshAddresses, setSelectedAddressId, saveGuest, addresses } =
+    useAddress();
   const { data: session } = useSession();
   const user = session?.user?.id;
 
@@ -66,34 +67,30 @@ export default function AddressForm({
   });
 
   const city = watch("city");
-const state = watch("state");
+  const state = watch("state");
   const pincode = watch("pincode");
 
+  const normalizeAddressField = (value: string) =>
+    value.trim().replace(/\s+/g, "").toLowerCase();
 
-const normalizeAddressField = (value: string) =>
-  value
-    .trim()
-    .replace(/\s+/g, "")
-    .toLowerCase();
+  const isDuplicateAddress = (
+    data: AddressFormValues,
+    addresses: any[],
+    editingAddressId?: string,
+  ) => {
+    return addresses.some((addr) => {
+      // Ignore currently edited address
+      if (editingAddressId && addr.id === editingAddressId) {
+        return false;
+      }
 
-const isDuplicateAddress = (
-  data: AddressFormValues,
-  addresses: any[],
-  editingAddressId?: string
-) => {
-  return addresses.some((addr) => {
-    // Ignore currently edited address
-    if (editingAddressId && addr.id === editingAddressId) {
-      return false;
-    }
-
-    return (
-      addr.pincode === data.pincode &&
-      normalizeAddressField(addr.street) ===
-        normalizeAddressField(data.street)
-    );
-  });
-};
+      return (
+        addr.pincode === data.pincode &&
+        normalizeAddressField(addr.street) ===
+          normalizeAddressField(data.street)
+      );
+    });
+  };
 
   // --- SUBMIT HANDLERS ---
   const onSubmit = (data: AddressFormValues) => {
@@ -112,18 +109,18 @@ const isDuplicateAddress = (
         if (address) {
           // Update
           if (isDuplicateAddress(data, addresses, address?.id)) {
-  toast.error("Address already exists");
-  return;
-}
+            toast.error("Address already exists");
+            return;
+          }
           await updateAddress(address.id, data);
           await refreshAddresses();
           onClose();
         } else {
           // Create
           if (isDuplicateAddress(data, addresses, address?.id)) {
-  toast.error("Address already exists");
-  return;
-}
+            toast.error("Address already exists");
+            return;
+          }
           const saved = await createAddress(data);
           await refreshAddresses();
           setSelectedAddressId(saved.id);
@@ -186,7 +183,6 @@ const isDuplicateAddress = (
           console.error(error);
 
           setPostalApiFailed(true);
-        
         }
       } catch (error) {
         console.error("Availability check failed:", error);
@@ -304,46 +300,43 @@ const isDuplicateAddress = (
         </div>
 
         {/* City & State */}
-       {/* City & State */}
-<div>
-  <div className="grid grid-cols-2 gap-3">
-    <input
-      readOnly={!postalApiFailed}
-      disabled={isPending}
-      {...register("city")}
-      placeholder={
-        availability === "checking" ? "Fetching..." : "City"
-      }
-      className={`${getInputClass(
-        !!errors.city,
-        !postalApiFailed
-      )} font-dmsans_light`}
-    />
+        {/* City & State */}
+        <div>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              readOnly={!postalApiFailed}
+              disabled={isPending}
+              {...register("city")}
+              placeholder={availability === "checking" ? "Fetching..." : "City"}
+              className={`${getInputClass(
+                !!errors.city,
+                !postalApiFailed,
+              )} font-dmsans_light`}
+            />
 
-    <input
-      readOnly={!postalApiFailed}
-      disabled={isPending}
-      {...register("state")}
-      placeholder={
-        availability === "checking" ? "Fetching..." : "State"
-      }
-      className={`${getInputClass(
-        !!errors.state,
-        !postalApiFailed
-      )} font-dmsans_light`}
-    />
-  </div>
+            <input
+              readOnly={!postalApiFailed}
+              disabled={isPending}
+              {...register("state")}
+              placeholder={
+                availability === "checking" ? "Fetching..." : "State"
+              }
+              className={`${getInputClass(
+                !!errors.state,
+                !postalApiFailed,
+              )} font-dmsans_light`}
+            />
+          </div>
 
-  {/* Manual entry helper */}
- {postalApiFailed &&
-  (availability === "active" ||
-    availability === "limited") &&
-  (!city?.trim() || !state?.trim()) && (
-    <p className="mt-1 px-1 text-[12px] text-amber-600 font-dmsans_semibold">
-      Unable to auto-fill city/state. Please enter manually.
-    </p>
-)}
-</div>
+          {/* Manual entry helper */}
+          {postalApiFailed &&
+            (availability === "active" || availability === "limited") &&
+            (!city?.trim() || !state?.trim()) && (
+              <p className="mt-1 px-1 text-[12px] text-amber-600 font-dmsans_semibold">
+                Unable to auto-fill city/state. Please enter manually.
+              </p>
+            )}
+        </div>
 
         {/* Street Address */}
         <div className="relative">

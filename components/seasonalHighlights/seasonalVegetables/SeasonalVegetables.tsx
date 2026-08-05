@@ -24,15 +24,7 @@ const SeasonalVegetables = ({vegetables}:any) => {
   const cartProducts = useSelector((state: RootState) => state.cartProducts.items);
 
 
-  const products = useSelector((state: RootState) => state.products.items)
-  const error = useSelector((state: RootState) => state.products.error)
-  const loading = useSelector((state: RootState) => state.products.loading)
-
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
-
-  const seasonalProducts = products.filter((product: any) =>
-    seasonalNames.includes(product.name)
-  );
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
 
@@ -45,19 +37,8 @@ const SeasonalVegetables = ({vegetables}:any) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const getLimit = () => {
-    if (windowWidth < 768) return 6;
-    if (windowWidth >= 768 && windowWidth < 1025) return 4;
-    return 5; // 1080px and above
-  };
 
 
-  const limitedProducts = seasonalProducts.slice(0, getLimit());
-
-  if (error) {
-    return <div>Error: {error}</div>
-  }
-  if (loading) return <div>Loading...</div>
   return (
     <div className="flex w-full flex-col lg:px-10 xl:px-20">
 

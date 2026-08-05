@@ -21,7 +21,6 @@ import {
 
 export type Address = {
   id: number;
-  
 
   // Person details
   name: string;
@@ -90,23 +89,23 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     }
   }, [session?.user?.id]);
 
- const saveGuest = async (data: Address) => {
-  // 🔥 fetch availability
-  const res = await fetch("/api/check-availability", {
-    method: "POST",
-    body: JSON.stringify({ pincode: data.pincode }),
-  });
+  const saveGuest = async (data: Address) => {
+    // 🔥 fetch availability
+    const res = await fetch("/api/check-availability", {
+      method: "POST",
+      body: JSON.stringify({ pincode: data.pincode }),
+    });
 
-  const { status } = await res.json(); // "active" | "limited"
+    const { status } = await res.json(); // "active" | "limited"
 
-  const enriched = {
-    ...data,
-    serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
+    const enriched = {
+      ...data,
+      serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
+    };
+
+    saveGuestAddress(enriched);
+    setGuestAddress(enriched);
   };
-
-  saveGuestAddress(enriched);
-  setGuestAddress(enriched);
-};
 
   const clearGuest = () => {
     clearGuestAddress();
@@ -114,43 +113,41 @@ export function AddressProvider({ children }: { children: ReactNode }) {
   };
 
   // derive selected address
-const selectedAddress = useMemo(() => {
-  if (!selectedAddressId) return null;
+  const selectedAddress = useMemo(() => {
+    if (!selectedAddressId) return null;
 
-  const found = addresses.find((a) => a.id === selectedAddressId);
-  return found || null;
-}, [addresses, selectedAddressId]);
+    const found = addresses.find((a) => a.id === selectedAddressId);
+    return found || null;
+  }, [addresses, selectedAddressId]);
 
- 
+  const fetchAddresses = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
+      const data = await getUserAddresses();
 
-const fetchAddresses = async () => {
-  try {
-    setLoading(true);
-    setError(false);
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
-    const data = await getUserAddresses();
+      setAddresses(data as any);
 
-    setAddresses(data as any);
+      if (data.length > 0) {
+        setSelectedAddressId((prev) => {
+          const exists = data.some((a) => a.id === prev);
+          return exists ? prev : data[0].id;
+        });
+      } else {
+        setSelectedAddressId(null);
+      }
+    } catch (err) {
+      console.error("Failed to fetch addresses:", err);
 
-    if (data.length > 0) {
-      setSelectedAddressId((prev) => {
-        const exists = data.some((a) => a.id === prev);
-        return exists ? prev : data[0].id;
-      });
-    } else {
-      setSelectedAddressId(null);
+      setError(true);
+
+      // important:
+      // don't wipe existing addresses on failure
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Failed to fetch addresses:", err);
-
-    setError(true);
-
-    // important:
-    // don't wipe existing addresses on failure
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     fetchAddresses();
@@ -174,38 +171,38 @@ const fetchAddresses = async () => {
 
     const saved = await createAddress(pendingGuestAddress);
 
-  setSelectedAddressId(saved.id);
+    setSelectedAddressId(saved.id);
 
-await fetchAddresses();
+    await fetchAddresses();
 
-clearGuestAddress();
-setPendingGuestAddress(null);
+    clearGuestAddress();
+    setPendingGuestAddress(null);
   };
 
   useEffect(() => {
-  if (session?.user?.id) {
-    setGuestAddress(null);
-    return;
-  }
+    if (session?.user?.id) {
+      setGuestAddress(null);
+      return;
+    }
 
-  const guest = getGuestAddress();
+    const guest = getGuestAddress();
 
-  if (guest?.pincode) {
-    fetch("/api/check-availability", {
-      method: "POST",
-      body: JSON.stringify({ pincode: guest.pincode }),
-    })
-      .then((res) => res.json())
-      .then(({ status }) => {
-        setGuestAddress({
-          ...guest,
-          serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
+    if (guest?.pincode) {
+      fetch("/api/check-availability", {
+        method: "POST",
+        body: JSON.stringify({ pincode: guest.pincode }),
+      })
+        .then((res) => res.json())
+        .then(({ status }) => {
+          setGuestAddress({
+            ...guest,
+            serviceStatus: status?.toUpperCase() || "UNAVAILABLE",
+          });
         });
-      });
-  } else {
-    setGuestAddress(null);
-  }
-}, [session?.user?.id]);
+    } else {
+      setGuestAddress(null);
+    }
+  }, [session?.user?.id]);
 
   return (
     <AddressContext.Provider
@@ -215,8 +212,8 @@ setPendingGuestAddress(null);
         setAddresses,
         selectedAddressId,
         setSelectedAddressId,
-         loading,
-    error,
+        loading,
+        error,
         selectAddress,
         refreshAddresses: fetchAddresses,
         pendingGuestAddress,

@@ -6,13 +6,6 @@ import localFont from "next/font/local";
 import SessionAuthProvider from "@/components/SessionAuthProvider";
 import CleanFacebookHash from "@/components/CleanFacebookHash";
 import { ReactNode } from "react";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/Footer";
-import CartSyncManager from "@/components/CartSyncManager";
-import WishlistSyncManager from "@/components/WishlistSyncManager";
-import ProductsSyncManager from "@/components/ProductsSyncManager";
-import CartPreview from "@/components/cartComponents/CartPreview";
-import { ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import LocationProvider from "@/components/LocationProvider";
 import { UIProvider } from "../context/ui-context";
@@ -20,7 +13,6 @@ import { AddressProvider } from "../context/address-context";
 import AddressListModal from "@/components/user-address/AddressListModal";
 import AddressModal from "@/components/user-address/AddressModal";
 import GuestAddressHandler from "@/components/user-address/GuestAddressHandler";
-import CoverageBar from "@/components/CoverageBar";
 import ToastProvider from "@/components/ToastProvider";
 
 

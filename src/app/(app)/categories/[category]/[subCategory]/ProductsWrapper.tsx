@@ -7,7 +7,7 @@ import { AlertCircle } from "lucide-react";
 
 type Props = {
   category: string;
-  subCategory: string;
+  subCategory: string; 
   isSeasonalPage: boolean;
   selectedSeason?: Season;
 };

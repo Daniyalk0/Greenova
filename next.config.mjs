@@ -1,3 +1,9 @@
+import createBundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -32,11 +38,7 @@ const nextConfig = {
       },
     ],
   },
-   experimental: {
-    serverActions: {
-      bodySizeLimit: "10mb", // or "20mb"
-    },
-  },
-};
+ 
+}
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig)
