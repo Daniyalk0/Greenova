@@ -7,11 +7,11 @@ import { ReactNode } from "react";
 import { Provider } from "react-redux";
 
 
-export default function SessionAuthProvider({ children }: { children: ReactNode }) {
+export default function SessionAuthProvider({ children, session }: { children: ReactNode; session:any }) {
   return (
 
     <Provider store={store}>
-      <SessionProvider>
+      <SessionProvider session={session}>
 
         {children}
       </SessionProvider>

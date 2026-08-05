@@ -1,6 +1,7 @@
 // ProductsWrapper.tsx
 
 import CategoryCommonComponent from "@/components/categoryCommonComp/CategoryCommonComponent";
+import { getCachedProducts } from "@/lib/CachedProducts";
 import { getProducts } from "@/lib/products";
 import { Category, Season } from "@prisma/client";
 import { AlertCircle } from "lucide-react";
@@ -23,7 +24,7 @@ export default async function ProductsWrapper({
     // await new Promise((resolve) => setTimeout(resolve, 5000));
 
     
-    const products = await getProducts({
+    const products = await getCachedProducts({
       category: category.toUpperCase() as Category,
       subCategory: isSeasonalPage ? undefined : subCategory,
       season: selectedSeason,

@@ -14,6 +14,8 @@ import AddressListModal from "@/components/user-address/AddressListModal";
 import AddressModal from "@/components/user-address/AddressModal";
 import GuestAddressHandler from "@/components/user-address/GuestAddressHandler";
 import ToastProvider from "@/components/ToastProvider";
+import { authConfig } from "./api/auth/[...nextauth]/auth.config";
+import { getServerSession } from "next-auth";
 
 
 const geistSans = Geist({
@@ -103,11 +105,13 @@ const monasans_bold = localFont({
 });
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+  const session = await getServerSession(authConfig);
   return (
     <html lang="en">
       <body
@@ -117,7 +121,7 @@ export default function RootLayout({
         ${DMSans_italic_light.variable} ${monasans_bold.variable}
         antialiased bg-white`}
       >
-        <SessionAuthProvider>
+        <SessionAuthProvider session={session}>
           <AddressProvider>
           <UIProvider>
 <GuestAddressHandler/>

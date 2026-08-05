@@ -7,7 +7,7 @@ import { authConfig } from "@/src/app/api/auth/[...nextauth]/auth.config";
 import { OrderStatus } from "@prisma/client";
 // import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 // import { authOptions } from "@/lib/auth";
 // import { supabase } from "@/lib/supabase/server";
 
@@ -25,6 +25,10 @@ export async function createProduct(data: any) {
       imageUrl: data.imageUrl || "",
     },
   });
+   revalidateTag("products");
+
+  // Clear featured products cache (if this product could be featured)
+  revalidateTag("featured-products");
 }
 
 
@@ -46,6 +50,10 @@ export async function updateProduct(productId: number, data: any) {
       updatedAt: new Date(),
     },
   });
+  revalidateTag("products");
+
+  // Clear featured products cache (if this product could be featured)
+  revalidateTag("featured-products");
 }
 
 export async function deleteProduct(productId: number) {
@@ -58,7 +66,14 @@ export async function deleteProduct(productId: number) {
   await prisma.product.delete({
     where: { id: productId },
   });
-    revalidatePath("/admin/products");
+ revalidatePath("/admin/products");
+
+  // Refresh cached product data
+  revalidateTag("products");
+  revalidateTag("featured-products");
+
+  // If you cache individual product pages
+  revalidateTag(`product-${productId}`);
 }
 
 

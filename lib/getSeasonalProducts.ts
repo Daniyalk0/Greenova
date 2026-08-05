@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 async function getByCategory(category: "FRUITS" | "VEGETABLES", limit: number) {
   // 1. Get featured products first
@@ -40,25 +41,31 @@ async function getByCategory(category: "FRUITS" | "VEGETABLES", limit: number) {
 //   return new Promise(resolve => setTimeout(resolve, ms));
 // }
 
-export async function getSeasonalProducts() {
-  
-  try {
-    // throw new Error("Testing failure");
-    const [fruits, vegetables] = await Promise.all([
-      getByCategory("FRUITS", 5),
-      getByCategory("VEGETABLES", 5),
-    ]);
+export const getSeasonalProducts = unstable_cache(
+  async () => {
+      console.log("🔥 Fetching from database...");
+    try {
+      const [fruits, vegetables] = await Promise.all([
+        getByCategory("FRUITS", 5),
+        getByCategory("VEGETABLES", 5),
+      ]);
 
-    return {
-      fruits,
-      vegetables,
-    };
-  } catch (error) {
-    console.error("Failed to fetch seasonal products:", error);
+      return {
+        fruits,
+        vegetables,
+      };
+    } catch (error) {
+      console.error("Failed to fetch seasonal products:", error);
 
-    return {
-      fruits: [],
-      vegetables: [],
-    };
+      return {
+        fruits: [],
+        vegetables: [],
+      };
+    }
+  },
+  ["home-seasonal-products"],
+  {
+    tags: ["products", "featured-products"],
+    revalidate: 300, // 5 minutes
   }
-}
+);

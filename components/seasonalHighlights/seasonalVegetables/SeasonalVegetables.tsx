@@ -38,7 +38,6 @@ const SeasonalVegetables = ({vegetables}:any) => {
   }, []);
 
 
-
   return (
     <div className="flex w-full flex-col lg:px-10 xl:px-20">
 
