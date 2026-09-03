@@ -74,6 +74,8 @@ const UserMenu = () => {
     );
   }
   const { email, name, image } = session.user;
+  console.log('userImage', image);
+  
   const initials = getInitials(name, email);
   const pastelBg = getPastelColor(email ?? name ?? "user");
 

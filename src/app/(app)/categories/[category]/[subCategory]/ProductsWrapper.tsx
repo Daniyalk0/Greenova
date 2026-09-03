@@ -8,7 +8,7 @@ import { AlertCircle } from "lucide-react";
 
 type Props = {
   category: string;
-  subCategory: string; 
+  subCategory: string;
   isSeasonalPage: boolean;
   selectedSeason?: Season;
 };
@@ -23,19 +23,18 @@ export default async function ProductsWrapper({
     // simulate delay
     // await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    
     const products = await getCachedProducts({
       category: category.toUpperCase() as Category,
       subCategory: isSeasonalPage ? undefined : subCategory,
       season: selectedSeason,
     });
-    
+
     return (
       <CategoryCommonComponent
-      products={products}
-      isSeasonalPage={isSeasonalPage}
-      selectedSeason={selectedSeason}
-      enableSeasonHighlight={isSeasonalPage}
+        products={products}
+        isSeasonalPage={isSeasonalPage}
+        selectedSeason={selectedSeason}
+        enableSeasonHighlight={isSeasonalPage}
       />
     );
   } catch (error) {
@@ -50,13 +49,13 @@ export default async function ProductsWrapper({
     const readableSubCategory = formatCategoryName(subCategory);
     const readableCategory = formatCategoryName(category);
 
-   const title = isSeasonalPage
-  ? `${readableCategory} seasonal products unavailable`
-  : `${readableSubCategory} products unavailable`;
+    const title = isSeasonalPage
+      ? `${readableCategory} seasonal products unavailable`
+      : `${readableSubCategory} products unavailable`;
 
-const description = isSeasonalPage
-  ? `We're having trouble loading seasonal ${readableCategory.toLowerCase()} right now. Please try again shortly.`
-  : `We couldn't load ${readableSubCategory.toLowerCase()} products at the moment. Please refresh the page and try again.`;
+    const description = isSeasonalPage
+      ? `We're having trouble loading seasonal ${readableCategory.toLowerCase()} right now. Please try again shortly.`
+      : `We couldn't load ${readableSubCategory.toLowerCase()} products at the moment. Please refresh the page and try again.`;
 
     return (
       <section className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-10">
@@ -75,7 +74,7 @@ const description = isSeasonalPage
           <p className="mt-2 max-w-md font-dmsans_light text-sm leading-6 text-gray-500">
             {description}
           </p>
-              <a
+          <a
             href=""
             className="mt-6 inline-flex font-dmsans_light rounded-full bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
           >

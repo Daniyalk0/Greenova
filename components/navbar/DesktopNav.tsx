@@ -32,21 +32,18 @@ const DesktopNav = ({
   data,
   setDrawerOpen,
   total,
-
-
 }: UserMenuProps) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  
-
   const { openAddressListModal, openAddressFormModal } = useUI();
-  const { addresses, selectedAddress, guestAddress, error, loading } = useAddress();
-   console.log(addresses)
+  const { addresses, selectedAddress, guestAddress, error, loading } =
+    useAddress();
+  console.log(addresses);
 
-// const [guestAddress, setGuestAddress] = useState(() =>
-//   !session?.user?.id ? getGuestAddress() : null
-// );
+  // const [guestAddress, setGuestAddress] = useState(() =>
+  //   !session?.user?.id ? getGuestAddress() : null
+  // );
 
   const isLoggedIn = !!session?.user?.id;
 
@@ -63,14 +60,13 @@ const DesktopNav = ({
   const finalAddress = isLoggedIn ? selectedAddress : guestAddress;
 
   // console.log("finalAddress", finalAddress);
-  
 
   // ✅ normalize for button logic
   const addressList = isLoggedIn
     ? addresses
     : guestAddress
-    ? [{ ...guestAddress, id: -1 }]
-    : [];
+      ? [{ ...guestAddress, id: -1 }]
+      : [];
 
   const pathname = usePathname();
 
@@ -85,16 +81,13 @@ const DesktopNav = ({
   ];
 
   const shouldShowCategories = !hideOnRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
-  console.log(likedItemCount);
-  
   return (
     <nav className="sticky top-0 z-[2000] bg-white border-b p-2">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-9">
         <div className="flex items-center gap-6 h-16">
-
           {/* LEFT: Logo + Location */}
           <div className="flex items-center gap-7 min-w-fit">
             <Link href="/" className="flex-shrink-0 mb-3">
@@ -108,53 +101,51 @@ const DesktopNav = ({
             </Link>
 
             {/* Location Button */}
-       {loading ? (
-  /* Loading Skeleton */
-  <div className="flex flex-col items-start animate-pulse">
-    <div className="h-3 w-16 rounded bg-gray-200 mb-2" />
+            {loading ? (
+              /* Loading Skeleton */
+              <div className="flex flex-col items-start animate-pulse">
+                <div className="h-3 w-16 rounded bg-gray-200 mb-2" />
 
-    <div className="flex items-center gap-2">
-      <div className="h-4 w-32 rounded bg-gray-300" />
-      <div className="w-3 h-3 rounded-full bg-gray-200" />
-    </div>
-  </div>
-) : (
-  <button
-    onClick={() => {
-      if (addressList.length === 0) {
-        openAddressFormModal();
-      } else {
-        openAddressListModal();
-      }
-    }}
-    className="flex flex-col items-start"
-  >
-    <span className="text-xs text-gray-500 font-dmsans_light">
-      Delivery to
-    </span>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-32 rounded bg-gray-300" />
+                  <div className="w-3 h-3 rounded-full bg-gray-200" />
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  if (addressList.length === 0) {
+                    openAddressFormModal();
+                  } else {
+                    openAddressListModal();
+                  }
+                }}
+                className="flex flex-col items-start"
+              >
+                <span className="text-xs text-gray-500 font-dmsans_light">
+                  Delivery to
+                </span>
 
-    <div className="flex items-center gap-1">
-      <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
-        {error
-          ? "Location unavailable"
-          : finalAddress
-          ? `${finalAddress.city}, ${finalAddress.state}`
-          : "Add delivery location"}
-      </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
+                    {error
+                      ? "Location unavailable"
+                      : finalAddress
+                        ? `${finalAddress.city}, ${finalAddress.state}`
+                        : "Add delivery location"}
+                  </span>
 
-      {!error && (
-        <ChevronDown className="w-3 h-3 text-gray-600" />
-      )}
-    </div>
+                  {!error && <ChevronDown className="w-3 h-3 text-gray-600" />}
+                </div>
 
-    {/* Optional helper text */}
-    {error && (
-      <span className="text-[11px] text-red-500 mt-0.5 font-dmsans_medium">
-        Tap to retry
-      </span>
-    )}
-  </button>
-)}
+                {/* Optional helper text */}
+                {error && (
+                  <span className="text-[11px] text-red-500 mt-0.5 font-dmsans_medium">
+                    Tap to retry
+                  </span>
+                )}
+              </button>
+            )}
           </div>
 
           {/* CENTER: Search (Wide like Zepto/Blinkit) */}
@@ -190,7 +181,7 @@ const DesktopNav = ({
       /> */}
 
       <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-      {shouldShowCategories && <Categoriesbar />}
+      {/* {shouldShowCategories && <Categoriesbar />} */}
     </nav>
   );
 };

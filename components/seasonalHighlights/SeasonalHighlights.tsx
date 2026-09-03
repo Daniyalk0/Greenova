@@ -14,7 +14,7 @@ const SeasonalHighlights = async () => {
     // 1. PRODUCTION EMPTY STATE
     if (!hasFruits && !hasVegetables) {
       return (
-        <section className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
+        <section id="products" className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50/50 px-6 py-14 text-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 mb-4">
               <Sprout className="h-6 w-6 text-green-600" />
@@ -35,7 +35,7 @@ const SeasonalHighlights = async () => {
 
     // SUCCESS STATE
     return (
-      <section className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
+      <section id="products" className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
         <div className="flex flex-col w-full gap-10">
           {hasFruits && <SeasonalFruits fruits={fruits} />}
           {hasVegetables && <SeasonalVegetables vegetables={vegetables} />}
@@ -43,11 +43,10 @@ const SeasonalHighlights = async () => {
       </section>
     );
   } catch (error) {
-    // 2. PRODUCTION ERROR STATE (If the API/Database fails)
-    console.error("Failed to fetch seasonal products:", error);
+
 
     return (
-      <section className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
+      <section id="products" className="px-5 w-full sm:px-6 lg:px-5 pb-10 my-6 md:my-0">
         <div className="flex flex-col items-center justify-center rounded-2xl border border-red-100 bg-red-50/50 px-6 py-12 text-center">
           <AlertCircle
             className="h-10 w-10 text-red-400 mb-3"

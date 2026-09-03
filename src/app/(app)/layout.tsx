@@ -25,8 +25,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       <CartPreview />
 
-      <main className="min-h-screen">
-        <div className="px-4 py-2">
+      <main className="min-h-screen ">
+        <div className="px-4 py-0">
           <Breadcrumbs />
         </div>
         {children}

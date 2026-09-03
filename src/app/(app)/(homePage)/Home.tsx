@@ -8,6 +8,7 @@ import WhyChooseUs from "@/components/whyChooseUs/WhyChooseUs";
 import Reviews from "@/components/reviews/Reviews";
 import SeasonalSkeleton from "@/components/ui/loadingSkeletons/SeasonalSkeleton";
 import { prisma } from "@/lib/prisma";
+import TopCategoryBar from "@/components/categoriesBar/Categoriesbar";
 
 const Home = async () => {
   let dbBanners: any[] = [];
@@ -27,6 +28,10 @@ const Home = async () => {
     <div className="">
 
       <Hero />
+      <div className="mt-6">
+
+       <TopCategoryBar/>
+      </div>
       <Banner banners={dbBanners} />
       <Suspense fallback={<SeasonalSkeleton />}>
         <SeasonalHighlights />

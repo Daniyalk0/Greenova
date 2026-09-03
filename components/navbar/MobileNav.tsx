@@ -151,7 +151,7 @@ const addressList = isLoggedIn
 
 
             <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
-            {shouldShowCategories && <Categoriesbar showTopActions={showTopActions} />}
+            {/* {shouldShowCategories && <Categoriesbar showTopActions={showTopActions} />} */}
         </div>
     );
 };
