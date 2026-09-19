@@ -26,7 +26,7 @@ export const authConfig: NextAuthOptions = {
       authorization: {
         params: {
           scope: "openid email profile",
-            prompt: "consent",
+          prompt: "consent",
         },
       },
     }),
@@ -121,7 +121,7 @@ export const authConfig: NextAuthOptions = {
 
     async signIn({ user, account, profile }) {
       // Account linking on OAuth sign-in
-      
+
       if (account && account.provider !== "credentials") {
         if (!user.email) throw new Error("Email is required");
 
@@ -172,11 +172,11 @@ export const authConfig: NextAuthOptions = {
           user.id = existingUser.id;
           (user as PrismaUser).emailVerified =
             existingUser.emailVerified ?? new Date();
-        }else {
-        // For new OAuth users, set the image too
-        user.image = imageUrl;
+        } else {
+          // For new OAuth users, set the image too
+          user.image = imageUrl;
+        }
       }
-      } 
       return true;
     },
   },

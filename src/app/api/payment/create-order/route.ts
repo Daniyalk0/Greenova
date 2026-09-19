@@ -94,25 +94,25 @@ export async function POST(req: Request) {
     });
 
     // ✅ send order confirmation email
- const fullOrder = await prisma.order.findUnique({
-  where: {
-    id: order.id
-  },
-  include: {
-    user: true,
-    items: {
+    const fullOrder = await prisma.order.findUnique({
+      where: {
+        id: order.id,
+      },
       include: {
-        product: true
-      }
-    }
-  }
-})
-await sendOrderConfirmationEmail({
-  email: session.user.email!,
-  order: fullOrder,
-  items: fullOrder!.items,
-  address
-})
+        user: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    await sendOrderConfirmationEmail({
+      email: session.user.email!,
+      order: fullOrder,
+      items: fullOrder!.items,
+      address,
+    });
 
     return NextResponse.json(
       {

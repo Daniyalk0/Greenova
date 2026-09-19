@@ -17,7 +17,6 @@ export const addToCartUtil = async ({
   dispatch: any;
   onOptimisticAdd?: (message: string) => void;
 }) => {
-  
   const totalPrice = (product.basePricePerKg || 0) * weight;
 
   // 1️⃣ UI SNAPSHOT (Redux + localStorage)
@@ -40,14 +39,12 @@ export const addToCartUtil = async ({
   };
 
   // 🔍 Duplicate check (UI shape)
-const latestCart =
-  store.getState().cartProducts.items ?? [];
+  const latestCart = store.getState().cartProducts.items ?? [];
 
-const exists = latestCart.some(
-  (item) =>
-    item.productId === uiItem.productId &&
-    item.weight === uiItem.weight
-);
+  const exists = latestCart.some(
+    (item) =>
+      item.productId === uiItem.productId && item.weight === uiItem.weight,
+  );
 
   if (exists) {
     return {
@@ -57,18 +54,16 @@ const exists = latestCart.some(
   }
 
   const previousCart = [...latestCart];
-const updatedCart = [...latestCart, uiItem];
+  const updatedCart = [...latestCart, uiItem];
   // ⚡ INSTANT UI UPDATE (NO WAITING)
   dispatch(
     setCart({
       items: updatedCart,
       source: session?.user?.id ? "db" : "local",
-    })
+    }),
   );
 
-  onOptimisticAdd?.(
-    `${weight} kg of ${product.name} added to your cart!`
-  );
+  onOptimisticAdd?.(`${weight} kg of ${product.name} added to your cart!`);
 
   // 💾 Persist in background
   try {
@@ -88,7 +83,7 @@ const updatedCart = [...latestCart, uiItem];
       setCart({
         items: previousCart,
         source: session?.user?.id ? "db" : "local",
-      })
+      }),
     );
 
     return {
