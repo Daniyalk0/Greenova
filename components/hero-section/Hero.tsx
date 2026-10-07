@@ -97,11 +97,11 @@ const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-6 text-[2rem] font-dmsans_semibold leading-[1.1] text-white sm:text-slate-900 md:text-5xl lg:text-7xl"
+              className="mb-4 text-left text-[clamp(1.75rem,8vw,3rem)] font-dmsans_semibold leading-[1.1] tracking-tight text-balance text-white sm:mb-6 sm:text-slate-900 sm:text-5xl lg:text-7xl"
             >
               Nurture your home <br className="hidden lg:block" />
               with{" "}
-              <span className="relative inline-block sm:px-2 text-green-300 sm:text-green-800 before:absolute before:inset-0 before:-z-10 before:translate-y-1 before:rounded-lg before:bg-green-900/40 sm:before:bg-green-100/80">
+              <span className="relative inline-block max-w-full align-baseline text-green-300 sm:px-2 sm:text-green-800 before:absolute before:inset-0 before:-z-10 before:translate-y-1 before:rounded-lg before:bg-green-900/40 sm:before:bg-green-100/80">
                 nature&apos;s finest.
               </span>
             </motion.h1>

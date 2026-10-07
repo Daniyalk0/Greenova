@@ -122,3 +122,17 @@ npm install
 ```bash
 npm run dev
 ```
+
+### Prisma and PostgreSQL
+
+Set `DATABASE_URL` to the Supabase/PostgreSQL connection used by the application and
+`DIRECT_URL` to the direct database connection used by Prisma migrations. Prisma CLI
+commands read `DIRECT_URL` from `prisma.config.ts`; the application and product seed
+script connect through `DATABASE_URL`.
+
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:deploy
+npm run db:seed
+```

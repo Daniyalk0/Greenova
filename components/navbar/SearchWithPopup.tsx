@@ -23,7 +23,11 @@ import { toast } from "react-toastify";
 // IMPORT YOUR SERVER ACTION HERE
 // import { searchProducts } from "@/src/actions/searchActions";
 
-export default function SearchPopup() {
+export default function SearchPopup({
+  iconOnlyTrigger = false,
+}: {
+  iconOnlyTrigger?: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Search & Debounce State
@@ -242,48 +246,65 @@ export default function SearchPopup() {
   };
 
   return (
-    <div className="relative w-full transition-all duration-200">
+    <div
+      className={`relative transition-all duration-200 ${
+        iconOnlyTrigger ? "w-auto" : "w-full"
+      }`}
+    >
       {/* --- Main Search Bar Trigger --- */}
-      <div
-        tabIndex={0}
-        className={`relative transition-[max-width] duration-300 ease-in-out cursor-text group
-        ${
-          (wishlistItems?.length ?? 0) > 0
-            ? "max-w-[calc(100%-0.7rem)]"
-            : "max-w-full"
-        }`}
-        onClick={handleOpen}
-        onMouseEnter={fetchSuggested}
-        onFocus={fetchSuggested}
-      >
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 z-20 group-hover:text-[#0c831f] transition-colors" />
+      {iconOnlyTrigger ? (
+        <button
+          type="button"
+          aria-label="Search products"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100"
+          onClick={handleOpen}
+          onMouseEnter={fetchSuggested}
+          onFocus={fetchSuggested}
+        >
+          <Search className="h-5 w-5" />
+        </button>
+      ) : (
+        <div
+          tabIndex={0}
+          className={`relative transition-[max-width] duration-300 ease-in-out cursor-text group
+          ${
+            (wishlistItems?.length ?? 0) > 0
+              ? "max-w-[calc(100%-0.7rem)]"
+              : "max-w-full"
+          }`}
+          onClick={handleOpen}
+          onMouseEnter={fetchSuggested}
+          onFocus={fetchSuggested}
+        >
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 z-20 group-hover:text-[#0c831f] transition-colors" />
 
-        <input
-          type="text"
-          readOnly
-          className="relative z-10 w-full pl-10 pr-4 py-3 text-[14px] font-dmsans_light border border-gray-200 rounded-xl bg-gray-50/50 outline-none cursor-text transition-colors shadow-sm"
-        />
+          <input
+            type="text"
+            readOnly
+            className="relative z-10 w-full pl-10 pr-4 py-3 text-[14px] font-dmsans_light border border-gray-200 rounded-xl bg-gray-50/50 outline-none cursor-text transition-colors shadow-sm"
+          />
 
-        {!focused && (
-          <div className="pointer-events-none absolute left-10 top-1/2 -translate-y-1/2 flex items-center text-[14px] text-gray-400 z-0 font-dmsans_light">
-            <span className="mr-1 whitespace-nowrap">Search for</span>
-            <div className="relative h-[1.25rem] min-w-[120px] overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={index}
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -12, opacity: 0 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="absolute left-0 top-0 font-dmsans_semibold text-gray-500 truncate max-w-[150px]"
-                >
-                  &quot;{dynamicPlaceholders[index]}&quot;
-                </motion.span>
-              </AnimatePresence>
+          {!focused && (
+            <div className="pointer-events-none absolute left-10 top-1/2 -translate-y-1/2 flex items-center text-[14px] text-gray-400 z-0 font-dmsans_light">
+              <span className="mr-1 whitespace-nowrap">Search for</span>
+              <div className="relative h-[1.25rem] min-w-[120px] overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={index}
+                    initial={{ y: 12, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -12, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="absolute left-0 top-0 font-dmsans_semibold text-gray-500 truncate max-w-[150px]"
+                  >
+                    &quot;{dynamicPlaceholders[index]}&quot;
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* --- Backdrop --- */}
       <div

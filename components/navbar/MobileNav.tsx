@@ -1,15 +1,12 @@
 "use client";
 
 import SearchWithPopup from "./SearchWithPopup";
-import { ChevronDown } from "lucide-react";
-import WishlistIndicator from "../ui/WishlistIndicator";
-import { usePathname, useRouter } from "next/navigation";
+import { ChevronDown, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import CartBottomBadge from "../ui/CartIndicator";
 import { UserMenuProps } from "./DesktopNav";
 import UserMenu from "./UserProfilePopUp";
-import Categoriesbar from "../categoriesBar/Categoriesbar";
 import { useUI } from "@/src/context/ui-context";
 import { useAddress } from "@/src/context/address-context";
 // import CartBottomBadge from "../ui/WishlistIndicator";
@@ -30,60 +27,23 @@ const addressList = isLoggedIn
   ? [{ ...guestAddress, id: -1 }]
   : [];
 
-    const [showTopActions, setShowTopActions] = useState(true);
-    
-
-    useEffect(() => {
-        const handleScroll = () => {
-            // only apply on mobile
-            if (window.innerWidth >= 640) {
-                setShowTopActions(true);
-                return;
-            }
-
-            // show only when user is near top
-            setShowTopActions(window.scrollY < 20);
-        };
-
-        handleScroll(); // initial check
-        window.addEventListener("scroll", handleScroll, { passive: true });
-
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-      const pathname = usePathname();
-    
-    const hideOnRoutes = [
-      "/cart",
-      "/checkout",
-      "/order-success",
-      "/orders",
-      "/login",
-      "/signup",
-      "/profile",
-    ];
-    
-    const shouldShowCategories = !hideOnRoutes.some((route) =>
-      pathname.startsWith(route)
-    );
-
-
     return (
         <div className="sticky top-0 z-[2000] bg-white sm:hidden border-2 ">
             {/* Top Bar */}
-            <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2 px-3 py-3">
                 {/* Location */}
                 {loading ? (
                   /* Loading Skeleton */
-                  <div className="flex flex-col items-start animate-pulse">
+                  <div className="flex min-w-0 flex-1 flex-col items-start animate-pulse">
                     <div className="h-3 w-16 rounded bg-gray-200 mb-2" />
                     <div className="flex items-center gap-2">
-                      <div className="h-4 w-32 rounded bg-gray-300" />
+                      <div className="h-4 w-32 max-w-full rounded bg-gray-300" />
                       <div className="w-3 h-3 rounded-full bg-gray-200" />
                     </div>
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => {
                       if (addressList.length === 0) {
                         openAddressFormModal();
@@ -91,11 +51,11 @@ const addressList = isLoggedIn
                         openAddressListModal();
                       }
                     }}
-                    className="flex flex-col items-start"
+                    className="flex min-w-0 flex-1 flex-col items-start"
                   >
                     <span className="text-xs text-gray-500">Delivery to</span>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm font-semibold text-gray-900 font-monasans_semibold truncate max-w-[170px]">
+                    <div className="flex min-w-0 max-w-full items-center gap-1">
+                      <span className="max-w-full truncate text-left text-sm font-semibold text-gray-900 font-monasans_semibold">
                         {error
                           ? "Location unavailable"
                           : finalAddress
@@ -115,40 +75,33 @@ const addressList = isLoggedIn
                   </button>
                 )}
 
+                <div className="flex flex-shrink-0 items-center gap-0 mr-2">
+                  <SearchWithPopup iconOnlyTrigger />
+
+                  <button
+                    type="button"
+                    aria-label="Open wishlist"
+                    onClick={() => {
+                      if (!session?.user) {
+                        router.push("/login");
+                        return;
+                      }
+                      setDrawerOpen(true);
+                    }}
+                    className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100"
+                  >
+                    <Heart className="h-5 w-5" />
+                    {(likedItemCount ?? 0) > 0 && (
+                      <span className="absolute right-0 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-green-800 px-1 text-[10px] text-white">
+                        {likedItemCount ?? 0}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
                 {/* User */}
                 <UserMenu />
             </div>
-
-            {/* Floating Search */}
-            <div
-                className={`
-                 overflow-hidden transition-all duration-300 ease-out
-                 ${showTopActions
-                        ? "max-h-[120px] opacity-100"
-                        : "max-h-0 opacity-0"}
-  `}
-            >
-                <div className="flex items-center gap-2 px-4 pb-3">
-                    <div className="flex-1">
-                        <SearchWithPopup />
-                    </div>
-
-                    <div
-                        onClick={() => {
-                            if (!session?.user) {
-                                router.push("/login");
-                                return;
-                            }
-                            setDrawerOpen(true);
-                        }}
-                        className="cursor-pointer"
-                    >
-                        <WishlistIndicator likedItemCount={likedItemCount} />
-                    </div>
-                </div>
-            </div>
-
-
 
             <CartBottomBadge itemCount={itemCount || 0} totalPrice={total} />
             {/* {shouldShowCategories && <Categoriesbar showTopActions={showTopActions} />} */}

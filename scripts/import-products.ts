@@ -1,10 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../lib/prisma";
 import axios from "axios";
-import "dotenv/config";
 import fs from "fs";
 
-const prisma = new PrismaClient();
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
